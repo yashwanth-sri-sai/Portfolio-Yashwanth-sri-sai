@@ -1,0 +1,51 @@
+K.Yashwanth Sri Sai
+Hyderabad,Telangana, India, 500040
+♂phone9703545822 /envel⌢pek.yashwanthsrisai09@gmail.com /linkedinYashwanth /githubYashwanth SOURCE
+Objective
+AI/LLM Engineer with strong foundations in Python, RAG systems, NLP, and backend engineering. Experienced in building
+multi-agent AI workflows, vector-search pipelines, and scalable backend APIs. Skilled in LangChain, FAISS, GPT-based models,
+cloud-native development, and converting real-world workflows into production-ready AI automations. Background in cybersecurity
+adds advantage in secure model deployment.
+Education
+Indian Institute of Information Technology Kottayam Nov. 2022 – Present
+B.Tech in Computer Science Engineering (Cyber Security) Kottayam, Kerala
+Technical Skills
+Programming: Python, Java, JavaScript, C++, SQL, NoSQL
+AI & LLMs: LangChain, GPT/Claude/Llama APIs, RAG Pipelines, Transformers, CNNs, NLP, Generative Models
+Vector Databases: FAISS, Pinecone, Weaviate, PGVector
+Frameworks: FastAPI, Django, Spring Boot, Node.js, React.js
+Cloud & DevOps: AWS, GCP, Docker, Git, GitHub Actions, CI/CD
+Web & APIs: REST APIs, Microservices, MERN Stack Fundamentals
+Cybersecurity: Secure Coding, Threat Modelling, Authentication, Network Security
+Tools: Streamlit, Postman, VS Code
+Experience
+LUCID Dec 2024 – Jan 2025
+Project Developer Hybrid, Hyderabad
+• Built and optimized a CNN-based DDoS detection system for edge cybersecurity, improving response latency.
+• Designed REST API endpoints to deploy ML models for real-time decision-making. Automated monitoring and retraining workflows using
+Python and Git-based pipelines.
+• Worked in Agile teams, focusing on performance optimization, debugging, and secure model deployment.
+Projects
+Agentic AI Chat Assistant | Python, LangChain, F AISS, CrewAI 2025
+• Developed a multi-agent RAG system with autonomous task delegation and structured output generation.
+• Used FAISS for semantic vector retrieval and GPT-based agents for reasoning. Integrated Python backend with React frontend through
+REST APIs.
+Generative AI Multi-PDF Chatbot | Python, LangChain, F AISS, Streamlit 2025
+• Developed a scalable RAG pipeline for querying multiple PDFs using LLMs (GPT, Gemini).
+• Implemented data scraping, text chunking, embeddings, and vector search for high-accuracy retrieval. Deployed the application on cloud-
+ready architecture with modular API-based components.
+Smart India Hackathon (SIH) | Machine Learning, Computer Vision Sep 2023 – Nov 2023
+• Implemented real-time sign-language detection using CNN+LSTM models.
+• Integrated ML inference with a React-based frontend through FastAPI. Added accessibility-oriented features like vibration alerts.
+Certifications
+Data Analytics Job Simulation – Deloitte
+Cybersecurity Analyst Job Simulation – Tata
+Data Visualisation: Empowering Business with Effective Insights – Tata
+Business Analytics – Microsoft
+Customer Experience (CX) for Business Success – HP Life
+Google Analytics – Google Skillshop
+Leadership / Extracurricular
+Sports Design and Social Media Lead Sep 2024 – Sep 2025
+IIIT Kottayam Kerala
+• Automated digital media workflows using Python and cloud tools. Managed web infrastructure, improving uptime and performance.
+• Collaborated with multi-functional teams for large-scale event execution.
