@@ -14,7 +14,7 @@ export const certifications: Certification[] = [
     issuer: "Deloitte",
     icon: "📊",
     color: "#8b5cf6",
-    link: null,
+    link: "https://drive.google.com/file/d/1l01CQ7WJSu-XtztpuxR-sr6WHtfibdkJ/view?usp=drive_link",
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ export const certifications: Certification[] = [
     issuer: "Tata",
     icon: "🛡️",
     color: "#06b6d4",
-    link: null,
+    link: "https://drive.google.com/file/d/1l0nxgGvdhmnJsqUYsRS2YRrWaBj2zZcH/view?usp=drive_link",
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ export const certifications: Certification[] = [
     issuer: "Tata",
     icon: "📈",
     color: "#e2e8f0",
-    link: null,
+    link: "https://drive.google.com/file/d/1l1eeEvNdskMFzS02nw5JnRxCBzU3Lu4N/view?usp=drive_link",
   },
   {
     id: 4,
@@ -38,7 +38,7 @@ export const certifications: Certification[] = [
     issuer: "Microsoft",
     icon: "💼",
     color: "#ec4899",
-    link: null,
+    link: "https://drive.google.com/file/d/1CTdaC2YDz65eQzT-C1lKpjX__LCWq3_2/view?usp=drive_link",
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ export const certifications: Certification[] = [
     issuer: "HP Life",
     icon: "⭐",
     color: "#f97316",
-    link: null,
+    link: "https://drive.google.com/file/d/1O6FEPXGFo1tnMRwlsyLiM_XWazxsWDTt/view?usp=drive_link",
   },
   {
     id: 6,
@@ -54,6 +54,6 @@ export const certifications: Certification[] = [
     issuer: "Google Skillshop",
     icon: "📉",
     color: "#22c55e",
-    link: null,
+    link: "https://drive.google.com/file/d/1kfmDOmymZitkEbLnc12_iKTKMc420I67/view?usp=drive_link",
   },
 ];
