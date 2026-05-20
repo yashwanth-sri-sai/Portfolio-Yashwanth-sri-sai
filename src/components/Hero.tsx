@@ -195,6 +195,7 @@ function RoleTypewriter() {
 /* ─── Main Hero Component ─── */
 export default function Hero() {
   const nameWords = ["Yashwanth", "Sri", "Sai"];
+  const [imgSrc, setImgSrc] = useState("/profile.png");
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -439,12 +440,13 @@ export default function Hero() {
               >
                 <div className="relative w-full h-full p-4">
                   <Image
-                    src="/hero-icon.png"
+                    src={imgSrc}
                     alt="Yashwanth Sri Sai — AI/ML Engineer"
                     fill
                     priority
                     sizes="(max-width: 640px) 240px, 280px"
-                    className="object-contain"
+                    className={imgSrc === "/profile.png" ? "object-cover rounded-2xl" : "object-contain"}
+                    onError={() => setImgSrc("/hero-icon.png")}
                   />
                 </div>
                 {/* Card shimmer border */}
