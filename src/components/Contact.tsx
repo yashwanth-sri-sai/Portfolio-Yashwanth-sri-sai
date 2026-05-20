@@ -108,6 +108,7 @@ export default function Contact() {
                   name="user_name"
                   required
                   placeholder="Your name"
+                  suppressHydrationWarning
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 focus:ring-2 focus:ring-[var(--color-accent-indigo)]/30 focus:border-[var(--color-accent-indigo)]/50 placeholder:text-[var(--color-text-muted)]"
                   style={inputStyle}
                 />
@@ -128,6 +129,7 @@ export default function Contact() {
                   name="user_email"
                   required
                   placeholder="you@example.com"
+                  suppressHydrationWarning
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 focus:ring-2 focus:ring-[var(--color-accent-indigo)]/30 focus:border-[var(--color-accent-indigo)]/50 placeholder:text-[var(--color-text-muted)]"
                   style={inputStyle}
                 />
@@ -148,6 +150,7 @@ export default function Contact() {
                   required
                   rows={5}
                   placeholder="Type your message here..."
+                  suppressHydrationWarning
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 resize-none focus:ring-2 focus:ring-[var(--color-accent-indigo)]/30 focus:border-[var(--color-accent-indigo)]/50 placeholder:text-[var(--color-text-muted)]"
                   style={inputStyle}
                 />
@@ -159,6 +162,7 @@ export default function Contact() {
                 disabled={status === "sending"}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                suppressHydrationWarning
                 className="w-full py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 disabled:opacity-60"
                 style={{
                   background:

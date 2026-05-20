@@ -1,200 +1,153 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { FiGithub, FiExternalLink } from "react-icons/fi";
-import type { Project } from "@/data/projects";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { FiGithub, FiExternalLink, FiArrowRight } from "react-icons/fi";
+import { Project } from "@/data/projects";
 
 interface ProjectCardProps {
   project: Project;
   index: number;
-  className?: string;
+  featured?: boolean;
 }
 
-export default function ProjectCard({ project, index, className = "" }: ProjectCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { damping: 20, stiffness: 200 };
-  const glowX = useSpring(mouseX, springConfig);
-  const glowY = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(glowY, [-0.5, 0.5], [5, -5]);
-  const rotateY = useTransform(glowX, [-0.5, 0.5], [-5, 5]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-    setIsHovered(false);
+export default function ProjectCard({ project, index, featured = false }: ProjectCardProps) {
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        delay: index * 0.1,
+      },
+    },
   };
 
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.15,
-        ease: [0.215, 0.61, 0.355, 1],
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        perspective: 1000,
-        transformStyle: "preserve-3d",
-      }}
-      className={`relative group h-full flex flex-col ${className}`}
-      id={`project-card-${project.id}`}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      className={`group relative rounded-3xl overflow-hidden glass-card transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-white/20 flex flex-col ${
+        featured ? "md:flex-row md:col-span-2" : "col-span-1"
+      }`}
     >
-      {/* Glow effect */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `radial-gradient(600px circle at ${isHovered ? "var(--mouse-x, 50%)" : "50%"} ${isHovered ? "var(--mouse-y, 50%)" : "50%"}, ${project.color}15, transparent 40%)`,
-        }}
-      />
+      {/* ─── Glowing Background Hover Effect ─── */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-purple-500/0 to-pink-500/0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-0" />
 
-      {/* Card */}
+      {/* ─── Project Thumbnail ─── */}
       <div
-        className="relative glass-card p-8 h-full flex flex-col overflow-hidden"
-        style={{ borderRadius: "24px" }}
+        className={`relative overflow-hidden z-10 ${
+          featured ? "w-full md:w-1/2 h-64 md:h-auto" : "w-full h-56"
+        }`}
       >
-        {/* Top accent line */}
-        <div
-          className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${project.color}, transparent)`,
-          }}
+        <Image
+          src={project.image}
+          alt={project.title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-
-        {/* Icon & Number */}
-        <div className="flex items-start justify-between mb-6">
-          <motion.div
-            className="text-4xl"
-            animate={isHovered ? { scale: 1.2, rotate: 10 } : { scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-          >
-            {project.icon}
-          </motion.div>
-          <span
-            className="text-sm font-mono font-semibold"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            0{project.id}
+        {/* Category Badge overlay on image */}
+        <div className="absolute top-4 left-4 z-20">
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white shadow-lg">
+            {project.category}
           </span>
         </div>
+      </div>
 
-        {/* Title */}
-        <h3
-          className="text-2xl font-bold mb-3 tracking-tight transition-colors duration-300"
-          style={{
-            color: isHovered ? "#fff" : "var(--color-text-primary)",
-          }}
-        >
-          {project.title}
-        </h3>
+      {/* ─── Content Container ─── */}
+      <div
+        className={`relative z-10 flex flex-col p-6 sm:p-8 ${
+          featured ? "w-full md:w-1/2 justify-center" : "w-full flex-grow"
+        }`}
+      >
+        <div className="flex-grow">
+          {/* Title & Date */}
+          <div className="flex justify-between items-start mb-3 gap-4">
+            <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+              {project.title}
+            </h3>
+            <span className="text-sm font-medium text-white/40 whitespace-nowrap pt-1">
+              {project.date}
+            </span>
+          </div>
 
-        {/* Description */}
-        <p
-          className="text-sm leading-relaxed mb-6 flex-grow"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          {project.description}
-        </p>
+          {/* Short Description */}
+          <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-6 line-clamp-3">
+            {project.shortDescription}
+          </p>
 
-        {/* Metrics Row */}
-        {project.metrics && project.metrics.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 mb-6 pt-4 border-t" style={{ borderColor: "rgba(255, 255, 255, 0.05)" }}>
-            {project.metrics.map((metric, idx) => (
-              <div key={idx} className="flex flex-col">
-                <span 
-                  className="text-2xl font-bold tracking-tight mb-1"
-                  style={{ color: "var(--color-accent-indigo)" }}
-                >
-                  {metric.value}
-                </span>
-                <span 
-                  className="text-xs uppercase tracking-wider font-semibold"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  {metric.label}
-                </span>
-              </div>
+          {/* Tech Stack */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {project.tech.map((tech) => (
+              <span
+                key={tech}
+                className="px-2.5 py-1 text-xs font-medium rounded-md bg-white/5 border border-white/10 text-white/80"
+              >
+                {tech}
+              </span>
             ))}
           </div>
-        )}
 
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {project.tech.map((tech) => (
-            <span key={tech} className="tech-tag">
-              {tech}
-            </span>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-4 mt-auto">
-          <motion.a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center flex-1 gap-2 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
-            style={{
-              color: "var(--color-text-primary)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              background: "rgba(255, 255, 255, 0.05)",
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <FiGithub size={18} />
-            View Code
-          </motion.a>
-          {project.demo && (
-            <motion.a
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center flex-1 gap-2 py-3 rounded-xl text-sm font-semibold text-black transition-all duration-300"
-              style={{
-                background: "#f5f5f7",
-              }}
-            >
-              <FiExternalLink size={18} />
-              Live Demo
-            </motion.a>
+          {/* Key Metrics */}
+          {project.metrics && project.metrics.length > 0 && (
+            <div className="flex gap-6 mb-8 py-3 border-y border-white/10">
+              {project.metrics.map((metric, i) => (
+                <div key={i}>
+                  <p className="text-xs text-white/50 uppercase tracking-wider mb-1">
+                    {metric.label}
+                  </p>
+                  <p className="text-sm font-semibold text-white">
+                    {metric.value}
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* Corner glow */}
-        <div
-          className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-          style={{
-            background: `radial-gradient(circle, ${project.color}20, transparent 70%)`,
-            filter: "blur(40px)",
-          }}
-        />
+        {/* ─── Action Buttons ─── */}
+        <div className="flex flex-wrap items-center gap-4 mt-auto">
+          {/* Primary Action: Case Study */}
+          <Link
+            href={`/projects/${project.id}`}
+            className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 transition-colors duration-300 text-sm font-semibold text-white"
+          >
+            Read Case Study
+            <FiArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" />
+          </Link>
+
+          {/* Secondary Actions */}
+          <div className="flex gap-3 ml-auto">
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-colors text-white/70 hover:text-white"
+                aria-label="View Source on GitHub"
+              >
+                <FiGithub size={18} />
+              </a>
+            )}
+            {project.demo && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-colors text-white/70 hover:text-blue-400"
+                aria-label="View Live Demo"
+              >
+                <FiExternalLink size={18} />
+              </a>
+            )}
+          </div>
+        </div>
       </div>
     </motion.div>
   );

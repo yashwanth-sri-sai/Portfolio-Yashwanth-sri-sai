@@ -57,6 +57,7 @@ export default function Navbar() {
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("hero")}
+            suppressHydrationWarning
             className="cursor-pointer bg-transparent border-none flex items-center"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -88,6 +89,7 @@ export default function Navbar() {
                 key={link.id}
                 id={`nav-link-${link.id}`}
                 onClick={() => scrollToSection(link.id)}
+                suppressHydrationWarning
                 className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 cursor-pointer bg-transparent border-none rounded-lg"
                 style={{
                   color:
@@ -120,6 +122,7 @@ export default function Navbar() {
           <button
             id="mobile-menu-toggle"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
+            suppressHydrationWarning
             className="md:hidden p-2 rounded-lg cursor-pointer bg-transparent"
             style={{
               color: "var(--color-text-primary)",
@@ -154,6 +157,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }}
                   onClick={() => scrollToSection(link.id)}
+                  suppressHydrationWarning
                   className="text-left px-4 py-3 text-lg font-medium rounded-lg cursor-pointer bg-transparent transition-colors"
                   style={{
                     color:

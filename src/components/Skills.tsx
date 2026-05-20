@@ -44,7 +44,7 @@ function SkillBar({
           transition={{
             duration: 1.2,
             delay,
-            ease: [0.215, 0.61, 0.355, 1],
+            ease: [0.215, 0.61, 0.355, 1] as [number, number, number, number],
           }}
         />
       </div>
