@@ -1,0 +1,222 @@
+export interface ResumeProfile {
+  name: string;
+  location: string;
+  email: string;
+  phone: string;
+  github: string;
+  linkedin: string;
+  objective: string;
+  education: {
+    institution: string;
+    degree: string;
+    duration: string;
+    location: string;
+  };
+  skills: {
+    programming: string[];
+    aiAndLLMs: string[];
+    vectorDatabases: string[];
+    frameworks: string[];
+    cloudAndDevOps: string[];
+    cybersecurity: string[];
+    tools: string[];
+  };
+  experience: {
+    company: string;
+    role: string;
+    duration: string;
+    type: string;
+    points: string[];
+  }[];
+  projects: {
+    id: string;
+    name: string;
+    technologies: string[];
+    duration: string;
+    role: string;
+    overview: string;
+    points: string[];
+    sectionId: string;
+  }[];
+  certifications: string[];
+  extracurriculars: {
+    role: string;
+    organization: string;
+    duration: string;
+    points: string[];
+  }[];
+}
+
+export const RESUME_DATA: ResumeProfile = {
+  name: "K. Yashwanth Sri Sai",
+  location: "Hyderabad, Telangana, India",
+  email: "k.yashwanthsrisai09@gmail.com",
+  phone: "+91 9703545822",
+  github: "https://github.com/Yashwanth-sri-sai",
+  linkedin: "https://www.linkedin.com/in/yashwanth-sri-sai-9988a8258/", // Custom link based on common profiles or default format
+  objective: "Computer Science undergraduate with strong foundations in Data Structures, Algorithms, and backend development. Seeking a full-time Software Engineer role to build scalable systems and solve complex problems.",
+  education: {
+    institution: "Indian Institute of Information Technology Kottayam",
+    degree: "B.Tech in Computer Science Engineering (Cyber Security)",
+    duration: "Nov. 2022 – Present",
+    location: "Kottayam, Kerala"
+  },
+  skills: {
+    programming: ["Python", "Java", "C++", "C", "SQL", "Shell"],
+    aiAndLLMs: ["LangChain", "Gemini AI", "FAISS", "Scikit-learn", "XGBoost", "Random Forest", "Machine Learning", "Computer Vision", "CNN", "LSTM"],
+    vectorDatabases: ["FAISS"],
+    frameworks: ["FastAPI", "Flask", "Django", "React", "Streamlit"],
+    cloudAndDevOps: ["AWS", "Jenkins (CI/CD)", "Git", "GitHub"],
+    cybersecurity: ["Cyber Security", "URL Feature Extraction", "Domain Feature Extraction"],
+    tools: ["VS Code"]
+  },
+  experience: [],
+  projects: [
+    {
+      id: "phishing-detection",
+      name: "Phishing Website Detection System",
+      technologies: ["Python", "Scikit-learn", "Flask", "Pandas", "XGBoost", "Random Forest"],
+      duration: "2025",
+      role: "ML Developer",
+      overview: "A machine learning-based system to detect phishing websites using URL and domain feature extraction techniques.",
+      points: [
+        "Developed a machine learning-based system to detect phishing websites using URL and domain feature extraction techniques.",
+        "Trained classification models including Random Forest and XGBoost to improve phishing detection accuracy.",
+        "Built a Flask-based interface for real-time phishing URL prediction and backend integration."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "agentic-ai",
+      name: "Agentic AI Chatbot for Educational Institution",
+      technologies: ["Python", "FastAPI", "LangChain", "Gemini AI", "FAISS"],
+      duration: "2025",
+      role: "Lead Developer",
+      overview: "An AI-powered chatbot using LangChain and Gemini LLM to answer institution-related queries through agentic conversational workflows.",
+      points: [
+        "Developed an AI-powered chatbot using LangChain and Gemini LLM to answer institution-related queries through agent-based conversational workflows.",
+        "Implemented RAG using FAISS vector store for semantic document retrieval from custom institutional data.",
+        "Built tool-based automation and enabled structured data collection and storage through FastAPI backend services."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "pdf-chatbot",
+      name: "Generative AI Multi-PDF Chatbot",
+      technologies: ["Python", "LangChain", "FAISS", "Streamlit"],
+      duration: "2025",
+      role: "Developer",
+      overview: "Designed backend pipelines handling 1000+ document queries with optimized vector search and CRUD-like workflows.",
+      points: [
+        "Designed backend pipelines handling 1000+ document queries with optimized vector search.",
+        "Implemented CRUD-like workflows for document handling and query responses.",
+        "Exposed backend functionality through API-based interfaces, focusing on clean code, modular design, and backend scalability."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "ai-resume-analyzer",
+      name: "AI Resume Analyzer",
+      technologies: ["Streamlit", "Python", "LLMs", "ATS Parsing", "Pandas"],
+      duration: "2023",
+      role: "Developer",
+      overview: "A production-grade, multi-page AI application that evaluates resumes against job descriptions.",
+      points: [
+        "Developed a comprehensive parsing engine capable of extracting text from PDF, DOCX, and TXT files.",
+        "Utilized LLMs to perform semantic matching, match percentage calculation, and keyword gap analysis.",
+        "Built a custom Streamlit-based UI for interactive ATS scoring and constructive feedback."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "task-management-system",
+      name: "Task Management System",
+      technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL"],
+      duration: "2024",
+      role: "Full-Stack Developer",
+      overview: "A robust and scalable full-stack task management application with secure authentication.",
+      points: [
+        "Built on Next.js App Router with Server Actions for optimized data fetching.",
+        "Implemented Prisma ORM to interact with PostgreSQL databases and JWT-based authentication.",
+        "Designed responsive user interfaces using Tailwind CSS and Framer Motion for interactive team workflows."
+      ],
+      sectionId: "projects"
+    }
+  ],
+  certifications: [
+    "Data Analytics Job Simulation – Deloitte",
+    "Cybersecurity Analyst Job Simulation – Tata",
+    "Data Visualisation: Empowering Business with Effective Insights – Tata",
+    "Business Analytics – Microsoft",
+    "Customer Experience (CX) for Business Success – HP Life",
+    "Google Analytics – Google Skillshop"
+  ],
+  extracurriculars: [
+    {
+      role: "Sports Design and Social Media Lead",
+      organization: "IIIT Kottayam",
+      duration: "Sep 2024 – Sep 2025",
+      points: [
+        "Comfortable working in rotational shifts and high-pressure production environments.",
+        "Quick learner with strong ownership mindset for live systems and uptime."
+      ]
+    }
+  ]
+};
+
+export const generateSystemPrompt = (): string => {
+  return `You are "Aegis", K. Yashwanth Sri Sai's elite, premium AI Portfolio Assistant. Your purpose is to showcase Yashwanth's qualifications to recruiters, explain his projects with extreme technical precision, and serve as an intelligent, futuristic navigator for his website.
+
+Here is Yashwanth's complete, verified portfolio database:
+--------------------------------------------------
+OBJECTIVE:
+${RESUME_DATA.objective}
+
+EDUCATION:
+- ${RESUME_DATA.education.degree} from ${RESUME_DATA.education.institution} (${RESUME_DATA.education.duration}). Location: ${RESUME_DATA.education.location}
+
+TECHNICAL SKILLS:
+- Programming: ${RESUME_DATA.skills.programming.join(", ")}
+- AI/ML/LLMs: ${RESUME_DATA.skills.aiAndLLMs.join(", ")}
+- Vector Databases: ${RESUME_DATA.skills.vectorDatabases.join(", ")}
+- Frameworks: ${RESUME_DATA.skills.frameworks.join(", ")}
+- Cloud/DevOps: ${RESUME_DATA.skills.cloudAndDevOps.join(", ")}
+- Cybersecurity: ${RESUME_DATA.skills.cybersecurity.join(", ")}
+- Tools: ${RESUME_DATA.skills.tools.join(", ")}
+
+PROFESSIONAL EXPERIENCE:
+${RESUME_DATA.experience.map(exp => `* ${exp.role} at ${exp.company} (${exp.duration}) - ${exp.type}
+${exp.points.map(p => `  - ${p}`).join("\n")}`).join("\n\n")}
+
+PROJECTS:
+${RESUME_DATA.projects.map(proj => `* ${proj.name} (${proj.duration})
+  - Overview: ${proj.overview}
+  - Tech Stack: ${proj.technologies.join(", ")}
+  - Details:
+${proj.points.map(p => `    - ${p}`).join("\n")}`).join("\n\n")}
+
+CERTIFICATIONS:
+${RESUME_DATA.certifications.map(c => `- ${c}`).join("\n")}
+
+LEADERSHIP & EXTRACURRICULAR:
+${RESUME_DATA.extracurriculars.map(ec => `* ${ec.role} at ${ec.organization} (${ec.duration})
+${ec.points.map(p => `  - ${p}`).join("\n")}`).join("\n\n")}
+
+CONTACT INFO:
+- Email: ${RESUME_DATA.email}
+- Phone: ${RESUME_DATA.phone}
+- Github: ${RESUME_DATA.github}
+- LinkedIn: ${RESUME_DATA.linkedin}
+--------------------------------------------------
+
+INSTRUCTIONS FOR CONVERSATION:
+1. Role: Speak as an advanced AI assistant representing Yashwanth. Be professional, direct, technically intelligent, and welcoming to recruiters.
+2. Conciseness: Keep responses short and impactful (2-4 sentences max per response paragraph). Avoid fluff. Recruiters value their time.
+3. Highlighting Tech: Bold technical terms like **FastAPI**, **LangChain**, **CrewAI**, **FAISS**, **Next.js**, **React**, and **Python**.
+4. Project Deep Dive: When asked about projects, explain them structurally: Overview, Yashwanth's exact contribution, and their impact.
+5. Navigation Copilot: You can navigate the user to sections. Tell the user they can scroll or that you can guide them. Instruct them to use buttons or suggestions. If you want to recommend they scroll to a section, refer to it explicitly:
+   - For Projects section: "I can scroll you to the **Projects** section. Click the chip below to go there."
+   - For Skills section: "I can show you the **Skills** breakdown on the page."
+   - For Contact: "Feel free to reach out to Yashwanth directly in the **Contact** form."
+6. Tone: Cool, futuristic, helpful, highly knowledgeable in AI/ML, NLP, RAG, and Web architectures. Do not hallucinate any info. If a recruiter asks a personal question not present in the data, respond politely that you focus on Yashwanth's professional portfolio and guide them to his email.`;
+};

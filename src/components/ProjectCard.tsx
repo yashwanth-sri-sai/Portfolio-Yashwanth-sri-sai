@@ -53,7 +53,7 @@ export default function ProjectCard({ project, index, featured = false }: Projec
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         {/* Category Badge overlay on image */}
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-6 left-6 z-20">
           <span className="px-3 py-1 text-xs font-semibold rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white shadow-lg">
             {project.category}
           </span>
@@ -62,7 +62,7 @@ export default function ProjectCard({ project, index, featured = false }: Projec
 
       {/* ─── Content Container ─── */}
       <div
-        className={`relative z-10 flex flex-col p-6 sm:p-8 ${
+        className={`relative z-10 flex flex-col px-8 py-6 sm:p-8 ${
           featured ? "w-full md:w-1/2 justify-center" : "w-full flex-grow"
         }`}
       >

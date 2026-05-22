@@ -18,7 +18,7 @@ export default function SectionHeading({ title, subtitle, align = "center" }: Se
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
-        className={`text-4xl md:text-5xl font-bold gradient-text mb-4 ${isCenter ? "mx-auto" : ""}`}
+        className={`text-4xl md:text-5xl font-bold gradient-text mb-4 ${isCenter ? "mx-auto text-center" : "text-left"}`}
       >
         {title}
       </motion.h2>
@@ -28,8 +28,14 @@ export default function SectionHeading({ title, subtitle, align = "center" }: Se
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className={`text-lg md:text-xl max-w-2xl ${isCenter ? "mx-auto" : ""}`}
-          style={{ color: "var(--color-text-secondary)" }}
+          style={{
+            color: "var(--color-text-secondary)",
+            fontSize: "1.125rem",
+            lineHeight: "1.75rem",
+            maxWidth: "48rem",
+            margin: "0 auto",
+            textAlign: "center",
+          }}
         >
           {subtitle}
         </motion.p>

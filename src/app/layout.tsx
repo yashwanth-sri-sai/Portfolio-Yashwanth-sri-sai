@@ -49,8 +49,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
-      <body className="noise-overlay">
+    <html lang="en" className={`${inter.variable} overflow-x-clip max-w-full`}>
+      <body className="noise-overlay overflow-x-clip max-w-full">
         {children}
       </body>
     </html>

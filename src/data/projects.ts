@@ -29,60 +29,88 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "agentic-ai-assistant",
-    title: "Agentic AI Chat Assistant",
-    shortDescription: "Multi-agent RAG system built with CrewAI for orchestrating specialized agents to answer complex queries.",
-    description: "A comprehensive multi-agent retrieval-augmented generation (RAG) system with autonomous task delegation and reasoning agents. Built with CrewAI to orchestrate specialized agents that collaborate to answer complex queries intelligently.",
-    tech: ["LangChain", "FAISS", "CrewAI", "Python", "RAG"],
-    github: "https://github.com/yourusername/agentic-ai-assistant",
+    id: "phishing-detection",
+    title: "Phishing Website Detection System",
+    shortDescription: "Machine learning-based security system detecting phishing URLs and domains with XGBoost and Random Forest.",
+    description: "Developed a machine learning-based system to detect phishing websites using URL and domain feature extraction techniques. Trained classification models including Random Forest and XGBoost to improve phishing detection accuracy, and built a Flask-based interface for real-time predictions.",
+    tech: ["Python", "Scikit-learn", "Flask", "Pandas", "XGBoost", "Random Forest"],
+    github: "https://github.com/Yashwanth-sri-sai/Phishing-Website-Detection-using-Machine-Learning",
+    demo: null,
+    image: "/projects/phishing-detection.png",
+    category: "AI/ML",
+    featured: true,
+    date: "2025",
+    metrics: [
+      { label: "Detection Accuracy", value: "96.5%" },
+      { label: "Analysis Latency", value: "<80ms" }
+    ],
+    problemStatement: "Phishing attacks remain one of the primary vectors for security breaches. Standard signature-based detection methods fail against zero-day phishing URLs that haven't been blacklisted yet.",
+    solutionArchitecture: "Developed a feature extraction engine that parses raw URLs to extract lexical, host-based, and content-based features. Fed these features into ensemble models (Random Forest and XGBoost) to classify URLs in real-time, exposed via a lightweight Flask API.",
+    challenges: [
+      "Extracting features from URLs efficiently without introducing blocking network call overhead (e.g., WHOIS lookups).",
+      "Handling class imbalance where benign URLs vastly outnumber phishing samples in real-world traffic."
+    ],
+    learnings: [
+      "Mastered feature engineering techniques for string and lexical domain analysis.",
+      "Optimized ensemble model hyperparameters using GridSearch to minimize false positives."
+    ],
+    outcome: "Achieved a 96.5% classification accuracy on zero-day phishing links with sub-80ms detection latency, providing a robust defensive layer against credential harvesting."
+  },
+  {
+    id: "agentic-ai",
+    title: "Agentic AI Chatbot for Educational Institution",
+    shortDescription: "AI-powered assistant using LangChain and Gemini LLM for autonomous student and parent query resolution.",
+    description: "Developed an AI-powered chatbot using LangChain and Gemini LLM to answer institution-related queries through agent-based conversational workflows. Implemented RAG using FAISS vector store for semantic document retrieval and FastAPI backend services for tool automation.",
+    tech: ["Python", "FastAPI", "LangChain", "Gemini AI", "FAISS"],
+    github: "https://github.com/Yashwanth-sri-sai/Agentic-AI-Chatbot-for-Educational-Institution.git",
     demo: null,
     image: "/projects/ai-agent-v2.png",
     category: "AI/ML",
     featured: true,
-    date: "2024",
+    date: "2025",
     metrics: [
       { label: "Query Accuracy", value: "92%" },
-      { label: "Processing Speed", value: "2.5x" },
+      { label: "Factual Precision", value: "95%" }
     ],
-    problemStatement: "Traditional singular LLMs struggle with multi-step reasoning and domain-specific knowledge retrieval, leading to hallucinations or incomplete answers on complex user queries.",
-    solutionArchitecture: "Implemented a multi-agent architecture using CrewAI where a 'Researcher Agent' queries a FAISS vector database (populated via LangChain), and a 'Writer Agent' synthesizes the final response. The system autonomously breaks down complex user prompts into discrete sub-tasks.",
+    problemStatement: "Traditional university and educational chatbots rely on strict decision trees, failing to resolve compound, unstructured, or open-ended inquiries from prospective students and parents.",
+    solutionArchitecture: "Designed a multi-agent framework using LangChain where incoming prompts are routed to specialized query agents. RAG integrates institutional handbooks and guidelines indexed in a FAISS vector store, served over FastAPI endpoints.",
     challenges: [
-      "Managing agent state and preventing infinite conversation loops between autonomous agents.",
-      "Optimizing the chunking strategy for the FAISS vector database to ensure high-relevance retrieval without exceeding token limits."
+      "Preventing LLM hallucinations regarding institution policies and fee structures.",
+      "Designing structured feedback state machines to collect visitor contact information securely before executing database writes."
     ],
     learnings: [
-      "Gained deep understanding of multi-agent orchestration frameworks like CrewAI.",
-      "Learned to implement advanced RAG techniques including query routing and hybrid search."
+      "Deepened expertise in LangChain agents, memory managers, and conversational routing design.",
+      "Optimized semantic document indexing through custom overlapping chunk strategies."
     ],
-    outcome: "Successfully deployed a backend service capable of answering multi-part analytical questions 2.5x faster than sequential single-prompt methods, achieving 92% factual accuracy on benchmark tests."
+    outcome: "Built a fully functional assistant that handles complex school enrollment queries with a 92% accurate resolution rate, reducing administrative ticket load."
   },
   {
-    id: "multi-pdf-chatbot",
-    title: "Multi-PDF Chatbot",
-    shortDescription: "Intelligent RAG pipeline enabling semantic search and conversational QA across multiple PDF documents.",
-    description: "An intelligent RAG pipeline enabling semantic search across multiple PDF documents simultaneously. Leverages GPT/Gemini embeddings with vector store retrieval for context-aware, accurate answers from large document collections.",
-    tech: ["RAG", "GPT", "Gemini", "Embeddings", "Streamlit"],
-    github: "https://github.com/yashwanth-sri-sai/Generative-AI-Multi-PDF-Chatbot.git",
+    id: "pdf-chatbot",
+    title: "Generative AI Multi-PDF Chatbot",
+    shortDescription: "High-performance RAG pipeline for querying and searching multiple complex PDF documents concurrently.",
+    description: "Designed backend pipelines handling 1000+ document queries with optimized vector search and CRUD-like workflows. Built a scalable RAG pipeline utilizing LangChain, FAISS vector indexing, and a Streamlit UI for seamless context-aware document QA.",
+    tech: ["Python", "LangChain", "FAISS", "Streamlit"],
+    github: "https://github.com/Yashwanth-sri-sai/Generative-AI-Multi-PDF-Chatbot.git",
     demo: "https://multi-pdf-chatbot.streamlit.app",
     image: "/projects/pdf-chatbot-v2.png",
     category: "AI/ML",
     featured: true,
-    date: "2023",
+    date: "2025",
     metrics: [
-      { label: "Vector Retrieval", value: "<100ms" },
-      { label: "Docs Processed", value: "500+" },
+      { label: "Search Index Speed", value: "<100ms" },
+      { label: "Document Volume", value: "1000+" }
     ],
-    problemStatement: "Professionals often spend hours manually searching for specific information across dozens of dense PDF reports and manuals. Standard keyword search is insufficient for conceptual queries.",
-    solutionArchitecture: "Built a Streamlit frontend where users upload PDFs. The backend uses PyPDF2 to extract text, splits it using RecursiveCharacterTextSplitter, and embeds it via Google Gemini/OpenAI embeddings into a FAISS index. Conversational memory is maintained using LangChain's memory modules.",
+    problemStatement: "Users waste significant hours searching through dense, hundreds-of-pages-long PDF manuals, policies, and contracts. Single-document QA systems fail when questions require cross-referencing information across multiple separate files.",
+    solutionArchitecture: "Constructed a document loading and processing pipeline that handles multiple file uploads, extracts text, splits it using recursive character separators, creates embeddings, and indexes them in FAISS. Deployed the front end on Streamlit.",
     challenges: [
-      "Handling large PDF files (50MB+) without causing memory overflow or hitting API rate limits during the embedding phase.",
-      "Maintaining conversational context across follow-up questions referencing different uploaded documents."
+      "Processing and embedding large multi-page PDF documents without hitting API timeout limits or running out of local memory.",
+      "Merging vector retrieval scores from disparate document indices to locate the most globally relevant context chunk."
     ],
     learnings: [
-      "Mastered document loading, text splitting, and vector embedding pipelines.",
-      "Gained experience building interactive AI interfaces using Streamlit."
+      "Gained deep understanding of vector index search algorithms, retrieval metrics, and cosine similarity tuning.",
+      "Mastered reactive UI state management inside Streamlit to handle active document sessions."
     ],
-    outcome: "Created a highly responsive web app capable of retrieving relevant context in under 100ms from a corpus of over 500 documents, significantly reducing manual research time."
+    outcome: "Delivered a production-ready application capable of indexing and querying 1000+ document pages with context-aware semantic retrieval under 100ms."
   },
   {
     id: "ai-resume-analyzer",
@@ -98,7 +126,7 @@ export const projects: Project[] = [
     date: "2023",
     metrics: [
       { label: "ATS Precision", value: "98%" },
-      { label: "File Formats", value: "4" },
+      { label: "File Formats", value: "4" }
     ],
     problemStatement: "Job seekers lack transparency into how Applicant Tracking Systems (ATS) score their resumes, leading to high rejection rates despite possessing the necessary skills.",
     solutionArchitecture: "Developed a comprehensive parsing engine capable of extracting text from PDF, DOCX, and TXT files. Utilized LLMs to perform semantic matching between the extracted resume text and a user-provided job description, calculating a match percentage and identifying missing keywords.",
@@ -126,7 +154,7 @@ export const projects: Project[] = [
     date: "2024",
     metrics: [
       { label: "API Latency", value: "<50ms" },
-      { label: "System Uptime", value: "99.9%" },
+      { label: "System Uptime", value: "99.9%" }
     ],
     problemStatement: "Existing task managers are either too simple (lacking team features) or too complex (steep learning curve). There was a need for a performant, mid-tier solution with real-time updates.",
     solutionArchitecture: "Built on Next.js 14 App Router with Server Actions for optimized data fetching. Uses Prisma ORM to interact with a PostgreSQL database. Implemented secure JWT-based authentication and a responsive UI using Tailwind CSS and Framer Motion.",

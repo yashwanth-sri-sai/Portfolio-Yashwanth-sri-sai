@@ -8,9 +8,11 @@ import { HiMenuAlt3, HiX } from "react-icons/hi";
 const navLinks = [
   { id: "hero", label: "Home" },
   { id: "about", label: "About" },
+  { id: "timeline", label: "Journey" },
   { id: "projects", label: "Projects" },
   { id: "skills", label: "Skills" },
   { id: "certifications", label: "Certifications" },
+  { id: "blog", label: "Insights" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -42,7 +44,7 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500"
+        className="fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-500"
         style={{
           background: isScrolled
             ? "rgba(6, 6, 14, 0.8)"
@@ -53,7 +55,7 @@ export default function Navbar() {
             : "1px solid transparent",
         }}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("hero")}

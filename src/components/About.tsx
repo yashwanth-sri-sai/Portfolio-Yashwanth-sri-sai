@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 
 const highlights = [
-  "LangChain",
-  "FAISS",
-  "RAG Pipelines",
+  "Python",
   "FastAPI",
+  "LangChain",
+  "Gemini AI",
+  "FAISS",
+  "REST APIs",
   "AWS",
-  "Docker",
-  "Transformers",
-  "CrewAI",
+  "Jenkins (CI/CD)",
 ];
 
 export default function About() {
@@ -23,7 +23,7 @@ export default function About() {
         style={{ background: "rgba(6, 182, 212, 0.05)" }}
       />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <motion.div
@@ -34,21 +34,18 @@ export default function About() {
           >
             <SectionHeading
               title="About Me"
-              subtitle="Bridging AI research and production engineering"
+              subtitle="Solid engineering foundations, scalable backends, and AI deployment"
               align="left"
             />
             <p
               className="text-lg leading-relaxed mb-6"
               style={{ color: "var(--color-text-secondary)" }}
             >
-              I&apos;m an{" "}
+              I&apos;m a{" "}
               <span className="font-semibold" style={{ color: "var(--color-text-primary)" }}>
-                AI/LLM Engineer and Backend Developer
+                Computer Science Undergraduate
               </span>{" "}
-              passionate about building intelligent systems that solve real-world
-              problems. My focus lies at the intersection of large language
-              models, retrieval-augmented generation, and scalable API
-              architecture.
+              specializing in Cyber Security, with strong foundations in Data Structures, Algorithms, and backend development. I am passionate about building secure, scalable systems and solving complex computational problems.
             </p>
             <p
               className="text-lg leading-relaxed mb-6"
@@ -56,21 +53,19 @@ export default function About() {
             >
               From designing{" "}
               <span className="font-semibold" style={{ color: "var(--color-accent-indigo)" }}>
-                multi-agent AI systems
+                machine learning security solutions
               </span>{" "}
-              with autonomous reasoning capabilities to deploying{" "}
+              to deploying{" "}
               <span className="font-semibold" style={{ color: "var(--color-accent-cyan)" }}>
-                production-grade APIs
+                agentic AI workflows
               </span>{" "}
-              that serve ML models at scale — I bring an engineering-first
-              mindset to every project.
+              using Gemini and LangChain — I bring an engineering-first mindset and solid analytical skills to every project.
             </p>
             <p
               className="text-lg leading-relaxed"
               style={{ color: "var(--color-text-secondary)" }}
             >
-              Currently exploring advanced RAG architectures, agentic AI
-              workflows, and the cutting edge of LLM application development.
+              Seeking a full-time Software Engineer role to leverage my backend, database optimization, and AI deployment expertise to deliver production-grade software solutions.
             </p>
           </motion.div>
 

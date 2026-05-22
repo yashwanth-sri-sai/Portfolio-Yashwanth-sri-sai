@@ -8,7 +8,7 @@ import SectionHeading from "./SectionHeading";
 export default function Certifications() {
   return (
     <section id="certifications" className="section-padding relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <SectionHeading
           title="Certifications"
           subtitle="Professional credentials and continuous learning"
@@ -23,7 +23,7 @@ export default function Certifications() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               whileHover={{ y: -5 }}
-              className="glass-card p-6 rounded-2xl flex flex-col group relative overflow-hidden"
+              className="glass-card px-8 py-6 rounded-2xl flex flex-col group relative overflow-hidden"
             >
               {/* Decorative gradient blob on hover */}
               <div
@@ -33,7 +33,8 @@ export default function Certifications() {
                 }}
               />
 
-              <div className="flex items-start justify-between mb-4 relative z-10">
+
+              <div className="flex items-start justify-between mb-4 relative z-10 px-1">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
                   style={{

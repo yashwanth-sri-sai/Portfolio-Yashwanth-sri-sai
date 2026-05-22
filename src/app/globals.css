@@ -10,8 +10,8 @@
   --color-border-glow: rgba(255, 255, 255, 0.1);
 
   --color-text-primary: #f5f5f7;
-  --color-text-secondary: #86868b;
-  --color-text-muted: #515154;
+  --color-text-secondary: #b0b0b8;
+  --color-text-muted: #7a7a85;
 
   --color-accent-indigo: #3b82f6;
   --color-accent-purple: #60a5fa;
@@ -59,6 +59,11 @@
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
   }
+
+  @keyframes spin-reverse {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
 }
 
 /* ─── Base Styles ─── */
@@ -83,7 +88,7 @@ body {
   background-repeat: no-repeat;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -130,7 +135,7 @@ body {
 
 /* ─── Gradient Text ─── */
 .gradient-text {
-  background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 50%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #c4d8ff 0%, #60a5fa 45%, #818cf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -199,12 +204,14 @@ body {
 
 /* ─── Section Spacing ─── */
 .section-padding {
-  padding: 120px 24px;
+  padding-top: 120px;
+  padding-bottom: 120px;
 }
 
 @media (max-width: 768px) {
   .section-padding {
-    padding: 80px 16px;
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
 }
 
@@ -597,4 +604,17 @@ body {
   background: rgba(255, 255, 255, 0.35);
   border-radius: 3px;
 }
+
+/* ─── Welcome Screen Custom Ripple Keyframes ─── */
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
 
