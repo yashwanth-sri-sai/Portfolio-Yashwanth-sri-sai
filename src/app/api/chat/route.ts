@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     // 1. Try Google Gemini API first
     if (geminiKey) {
       try {
-        const contents = messages.map((m: any) => ({
+        const contents = messages.map((m: Record<string, string>) => ({
           role: m.role === "assistant" ? "model" : "user",
           parts: [{ text: m.content }]
         }));
@@ -58,9 +58,9 @@ export async function POST(request: Request) {
         if (responseText) {
           return NextResponse.json({ response: responseText });
         }
-      } catch (geminiError: any) {
+      } catch (geminiError: unknown) {
         console.error("Failed call to Gemini, falling back to OpenAI/Offline:", geminiError);
-        errorReason = geminiError.message || "Gemini API failed";
+        errorReason = (geminiError as Error).message || "Gemini API failed";
       }
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       try {
         const openAIMessages = [
           { role: "system", content: systemPrompt },
-          ...messages.map((m: any) => ({
+          ...messages.map((m: Record<string, string>) => ({
             role: m.role,
             content: m.content
           }))
@@ -108,9 +108,9 @@ export async function POST(request: Request) {
         if (responseText) {
           return NextResponse.json({ response: responseText });
         }
-      } catch (openaiError: any) {
+      } catch (openaiError: unknown) {
         console.error("Failed call to OpenAI:", openaiError);
-        errorReason = openaiError.message || "OpenAI API failed";
+        errorReason = (openaiError as Error).message || "OpenAI API failed";
       }
     }
 
@@ -121,10 +121,10 @@ export async function POST(request: Request) {
       reason: errorReason || "No active API keys found.",
       message: "No active API keys found or queries failed. Re-routing query to local portfolio core module."
     });
-  } catch (globalError: any) {
+  } catch (globalError: unknown) {
     console.error("Global Chat API Route error:", globalError);
     return NextResponse.json(
-      { error: globalError?.message || "Internal server error" },
+      { error: (globalError as Error)?.message || "Internal server error" },
       { status: 500 }
     );
   }

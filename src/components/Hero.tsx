@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import GradientText from "./GradientText";
 import { FiArrowRight, FiGithub, FiLinkedin, FiMail, FiDownload } from "react-icons/fi";
 import { FaReact, FaPython, FaDatabase, FaBrain } from "react-icons/fa";
 import { SiTensorflow, SiNextdotjs } from "react-icons/si";
@@ -17,10 +18,10 @@ const floatingNodes = [
 ];
 
 const ROLES = [
-  "AI/ML Engineer",
-  "Software Developer",
-  "Creative Technologist",
-  "Interactive Experience Builder"
+  "AI/ML SDE",
+  "Backend Systems Developer",
+  "RAG Pipeline Specialist",
+  "Computer Science Engineer"
 ];
 
 /* ─── Component ─── */
@@ -65,7 +66,14 @@ export default function Hero() {
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (el) {
+      if (window.lenis) {
+        // @ts-expect-error: lenis global type is incomplete
+        window.lenis.scrollTo(el, { offset: 0 });
+      } else {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   return (
@@ -98,6 +106,24 @@ export default function Hero() {
           className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_30%,transparent_100%)] opacity-50"
           style={{ transform: "perspective(1000px) rotateX(60deg) translateY(-100px) scale(2.5)" }}
         />
+
+        {/* Full-screen Silhouette Backdrop */}
+        <motion.div
+          initial={{ opacity: 0, scale: 1.02 }}
+          animate={{ opacity: 0.45, scale: 1 }}
+          transition={{ duration: 2, delay: 0.3, ease: "easeOut" }}
+          className="absolute inset-0 w-full h-full mix-blend-screen pointer-events-none"
+        >
+          <img 
+            src="/hero-bg.png" 
+            alt="Hero Silhouette Backdrop" 
+            className="w-full h-full object-cover object-center"
+            style={{
+              maskImage: "radial-gradient(circle at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%)",
+              WebkitMaskImage: "radial-gradient(circle at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%)"
+            }}
+          />
+        </motion.div>
       </motion.div>
 
       {/* ======================================================== */}
@@ -141,95 +167,117 @@ export default function Hero() {
       </motion.div>
 
       {/* ======================================================== */}
-      {/* LAYER 3: MASSIVE IDENTITY REVEAL                           */}
+      {/* IDENTITY LAYOUT IN STRICT HIERARCHY: Role -> Name -> Desc -> CTA */}
       {/* ======================================================== */}
       <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 w-full h-full pointer-events-none">
         
-        {/* Subtle Pre-title */}
+        {/* 1. ROLE (Pre-title + Dynamic Transitions) */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-          className="flex items-center gap-3 mb-6"
+          className="flex flex-col items-center gap-1.5 mb-6"
         >
-          <div className="w-8 h-[1px] bg-cyan-500/50" />
-          <span className="font-mono text-xs sm:text-sm tracking-[0.3em] text-cyan-400 uppercase font-semibold">
-            Digital Engineering Identity
-          </span>
-          <div className="w-8 h-[1px] bg-cyan-500/50" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-[1px] bg-cyan-500/30" />
+            <span className="font-mono text-xs tracking-[0.3em] text-cyan-400 uppercase font-bold">
+              Specialization
+            </span>
+            <div className="w-8 h-[1px] bg-cyan-500/30" />
+          </div>
+          
+          <div className="h-8 relative flex items-center justify-center w-full max-w-xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={roleIndex}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute w-full text-center text-sm sm:text-base md:text-lg lg:text-xl font-light tracking-wider text-zinc-400 whitespace-nowrap"
+              >
+                {ROLES[roleIndex]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </motion.div>
 
-        {/* MASSIVE TYPOGRAPHY */}
+        {/* 2. NAME (Shrunk by 30% for premium balance) */}
         <motion.h1 
-          className="text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] mb-2 relative"
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-4 relative"
           initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="block text-white">YASHWANTH</span>
-          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-500 pb-4">
-            SRI SAI
+          <span className="block text-white">
+            <GradientText
+              colors={["#5227FF", "#FF9FFC", "#B497CF"]}
+              animationSpeed={10}
+              showBorder={false}
+              className="w-full text-white"
+            >
+              YASHWANTH
+            </GradientText>
+          </span>
+          <span className="block pb-2">
+            <GradientText
+              colors={["#5227FF", "#FF9FFC", "#B497CF"]}
+              animationSpeed={8}
+              showBorder={false}
+              className="w-full"
+            >
+              SRI SAI
+            </GradientText>
           </span>
           
           {/* Subtle typography glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-indigo-500/20 to-purple-500/20 blur-[80px] -z-10 opacity-50 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/15 via-indigo-500/15 to-purple-500/15 blur-[60px] -z-10 opacity-40 pointer-events-none" />
         </motion.h1>
 
-        {/* DYNAMIC ROLE TRANSITIONS */}
-        <div className="h-12 sm:h-16 mt-6 mb-12 relative overflow-hidden flex items-center justify-center w-full max-w-2xl">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={roleIndex}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute text-xl sm:text-3xl md:text-4xl font-light tracking-wide text-zinc-300 whitespace-nowrap"
-            >
-              {ROLES[roleIndex]}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        {/* 3. DESCRIPTION (Elegant tagline) */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+          className="text-zinc-400 text-sm sm:text-base md:text-lg max-w-xl font-normal leading-relaxed mt-2 mb-10 pointer-events-auto"
+        >
+          Building intelligent, high-performance systems with LLMs, RAG pipelines, and scalable backend APIs.
+        </motion.p>
 
-        {/* ======================================================== */}
-        {/* LAYER 4: PRIMARY CTA & LINKS                             */}
-        {/* ======================================================== */}
+        {/* 4. CTA (View Projects & Recruiter cluster) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
-          className="flex flex-col items-center gap-8 pointer-events-auto"
+          transition={{ duration: 1, delay: 1.0, ease: "easeOut" }}
+          className="flex flex-col items-center gap-6 pointer-events-auto"
         >
+          {/* Primary CTA */}
           <button
             onClick={() => scrollToSection("projects")}
-            className="group relative px-10 py-5 bg-white/5 border border-white/10 hover:border-cyan-500/50 rounded-full overflow-hidden transition-all duration-500 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+            className="group relative px-10 py-4 glass-primary rounded-full overflow-hidden transition-all duration-500 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
-            {/* Magnetic Hover Glow */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/30 to-purple-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg" />
-            
-            {/* Shine sweep */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md" />
             <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 ease-in-out" />
-
-            <span className="relative z-10 flex items-center gap-3 text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-white group-hover:text-cyan-300 transition-colors">
-              Explore Universe
+            <span className="relative z-10 flex items-center gap-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-white group-hover:text-cyan-300 transition-colors">
+              View Projects
               <FiArrowRight className="transform group-hover:translate-x-1.5 transition-transform duration-300" />
             </span>
           </button>
 
-          {/* Secondary Actions */}
-          <div className="flex items-center gap-8 text-zinc-500">
-            <a href="https://github.com/yashwanth-sri-sai" target="_blank" rel="noreferrer" className="hover:text-white hover:scale-110 transition-all">
-              <FiGithub size={22} />
+          {/* Recruiter Quick Links Cluster */}
+          <div className="flex items-center gap-6 px-8 py-3 glass-secondary rounded-full text-zinc-400 hover:border-white/10 transition-colors duration-300">
+            <a href="https://github.com/yashwanth-sri-sai" target="_blank" rel="noreferrer" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="GitHub">
+              <FiGithub size={20} />
             </a>
-            <a href="https://www.linkedin.com/in/yashwanth-srisai-7a1078252/" target="_blank" rel="noreferrer" className="hover:text-white hover:scale-110 transition-all">
-              <FiLinkedin size={22} />
+            <a href="https://www.linkedin.com/in/yashwanth-srisai-7a1078252/" target="_blank" rel="noreferrer" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="LinkedIn">
+              <FiLinkedin size={20} />
             </a>
-            <a href="mailto:yashwanthsrisai@gmail.com" className="hover:text-white hover:scale-110 transition-all">
-              <FiMail size={22} />
+            <a href="mailto:yashwanthsrisai@gmail.com" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="Email">
+              <FiMail size={20} />
             </a>
-            <div className="w-px h-5 bg-zinc-800 mx-2" />
-            <a href="https://drive.google.com/file/d/1z9KBC7yT0dVYz2OHQpa44-e9SHqPTC1K/view?usp=sharing" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors text-xs font-semibold uppercase tracking-widest hover:scale-105">
-              <FiDownload size={16} /> Resume
+            <div className="w-px h-4 bg-zinc-800 mx-1" />
+            <a href="https://drive.google.com/file/d/1z9KBC7yT0dVYz2OHQpa44-e9SHqPTC1K/view?usp=sharing" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded px-1">
+              <FiDownload size={14} /> Resume
             </a>
           </div>
         </motion.div>

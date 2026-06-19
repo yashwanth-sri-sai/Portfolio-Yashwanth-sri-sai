@@ -3,177 +3,137 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { HiMenuAlt3, HiX } from "react-icons/hi";
-
-const navLinks = [
-  { id: "hero", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "timeline", label: "Journey" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "certifications", label: "Certifications" },
-  { id: "blog", label: "Insights" },
-  { id: "contact", label: "Contact" },
-];
+import { FiMenu, FiX } from "react-icons/fi";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const activeSection = useScrollSpy();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("menu-open-scale");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.classList.remove("menu-open-scale");
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.classList.remove("menu-open-scale");
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileOpen(false);
+      if (window.lenis) {
+        // @ts-expect-error: lenis global type is incomplete
+        window.lenis.scrollTo(element, { offset: 0 });
+      } else {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{__html: `
+        body { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease; }
+        body.menu-open-scale main { transform: scale(0.95); filter: blur(10px); pointer-events: none; }
+      `}} />
+
+      {/* TOP NAVIGATION BAR */}
       <motion.nav
         id="main-navbar"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-500"
-        style={{
-          background: isScrolled
-            ? "rgba(6, 6, 14, 0.8)"
-            : "transparent",
-          backdropFilter: isScrolled ? "blur(20px)" : "none",
-          borderBottom: isScrolled
-            ? "1px solid rgba(255, 255, 255, 0.05)"
-            : "1px solid transparent",
-        }}
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled || isOpen ? 'glass-primary border-t-0 border-x-0' : 'bg-transparent border-b border-transparent'}`}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
-          {/* Logo */}
-          <motion.button
-            onClick={() => scrollToSection("hero")}
-            suppressHydrationWarning
-            className="cursor-pointer bg-transparent border-none flex items-center"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4 flex items-center justify-between">
+          
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              scrollToSection("hero");
+            }}
+            aria-label="Scroll to Home"
+            data-cursor="magnetic"
+            className="group relative z-[110] font-mono font-bold tracking-widest text-lg flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus:outline-none rounded px-2 py-1"
           >
-            {/* Using a relative wrapper for the logo. If logo.png doesn't exist, it falls back to text alt */}
-            <div className="relative h-10 flex items-center">
-              <img 
-                src="/logo.png" 
-                alt="Yashwanth Sri Sai" 
-                className="h-10 w-auto object-contain"
-                onError={(e) => {
-                  // Fallback if logo.png is missing
-                  e.currentTarget.style.display = 'none';
-                  const fallback = document.getElementById('logo-fallback');
-                  if (fallback) fallback.style.display = 'block';
-                }}
-              />
-              <div id="logo-fallback" style={{ display: 'none' }} className="text-xl font-bold">
-                <span className="gradient-text">YSS</span>
-                <span className="text-[var(--color-text-muted)]">.</span>
-              </div>
-            </div>
-          </motion.button>
+            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-white group-hover:text-cyan-400 transition-colors duration-300">YSS</span>
+            <span className="text-zinc-600">.CORE</span>
+          </button>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+          {/* Desktop Inline Navigation */}
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            {["about", "projects", "skills", "contact"].map((id) => (
               <button
-                key={link.id}
-                id={`nav-link-${link.id}`}
-                onClick={() => scrollToSection(link.id)}
-                suppressHydrationWarning
-                className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 cursor-pointer bg-transparent border-none rounded-lg"
-                style={{
-                  color:
-                    activeSection === link.id
-                      ? "#e2e8f0"
-                      : "var(--color-text-muted)",
-                }}
+                key={id}
+                onClick={() => scrollToSection(id)}
+                className={`text-sm font-mono tracking-widest uppercase transition-all duration-300 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus:outline-none rounded px-2 py-1 ${
+                  activeSection === id 
+                    ? "text-cyan-400" 
+                    : "text-zinc-400 hover:text-white"
+                }`}
               >
-                {activeSection === link.id && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute inset-0 rounded-lg"
-                    style={{
-                      background: "rgba(139, 92, 246, 0.1)",
-                      border: "1px solid rgba(139, 92, 246, 0.2)",
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 380,
-                      damping: 30,
-                    }}
-                  />
-                )}
-                <span className="relative z-10">{link.label}</span>
+                {id}
               </button>
             ))}
           </div>
 
-          {/* Mobile Toggle */}
+          {/* Mobile Hamburger Button */}
           <button
-            id="mobile-menu-toggle"
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            suppressHydrationWarning
-            className="md:hidden p-2 rounded-lg cursor-pointer bg-transparent"
-            style={{
-              color: "var(--color-text-primary)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex md:hidden items-center justify-center p-2 text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus:outline-none rounded z-[110] relative"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileOpen ? <HiX size={24} /> : <HiMenuAlt3 size={24} />}
+            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
+
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Overlay */}
       <AnimatePresence>
-        {isMobileOpen && (
+        {isOpen && (
           <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 pt-20 px-6 md:hidden"
-            style={{
-              background: "rgba(6, 6, 14, 0.95)",
-              backdropFilter: "blur(20px)",
-            }}
+            className="fixed inset-0 z-[90] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center"
           >
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link, i) => (
+            <div className="flex flex-col items-center gap-10">
+              {["about", "projects", "skills", "contact"].map((id, index) => (
                 <motion.button
-                  key={link.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={() => scrollToSection(link.id)}
-                  suppressHydrationWarning
-                  className="text-left px-4 py-3 text-lg font-medium rounded-lg cursor-pointer bg-transparent transition-colors"
-                  style={{
-                    color:
-                      activeSection === link.id
-                        ? "#e2e8f0"
-                        : "var(--color-text-muted)",
-                    border: "none",
-                    background:
-                      activeSection === link.id
-                        ? "rgba(139, 92, 246, 0.1)"
-                        : "transparent",
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ delay: index * 0.08, duration: 0.4 }}
+                  key={id}
+                  onClick={() => {
+                    setIsOpen(false);
+                    // Slight delay to allow closing animation before scroll starts
+                    setTimeout(() => {
+                      scrollToSection(id);
+                    }, 300);
                   }}
+                  className={`text-2xl font-mono tracking-[0.2em] uppercase transition-all duration-300 ${
+                    activeSection === id
+                      ? "text-cyan-400 font-bold"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
                 >
-                  {link.label}
+                  {id}
                 </motion.button>
               ))}
             </div>

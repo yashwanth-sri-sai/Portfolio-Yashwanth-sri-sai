@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { BlogPost, BlogSection } from "@/data/blogs";
 import { FiArrowLeft, FiArrowRight, FiClock, FiCalendar, FiShare2, FiCheck } from "react-icons/fi";
@@ -123,11 +123,21 @@ export default function ArticleContent({ blog }: { blog: BlogPost }) {
           tip: "💡",
           highlight: "✨"
         };
+        const ariaLabels = {
+          info: "Information",
+          warning: "Warning",
+          tip: "Tip",
+          highlight: "Highlight"
+        };
         const variant = section.variant || "info";
         
         return (
           <div key={index} className={`my-8 p-6 rounded-xl border ${styles[variant]} flex gap-4`}>
-            <div className="text-2xl flex-shrink-0">{icons[variant]}</div>
+            <div className="text-2xl flex-shrink-0">
+              <span role="img" aria-label={ariaLabels[variant]}>
+                {icons[variant]}
+              </span>
+            </div>
             <div className="text-lg leading-relaxed">{section.content}</div>
           </div>
         );

@@ -150,6 +150,7 @@ export default function Footer() {
                 icon: <FiGithub size={16} />,
                 href: "https://github.com/yashwanth-sri-sai",
                 label: "GIT",
+                ariaLabel: "GitHub",
                 color: "#f8fafc",
                 borderColor: "rgba(255, 255, 255, 0.08)",
                 glowColor: "rgba(255, 255, 255, 0.15)"
@@ -158,6 +159,7 @@ export default function Footer() {
                 icon: <FiLinkedin size={16} />,
                 href: "https://www.linkedin.com/in/yashwanth-srisai-7a1078252/",
                 label: "LKD",
+                ariaLabel: "LinkedIn",
                 color: "#3b82f6",
                 borderColor: "rgba(59, 130, 246, 0.15)",
                 glowColor: "rgba(59, 130, 246, 0.3)"
@@ -166,6 +168,7 @@ export default function Footer() {
                 icon: <FiMail size={16} />,
                 href: "mailto:k.yashwanthsrisai09@gmail.com",
                 label: "MAL",
+                ariaLabel: "Email",
                 color: "#a855f7",
                 borderColor: "rgba(168, 85, 247, 0.15)",
                 glowColor: "rgba(168, 85, 247, 0.3)"
@@ -176,7 +179,7 @@ export default function Footer() {
                 href={social.href}
                 target={social.label !== "MAL" ? "_blank" : undefined}
                 rel="noopener noreferrer"
-                aria-label={social.label}
+                aria-label={social.ariaLabel}
                 whileHover={{ scale: 1.05, borderColor: social.color }}
                 className="relative flex items-center gap-2 py-2 px-3 rounded bg-zinc-950 border transition-all duration-300 cursor-pointer text-xs font-mono font-bold"
                 style={{
@@ -201,7 +204,7 @@ export default function Footer() {
             viewport={{ once: true }}
             className="flex items-center gap-1 text-center md:text-left"
           >
-            <span>© {currentYear} // PORTAL RECORD ID: YSS-{currentYear} // ALL RIGHTS RESERVED</span>
+            <span>© {currentYear} {"//"} PORTAL RECORD ID: YSS-{currentYear} {"//"} ALL RIGHTS RESERVED</span>
           </motion.div>
 
           <motion.div
@@ -213,7 +216,7 @@ export default function Footer() {
           >
             <span>PORTAL RECONSTRUCTED WITH</span>
             <FiHeart size={10} className="text-red-500 animate-pulse" />
-            <span>USING NEXT.JS 15 & FRAMER MOTION</span>
+            <span>USING NEXT.JS 16 & FRAMER MOTION</span>
           </motion.div>
 
         </div>

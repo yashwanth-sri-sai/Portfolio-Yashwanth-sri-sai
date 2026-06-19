@@ -1,6 +1,7 @@
 "use client";
-import { useState, useRef, FormEvent, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState, FormEvent } from "react";
+import { motion } from "framer-motion";
+import BorderGlow from "./BorderGlow";
 import { 
   FiMail, 
   FiGithub, 
@@ -17,9 +18,16 @@ import {
 import emailjs from "@emailjs/browser";
 
 // EmailJS config
-const EMAILJS_SERVICE_ID = "service_dpbc1qv";
-const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+const isDemoMode = 
+  !EMAILJS_SERVICE_ID || 
+  !EMAILJS_TEMPLATE_ID || 
+  !EMAILJS_PUBLIC_KEY || 
+  EMAILJS_TEMPLATE_ID === "YOUR_TEMPLATE_ID" || 
+  EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY";
 
 // Holographic Canvas Orb Backdrop Component
 function HolographicCanvas() {
@@ -100,11 +108,11 @@ function HolographicCanvas() {
 
       // Project points
       const projected = particles.map(p => {
-        let x1 = p.x * Math.cos(angleY) - p.z * Math.sin(angleY);
-        let z1 = p.x * Math.sin(angleY) + p.z * Math.cos(angleY);
+        const x1 = p.x * Math.cos(angleY) - p.z * Math.sin(angleY);
+        const z1 = p.x * Math.sin(angleY) + p.z * Math.cos(angleY);
 
-        let y2 = p.y * Math.cos(angleX) - z1 * Math.sin(angleX);
-        let z2 = p.y * Math.sin(angleX) + z1 * Math.cos(angleX);
+        const y2 = p.y * Math.cos(angleX) - z1 * Math.sin(angleX);
+        const z2 = p.y * Math.sin(angleX) + z1 * Math.cos(angleX);
 
         let x3 = x1 * pulseScale;
         let y3 = y2 * pulseScale;
@@ -216,23 +224,31 @@ function MagneticCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="glass-card p-6 flex items-center gap-4 relative overflow-hidden transition-all duration-300 cursor-pointer group rounded-2xl"
+      className="block relative transition-all duration-300 cursor-pointer rounded-2xl group"
       style={{
         transform: `translate3d(${displacement.x}px, ${displacement.y}px, 0)`,
         transition: isHovered ? "none" : "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)",
-        background: "rgba(10, 10, 15, 0.8)",
-        backdropFilter: "blur(20px)",
-        border: isHovered ? `1px solid ${color}50` : "1px solid rgba(255, 255, 255, 0.06)",
         boxShadow: isHovered ? `0 10px 30px -10px ${color}20` : "none"
       }}
     >
-      <div 
-        className="absolute -inset-1 opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl pointer-events-none"
+      <BorderGlow
+        className="relative overflow-hidden group p-6"
+        innerClassName="flex items-center gap-4 w-full"
+        borderRadius={16}
+        backgroundColor="#09090b"
         style={{
-          background: `radial-gradient(circle at center, ${color}, transparent 70%)`
+          backdropFilter: "blur(20px)",
+          border: isHovered ? `1px solid ${color}50` : "1px solid rgba(255, 255, 255, 0.06)",
         }}
-      />
-      {children}
+      >
+        <div 
+          className="absolute -inset-1 opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at center, ${color}, transparent 70%)`
+          }}
+        />
+        {children}
+      </BorderGlow>
     </motion.a>
   );
 }
@@ -283,29 +299,26 @@ export default function Contact() {
     e.preventDefault();
     if (!formRef.current) return;
 
+    if (isDemoMode) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
     setStatus("sending");
     try {
       await emailjs.sendForm(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
+        EMAILJS_SERVICE_ID!,
+        EMAILJS_TEMPLATE_ID!,
         formRef.current,
-        EMAILJS_PUBLIC_KEY
+        EMAILJS_PUBLIC_KEY!
       );
       setStatus("sent");
       setFormValues({ user_name: "", user_email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 4000);
     } catch {
-      // Mock sent fallback if credentials are placeholders
-      if (EMAILJS_TEMPLATE_ID === "YOUR_TEMPLATE_ID") {
-        setTimeout(() => {
-          setStatus("sent");
-          setFormValues({ user_name: "", user_email: "", subject: "", message: "" });
-          setTimeout(() => setStatus("idle"), 4000);
-        }, 1500);
-      } else {
-        setStatus("error");
-        setTimeout(() => setStatus("idle"), 4000);
-      }
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
     }
   };
 
@@ -357,7 +370,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.0, delay: 0.1, ease: "easeOut" }}
-            className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight"
+            className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)]"
           >
             Let&apos;s Build Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">Impactful</span> Together
           </motion.h2>
@@ -399,9 +412,14 @@ export default function Contact() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: idx * 0.15 }}
                   whileHover={{ y: -4, borderColor: `${node.color}35` }}
-                  className="glass-card p-6 rounded-2xl border border-zinc-900 flex flex-col justify-between transition-all duration-300 relative group overflow-hidden"
-                  style={{ background: "rgba(8, 8, 12, 0.6)" }}
+                  className="relative group h-full"
                 >
+                  <BorderGlow
+                    className="relative overflow-hidden transition-all duration-300 p-6"
+                    innerClassName="flex flex-col justify-between w-full"
+                    borderRadius={16} backgroundColor="#09090b"
+                    style={{ border: "1px solid #18181b" }}
+                  >
                   <div 
                     className="absolute -top-10 -right-10 w-24 h-24 rounded-full blur-[45px] opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"
                     style={{ backgroundColor: node.color }}
@@ -415,6 +433,7 @@ export default function Contact() {
                     <h3 className="text-lg font-bold text-zinc-100">{node.title}</h3>
                     <p className="text-sm text-zinc-400 leading-relaxed font-medium">{node.desc}</p>
                   </div>
+                  </BorderGlow>
                 </motion.div>
               );
             })}
@@ -437,14 +456,18 @@ export default function Contact() {
             transition={{ duration: 0.8 }}
             className="lg:col-span-3 space-y-6 relative z-10"
           >
-            <div className="glass-card p-8 rounded-3xl border border-zinc-800/50 backdrop-blur-2xl relative"
-                 style={{ background: "rgba(10, 10, 15, 0.75)" }}>
+            <BorderGlow className="relative p-8" innerClassName="w-full" borderRadius={24} backgroundColor="#09090b">
               
               <h3 className="text-xl font-bold text-zinc-100 mb-6 flex items-center gap-2">
                 <FiMail className="text-cyan-400" /> Dispatch Transmission
               </h3>
 
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-5" id="contact-form">
+                {isDemoMode && (
+                  <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-300 text-xs font-mono leading-relaxed">
+                    <span className="font-bold">⚠️ Demo Mode:</span> Email API credentials are not configured in environment variables. Form submission will show a transmission error. Please reach me directly at <a href="mailto:yashwanthsrisai@gmail.com" className="underline text-cyan-400 hover:text-cyan-300">yashwanthsrisai@gmail.com</a>.
+                  </div>
+                )}
 
                 {/* Name */}
                 <div className="flex flex-col gap-1.5">
@@ -610,7 +633,7 @@ export default function Contact() {
                 </motion.button>
 
               </form>
-            </div>
+            </BorderGlow>
           </motion.div>
 
           {/* Right Column: Interactive Connection Cards (2/5 Columns) */}

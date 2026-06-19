@@ -141,6 +141,62 @@ export const RESUME_DATA: ResumeProfile = {
         "Designed responsive user interfaces using Tailwind CSS and Framer Motion for interactive team workflows."
       ],
       sectionId: "projects"
+    },
+    {
+      id: "modern-hr-admin-dashboard",
+      name: "Enterprise HR & Admin Dashboard",
+      technologies: ["Angular", "Node.js", "Express", "Angular Material", "SCSS"],
+      duration: "2026",
+      role: "Lead Developer",
+      overview: "A comprehensive internal operations, compliance records, and employee management system with Angular frontend and Node.js REST API backend.",
+      points: [
+        "Monorepo structure separating frontend client from decoupled Node.js and Express REST API service environments.",
+        "Secured session storage using HttpOnly cookies with JWT validation, CORS rules, and API rate-limiting.",
+        "Leveraged Angular Standalone components with reactive state variables via Angular Signals for instant DOM refreshes."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "bitcoin-sentiment-performance",
+      name: "Bitcoin Sentiment Analysis",
+      technologies: ["Python", "Jupyter", "Pandas", "Scipy", "Matplotlib"],
+      duration: "2026",
+      role: "Data Analyst",
+      overview: "Investigates the statistical correlation between cryptocurrency market sentiment regimes (Fear & Greed Index) and overall trader profitability.",
+      points: [
+        "Processed and analyzed over 211,000 historical trade execution records, merging datasets using Pandas vectorized operations.",
+        "Applied statistical testing (ANOVA, T-tests) using SciPy modules to mathematically validate variance in performance metrics.",
+        "Determined that the Extreme Greed market regime corresponds with peak win rates and highest profit outcomes."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "rest-api-backend",
+      name: "FastAPI GitHub Repo Tracker",
+      technologies: ["Python", "FastAPI", "PostgreSQL", "SQLAlchemy", "Pydantic"],
+      duration: "2026",
+      role: "Backend Developer",
+      overview: "An async-first REST API service that integrates with the GitHub REST API to fetch and cache repository metadata locally.",
+      points: [
+        "Designed a clean layered architecture separating API layers, service layers, client layers, and data access layers.",
+        "Configured SQLAlchemy Async session management with database connection pools to execute non-blocking queries.",
+        "Built resilient client connectors handling rate-limiting retries, redirects, and network timeouts using httpx asynchronous modules."
+      ],
+      sectionId: "projects"
+    },
+    {
+      id: "salesforge",
+      name: "SalesForge Intelligence",
+      technologies: ["MySQL", "Tableau", "Python", "Pandas", "SQL"],
+      duration: "2026",
+      role: "BI Analyst",
+      overview: "An end-to-end sales intelligence platform transforming raw transactional OLTP records into actionable business dashboards.",
+      points: [
+        "Designed a clean analytical Star Schema database consisting of central Fact tables and separate Dimension tables.",
+        "Wrote advanced SQL window queries and analytics to extract critical KPIs including YoY margins, growth rates, and market share.",
+        "Integrated Tableau dashboard visualizations to display revenue and profit metrics for business decision-makers."
+      ],
+      sectionId: "projects"
     }
   ],
   certifications: [

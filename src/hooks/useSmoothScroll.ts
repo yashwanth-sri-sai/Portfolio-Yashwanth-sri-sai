@@ -12,6 +12,9 @@ export function useSmoothScroll(disabled = false) {
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 2,
     });
+    
+    // @ts-expect-error - Global lenis reference
+    window.lenis = lenis;
 
     let rafId: number;
     function raf(time: number) {
@@ -24,6 +27,8 @@ export function useSmoothScroll(disabled = false) {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      // @ts-expect-error - Global lenis reference
+      window.lenis = undefined;
     };
   }, [disabled]);
 }

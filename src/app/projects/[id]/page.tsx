@@ -1,106 +1,192 @@
 "use client";
 
 import { use, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { 
-  FiArrowLeft, 
-  FiGithub, 
-  FiExternalLink, 
-  FiCalendar, 
-  FiTag, 
-  FiCheckCircle, 
-  FiLayers, 
-  FiCpu, 
-  FiCode, 
-  FiTrendingUp, 
-  FiBookOpen, 
+import {
+  FiArrowLeft,
+  FiGithub,
+  FiExternalLink,
+  FiCheckCircle,
+  FiLayers,
+  FiCpu,
+  FiCode,
+  FiTrendingUp,
   FiActivity,
   FiSend,
   FiFileText,
   FiSearch,
   FiUser
 } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
 
 // Dynamic workflows representing each project's architecture steps
 const ARCHITECTURES: Record<string, { title: string; desc: string }[]> = {
-  "agentic-ai-assistant": [
-    { title: "User Query", desc: "User inputs complex multi-step analytical prompt." },
-    { title: "Query Router", desc: "LangChain processes prompt intent and routes search path." },
-    { title: "Researcher Agent", desc: "Queries FAISS vector database for domain-specific contexts." },
-    { title: "Context Retrieval", desc: "Extracts text chunks and ranks by cosine similarity." },
-    { title: "Writer Agent", desc: "Synthesizes extracted data into a unified readable answer." },
-    { title: "Final Response", desc: "Pushes validated outputs to client console interface." }
+  "phishing-detection": [
+    { title: "Input URL", desc: "User inputs a URL or domain string to inspect." },
+    { title: "Feature Extractor", desc: "Parses URL to extract lexical, host, and content parameters." },
+    { title: "Domain Queries", desc: "Audits registrar data, WHOIS records, and DNS profiles." },
+    { title: "Ensemble Models", desc: "Processes features through trained Random Forest & XGBoost models." },
+    { title: "Inference Server", desc: "Lightweight Flask backend computes classification probabilities." },
+    { title: "Verdict Response", desc: "Returns a verdict (Phishing vs Benign) with security metrics." }
   ],
-  "multi-pdf-chatbot": [
-    { title: "Upload PDFs", desc: "User uploads document bundle to the Streamlit UI." },
-    { title: "Document Parser", desc: "PyPDF2 extracts raw characters from uploaded records." },
-    { title: "Chunking Engine", desc: "Splits strings into 1000-character recursive nodes." },
-    { title: "Embedding API", desc: "Generates semantic vectors using Google Gemini models." },
-    { title: "Vector Store", desc: "Index files are stored locally in FAISS database caches." },
-    { title: "Conversational QA", desc: "Retrieval chain processes responses with chat memory." }
+  "agentic-ai": [
+    { title: "User Prompt", desc: "User submits institution queries to conversational interface." },
+    { title: "Agentic Router", desc: "LangChain router checks intent and schedules query tasks." },
+    { title: "FAISS Retrieval", desc: "Retrieves document context from indexed institutional files." },
+    { title: "RAG Verification", desc: "Validates retrieved facts against query context parameters." },
+    { title: "Gemini Model", desc: "Synthesizes responses using Gemini AI model instructions." },
+    { title: "FastAPI Publish", desc: "Lightweight API endpoints push response streams to client UI." }
+  ],
+  "pdf-chatbot": [
+    { title: "PDF Uploads", desc: "User uploads PDF files to local workspace buffers." },
+    { title: "Extraction Node", desc: "PyPDF2 extracts raw characters and filters layout noise." },
+    { title: "Text Splitter", desc: "Divides long text lists using recursive character overlap." },
+    { title: "Vector Generator", desc: "Queries Gemini/OpenAI APIs to generate semantic embeddings." },
+    { title: "FAISS Storage", desc: "Indexes and saves embedding vectors locally for query lookup." },
+    { title: "Streamlit UI", desc: "Renders responsive conversational QA and source reference badges." }
   ],
   "ai-resume-analyzer": [
-    { title: "Upload Profile", desc: "Extracts PDF, DOCX, or TXT file bytes into strings." },
-    { title: "NLP Preprocessor", desc: "Tokenizes strings, filters stop words, and indexes terms." },
-    { title: "ATS Evaluation", desc: "Scans resume structure against industry benchmarks." },
-    { title: "Keyword Matching", desc: "Checks frequency correlation of job description nouns." },
-    { title: "LLM Evaluator", desc: "Fires structured JSON prompt to formulate feedback blocks." },
-    { title: "Score Breakdown", desc: "Renders skill gaps and recommendations in dashboard." }
+    { title: "Upload Profile", desc: "Processes PDF, DOCX, and TXT resumes into raw text strings." },
+    { title: "NLP Preprocessor", desc: "Filters stop words, tokenizes nouns, and indexes terms." },
+    { title: "ATS Evaluator", desc: "Scans resume structure and formatting against ATS rules." },
+    { title: "Keyword Match", desc: "Computes frequency overlap against target job description." },
+    { title: "LLM Diagnostics", desc: "Prompts LLM to identify technical skill gaps and tips." },
+    { title: "Dashboard Report", desc: "Renders compatibility scores and constructive feedback." }
   ],
   "task-management-system": [
-    { title: "Client UI Action", desc: "React action fires database state manipulation query." },
-    { title: "Authentication Shield", desc: "JWT cookies validate scopes and active user session." },
-    { title: "Server Handler", desc: "Next.js routing server processes data parameters." },
-    { title: "Prisma ORM Mapping", desc: "Constructs SQL transaction schema commands." },
-    { title: "PostgreSQL Execute", desc: "Performs query mutations on hosted SQL database." },
-    { title: "Optimistic Render", desc: "Instant UI update with rollback safeguard on fail." }
+    { title: "Client Action", desc: "User executes workspace drag-and-drop task card movement." },
+    { title: "JWT Auth Gate", desc: "Validates cookies and session tokens for secure connections." },
+    { title: "Server Actions", desc: "Next.js routing server processes data parameters." },
+    { title: "Prisma mapping", desc: "Generates SQL schema commands dynamically." },
+    { title: "PostgreSQL Edit", desc: "Performs query mutations on hosted SQL database." },
+    { title: "Optimistic Render", desc: "Renders UI changes instantly with local rollback triggers." }
+  ],
+  "modern-hr-admin-dashboard": [
+    { title: "Auth Gate", desc: "User logs in, initiating JWT authentication validation." },
+    { title: "Session Handshake", desc: "Server writes secure HttpOnly session cookies." },
+    { title: "REST Requests", desc: "Decoupled Node.js Express server receives API queries." },
+    { title: "SQL Transaction", desc: "Fetches employee records and logs from hosted DBs." },
+    { title: "State Signals", desc: "Angular Signals updates active component states." },
+    { title: "Admin Portal", desc: "Renders HR analytics dashboards and compliance forms." }
+  ],
+  "bitcoin-sentiment-performance": [
+    { title: "Ingestion Node", desc: "Loads and indexes historical trade execution datasets." },
+    { title: "Sentiment Fetch", desc: "Scrapes daily Fear & Greed index scores." },
+    { title: "Pandas Merger", desc: "Aligns sentiment classifications with historical trades." },
+    { title: "Stats Testing", desc: "Applies ANOVA and T-tests via SciPy modules." },
+    { title: "Regime Plots", desc: "Generates distribution plots using Matplotlib libraries." },
+    { title: "Trading Rules", desc: "Applies statistical outcomes to optimize trading strategies." }
+  ],
+  "rest-api-backend": [
+    { title: "API Request", desc: "Client sends asynchronous request to backend routers." },
+    { title: "FastAPI Endpoint", desc: "FastAPI handles asynchronous request matching." },
+    { title: "httpx Query", desc: "Queries GitHub REST API endpoints asynchronously." },
+    { title: "Resilience Check", desc: "Handles upstream API rate limits, timeouts, and redirects." },
+    { title: "SQLAlchemy Async", desc: "Performs non-blocking queries on hosted database." },
+    { title: "Return Payload", desc: "Sends structured JSON response matching Pydantic schemas." }
+  ],
+  "salesforge": [
+    { title: "CSV Data Extract", desc: "Reads raw OLTP data files into memory buffers." },
+    { title: "ETL Pipeline", desc: "Cleans and transforms records using Pandas scripts." },
+    { title: "Star Schema Load", desc: "Populates fact and dimension tables in MySQL database." },
+    { title: "SQL Queries", desc: "Runs advanced SQL window queries to extract business KPIs." },
+    { title: "Tableau Connect", desc: "Links MySQL database tables to Tableau dashboards." },
+    { title: "Visual Analytics", desc: "Visualizes sales, margins, and market performance." }
   ]
 };
 
 // Heuristically mapped solutions to complete the engineering narrative
 const CHALLENGE_SOLUTIONS: Record<string, { challenge: string; solution: string }[]> = {
-  "agentic-ai-assistant": [
+  "phishing-detection": [
     {
-      challenge: "Managing agent state and preventing infinite conversation loops between autonomous agents.",
-      solution: "Implemented strict maximum iteration caps (max_iter) and configured custom termination indicators (stop words) within the CrewAI router."
+      challenge: "Extracting features from URLs efficiently without introducing blocking network call overhead (e.g. WHOIS queries).",
+      solution: "Engineered a fast lexical feature parser in Python and cached domain details locally, avoiding outbound web requests during active evaluations."
     },
     {
-      challenge: "Optimizing the chunking strategy for the FAISS vector database to ensure high-relevance retrieval without exceeding token limits.",
-      solution: "Developed an overlap-based Recursive Character splitter combined with a custom metadata filter to rank retrieved content by recency and cosine similarity."
+      challenge: "Managing severe class imbalance inside training data where benign URLs vastly outnumber phishing URLs.",
+      solution: "Balanced the datasets using SMOTE oversampling and tuned XGBoost class weights to minimize false positive classifications."
     }
   ],
-  "multi-pdf-chatbot": [
+  "agentic-ai": [
     {
-      challenge: "Handling large PDF files (50MB+) without causing memory overflow or hitting API rate limits during the embedding phase.",
-      solution: "Created a batched ingestion pipeline with exponential backoff retries and chunked vector uploads, respecting LLM API rate limits."
+      challenge: "Managing conversational state and preventing recursive loop queries between supervisor and tool agents.",
+      solution: "Configured maximum iteration boundaries and strict stop-word indicators inside the routing chain."
     },
     {
-      challenge: "Maintaining conversational context across follow-up questions referencing different uploaded documents.",
-      solution: "Integrated a ConversationBufferWindowMemory module from LangChain that passes a sliding window of historical context directly to the retrieval LLM."
+      challenge: "Optimizing the FAISS index chunking strategy to retrieve precise paragraphs without exceeding token counts.",
+      solution: "Implemented an overlapping recursive text splitter combined with cosine similarity search ranking."
+    }
+  ],
+  "pdf-chatbot": [
+    {
+      challenge: "Ingesting large document directories (1000+ pages) without exceeding embedding API rate limits or running out of RAM.",
+      solution: "Designed a batched processing pipeline with exponential backoff retries and chunked vector insertions."
+    },
+    {
+      challenge: "Maintaining accurate context references when follow-up queries span multiple separate PDF files.",
+      solution: "Leveraged LangChain ConversationalBufferWindowMemory to pass sliding windows of chat history directly to the vector chain."
     }
   ],
   "ai-resume-analyzer": [
     {
-      challenge: "Accurately extracting structured data (skills, experience) from highly varied and unstructured resume formats.",
-      solution: "Designed a multi-stage parser combining Regex heuristic classifiers with small fine-tuned BERT models for named entity recognition (NER)."
+      challenge: "Parsing highly irregular layouts (tables, headers, two-column templates) from uploaded PDF resumes.",
+      solution: "Built a multi-stage parser combining Regex heuristics and BERT models for Named Entity Recognition (NER)."
     },
     {
-      challenge: "Prompt engineering the LLM to provide consistent, objective percentage scores rather than subjective text.",
-      solution: "Implemented structured JSON output schemas using Pydantic parsers and few-shot formatting examples to constrain model scoring logic."
+      challenge: "Compelling the LLM to output consistent, mathematical ATS scores rather than subjective text summaries.",
+      solution: "Enforced JSON output formatting rules using Pydantic schema validation and few-shot formatting prompt rules."
     }
   ],
   "task-management-system": [
     {
-      challenge: "Implementing optimistic UI updates to ensure a snappy user experience while waiting for server mutations to complete.",
-      solution: "Leveraged React's useOptimistic hook coupled with local state caches to render task movements instantly, rolling back only on server failure."
+      challenge: "Ensuring instant visual responsiveness during workspace task cards movements while backend writes execute.",
+      solution: "Leveraged React's useOptimistic hook for state updates, with rollback safeguards on backend transaction failures."
     },
     {
-      challenge: "Designing a scalable relational database schema for users, teams, projects, and nested tasks.",
-      solution: "Engineered a normalized database schema in PostgreSQL with composite indexing and explicit cascading deletes handled via Prisma schema rules."
+      challenge: "Designing database structures for nested task trees, teams, and user permission roles.",
+      solution: "Designed a normalized PostgreSQL database schema with composite indexing and Prisma cascade rules."
+    }
+  ],
+  "modern-hr-admin-dashboard": [
+    {
+      challenge: "Establishing highly secure session storage on frontend clients to prevent cross-site scripting (XSS) theft of JWT tokens.",
+      solution: "Stored JWT session tokens strictly in HttpOnly secure cookies and enforced CORS restrictions."
+    },
+    {
+      challenge: "Preventing laggy UI rendering when listing hundreds of dynamic employee logs.",
+      solution: "Leveraged Angular 18+ Signals for reactive state tracking, ensuring fine-grained, localized DOM updates."
+    }
+  ],
+  "bitcoin-sentiment-performance": [
+    {
+      challenge: "Processing over 211,000 trade records and merging them with daily index entries efficiently.",
+      solution: "Optimized data structures using Pandas vectorized operations, reducing execution latency from minutes to milliseconds."
+    },
+    {
+      challenge: "Avoiding false assumptions about sentiment trading performance correlations.",
+      solution: "Applied ANOVA and independent T-tests via SciPy to mathematically validate significance before finalizing conclusions."
+    }
+  ],
+  "rest-api-backend": [
+    {
+      challenge: "Fetching and caching upstream data from GitHub API without hitting rate limits during concurrent client requests.",
+      solution: "Implemented SQLAlchemy Async query queues and asynchronous caching logic in FastAPI using async context managers."
+    },
+    {
+      challenge: "Preventing database locks and thread blockages on heavy database transactions.",
+      solution: "Leveraged non-blocking database connectors via SQLAlchemy Async and httpx async HTTP clients."
+    }
+  ],
+  "salesforge": [
+    {
+      challenge: "Transforming raw transactional CSV files into structured formats suitable for analytical queries.",
+      solution: "Designed a Star Schema consisting of Fact Tables and Dimension Tables, executing ETL operations via Pandas."
+    },
+    {
+      challenge: "Serving complex KPIs (e.g. year-over-year growth, market shares) without slow query performance.",
+      solution: "Optimized MySQL schema tables using index structures and built optimized window queries to minimize retrieval time."
     }
   ]
 };
@@ -117,14 +203,14 @@ const getTechCategories = (tech: string[]) => {
     const l = t.toLowerCase();
     if (["langchain", "faiss", "crewai", "rag", "embeddings", "gemini", "gpt", "nlp", "llms", "ats parsing"].includes(l)) {
       categories["AI & Processing Core"].push(t);
-    } else if (["react", "next.js", "streamlit", "tailwind css", "streamlit", "streamlit app"].includes(l)) {
+    } else if (["react", "next.js", "streamlit", "tailwind css", "angular", "angular material"].includes(l)) {
       categories["Application Stack & UI"].push(t);
     } else {
       categories["Data & Architecture"].push(t);
     }
   });
 
-  return Object.entries(categories).filter(([_, items]) => items.length > 0);
+  return Object.entries(categories).filter((entry) => entry[1].length > 0);
 };
 
 export default function ProjectCaseStudy({ params }: { params: Promise<{ id: string }> }) {
@@ -135,9 +221,10 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const [activeArchIndex, setActiveArchIndex] = useState(0);
 
-  // States for interactive mockups
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [mockState, setMockState] = useState<any>({
-    activeAgent: "Researcher",
+    activeAgent: "Query Router",
     chatQuery: "",
     chatHistory: [
       { sender: "user", text: "Explain RAG vector databases." },
@@ -156,7 +243,6 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
   const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
   const nextProject = projects[(currentIndex + 1) % projects.length];
 
-  // Canvas particle background effect for the Hero section
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -165,7 +251,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
     if (!ctx) return;
 
     let animId: number;
-    let particles: { x: number; y: number; vx: number; vy: number; radius: number; alpha: number }[] = [];
+    const particles: { x: number; y: number; vx: number; vy: number; radius: number; alpha: number }[] = [];
 
     const handleResize = () => {
       canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
@@ -175,7 +261,6 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Initialize particles
     for (let i = 0; i < 40; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -189,8 +274,6 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
 
     const run = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw subtle grid line coordinates
       ctx.strokeStyle = "rgba(255, 255, 255, 0.01)";
       ctx.lineWidth = 0.5;
       const step = 50;
@@ -210,7 +293,6 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
-
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
@@ -227,23 +309,23 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
     };
 
     run();
-
     return () => {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animId);
     };
   }, []);
 
-  // UI Interactive Mockup Handler
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!mockState.chatQuery.trim()) return;
+    const query = mockState.chatQuery as string;
+    if (!query.trim()) return;
 
-    const query = mockState.chatQuery;
-    const history = [...mockState.chatHistory, { sender: "user", text: query }];
+    const history = [...(mockState.chatHistory as Array<unknown>), { sender: "user", text: query }];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setMockState((prev: any) => ({ ...prev, chatQuery: "", chatHistory: history }));
 
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setMockState((prev: any) => ({
         ...prev,
         chatHistory: [
@@ -259,8 +341,10 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
   };
 
   const handleResumeDrop = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setMockState((prev: any) => ({ ...prev, parsedResume: "parsing" }));
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setMockState((prev: any) => ({
         ...prev,
         parsedResume: {
@@ -405,7 +489,56 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
 
               {/* Mockup Interactive Render Area */}
               <div className="flex-1 flex flex-col justify-between overflow-y-auto">
-                {project.id === "agentic-ai-assistant" && (
+                {project.id === "phishing-detection" && (
+                  <div className="flex-1 flex flex-col justify-between text-left">
+                    <div className="space-y-3 font-mono text-[10px] text-zinc-400">
+                      <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
+                        <span className="text-blue-400 flex items-center gap-1.5"><FiCpu /> Classifier Model:</span>
+                        <span className="text-zinc-200 uppercase font-bold">XGBoost & RF</span>
+                      </div>
+                      <div className="p-3 bg-zinc-950 rounded border border-white/5 space-y-2">
+                        <div className="text-zinc-500 font-bold text-[9px] uppercase">Test Domain Input:</div>
+                        <input
+                          type="text"
+                          value={mockState.urlInput !== undefined ? mockState.urlInput : "http://secure-paypal-login-verify.com"}
+                          onChange={(e) => setMockState((prev: any) => ({ ...prev, urlInput: e.target.value }))}
+                          className="w-full bg-zinc-900 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none"
+                        />
+                        <button
+                          onClick={() => {
+                            setMockState((prev: any) => ({ ...prev, isScanning: true }));
+                            setTimeout(() => {
+                              const input = (mockState.urlInput || "http://secure-paypal-login-verify.com").toLowerCase();
+                              let verdict = "BENIGN (99.1% Confidence)";
+                              let color = "text-emerald-400";
+                              if (input.includes("paypal") || input.includes("secure") || input.includes("verify") || input.includes("login")) {
+                                verdict = "PHISHING DETECTED (96.5% Confidence)";
+                                color = "text-red-400";
+                              }
+                              setMockState((prev: any) => ({
+                                ...prev,
+                                isScanning: false,
+                                scanResult: verdict,
+                                scanColor: color
+                              }));
+                            }, 800);
+                          }}
+                          className="w-full py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold uppercase transition-colors"
+                        >
+                          {mockState.isScanning ? "Scanning..." : "Execute Security Scan"}
+                        </button>
+                      </div>
+                      {mockState.scanResult && (
+                        <div className="p-2.5 rounded bg-zinc-900 border border-white/5 flex flex-col gap-1">
+                          <span className="text-zinc-500 text-[8px] uppercase">Scan Verdict:</span>
+                          <span className={`font-bold ${mockState.scanColor || "text-zinc-200"}`}>{mockState.scanResult}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {project.id === "agentic-ai" && (
                   <div className="flex-1 flex flex-col justify-between text-left">
                     <div className="space-y-3 font-mono text-[10px] text-zinc-400">
                       <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
@@ -413,7 +546,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                         <span className="text-zinc-200 uppercase font-bold">{mockState.activeAgent}</span>
                       </div>
                       <div className="p-3 bg-zinc-950 rounded border border-white/5 space-y-1.5 max-h-[160px] overflow-y-auto">
-                        <div className="text-zinc-600 font-bold">// EXECUTION LOGS:</div>
+                        <div className="text-zinc-600 font-bold">{"//"} EXECUTION LOGS:</div>
                         <div>&gt; Initializing CrewAI supervisor node...</div>
                         <div>&gt; Router handshaked with FAISS database.</div>
                         {mockState.activeAgent === "Researcher" ? (
@@ -425,12 +558,14 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                     </div>
                     <div className="flex gap-2 pt-4">
                       <button
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onClick={() => setMockState((prev: any) => ({ ...prev, activeAgent: "Researcher" }))}
                         className={`flex-1 py-2 rounded text-[10px] font-mono tracking-widest font-bold uppercase transition-all duration-300 ${mockState.activeAgent === "Researcher" ? "bg-blue-600 text-white shadow-lg" : "bg-zinc-900 text-zinc-400 border border-white/5"}`}
                       >
                         Researcher
                       </button>
                       <button
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onClick={() => setMockState((prev: any) => ({ ...prev, activeAgent: "Writer" }))}
                         className={`flex-1 py-2 rounded text-[10px] font-mono tracking-widest font-bold uppercase transition-all duration-300 ${mockState.activeAgent === "Writer" ? "bg-emerald-600 text-white shadow-lg" : "bg-zinc-900 text-zinc-400 border border-white/5"}`}
                       >
@@ -440,10 +575,11 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                   </div>
                 )}
 
-                {project.id === "multi-pdf-chatbot" && (
+                {project.id === "pdf-chatbot" && (
                   <div className="flex-1 flex flex-col text-left justify-between h-full">
                     {/* Chat Area */}
                     <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1 flex-1">
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                       {mockState.chatHistory.map((chat: any, i: number) => (
                         <div key={i} className={`p-2.5 rounded-xl border text-[11px] leading-relaxed ${chat.sender === "user" ? "bg-zinc-900 border-white/5 self-end ml-8" : "bg-blue-950/20 border-blue-500/10 mr-8 text-zinc-300"}`}>
                           <div className="font-bold font-mono text-[9px] text-zinc-500 mb-1">
@@ -467,6 +603,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                       <input
                         type="text"
                         value={mockState.chatQuery}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onChange={(e) => setMockState((prev: any) => ({ ...prev, chatQuery: e.target.value }))}
                         placeholder="Ask RAG chatbot..."
                         className="flex-1 bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-sans"
@@ -483,7 +620,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                     {!mockState.parsedResume ? (
                       <div className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/10 hover:border-blue-500/40 rounded-2xl transition-colors cursor-pointer text-center" onClick={handleResumeDrop}>
                         <FiFileText className="text-3xl text-zinc-600 mb-2 animate-bounce" />
-                        <span className="text-xs text-zinc-400 font-mono">Click to simulate drop of 'Resume.pdf'</span>
+                        <span className="text-xs text-zinc-400 font-mono">Click to simulate drop of &apos;Resume.pdf&apos;</span>
                       </div>
                     ) : mockState.parsedResume === "parsing" ? (
                       <div className="flex-1 flex flex-col items-center justify-center p-6">
@@ -500,7 +637,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                           <div className="text-zinc-500 font-bold text-[9px] uppercase tracking-wider">Identified Skill Alignment:</div>
                           <div className="flex flex-wrap gap-1">
                             {mockState.parsedResume.extractedSkills.map((s: string, idx: number) => (
-                              <span key={idx} className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/5 text-[9px]">
+                               <span key={idx} className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/5 text-[9px]">
                                 {s}
                               </span>
                             ))}
@@ -510,6 +647,7 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                           <div className="text-zinc-500 font-bold text-[9px] uppercase tracking-wider">Recommendations:</div>
                           <p className="text-[9px] leading-relaxed text-zinc-400">{mockState.parsedResume.improvements}</p>
                         </div>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         <button onClick={() => setMockState((prev: any) => ({ ...prev, parsedResume: null }))} className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/5 rounded text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                           Reset Analysis
                         </button>
@@ -552,6 +690,156 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
                           <span>Uptime: 99.9%</span>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {project.id === "modern-hr-admin-dashboard" && (
+                  <div className="flex-1 flex flex-col justify-between text-left">
+                    <div className="space-y-3 font-mono text-[10px] text-zinc-300">
+                      <div className="flex items-center justify-between p-2 rounded bg-zinc-950 border border-white/5">
+                        <span className="text-zinc-500">Active Signals State:</span>
+                        <span className="text-cyan-400 font-bold">REACTIVE // ONLINE</span>
+                      </div>
+                      <div className="p-3 bg-zinc-950 border border-white/5 rounded space-y-2">
+                        <div className="text-zinc-500 font-bold text-[9px] uppercase">Employee Log Simulation:</div>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-[9px] border-b border-white/5 pb-1">
+                            <span>K. Yashwanth (Lead)</span>
+                            <span className="text-emerald-400">Active</span>
+                          </div>
+                          <div className="flex justify-between text-[9px] border-b border-white/5 pb-1">
+                            <span>Deloitte Audit Node</span>
+                            <span className="text-emerald-400">Synched</span>
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span>Express API Backend</span>
+                            <span className="text-cyan-400">Connected</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const status = mockState.hrTokenState === "HttpOnly Secure Cookie" ? "XSS Protected Session" : "HttpOnly Secure Cookie";
+                          setMockState((prev: any) => ({ ...prev, hrTokenState: status }));
+                        }}
+                        className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/5 rounded text-[9px] uppercase tracking-wider transition-colors cursor-pointer"
+                      >
+                        Toggle Cookie State: {mockState.hrTokenState || "HttpOnly Secure Cookie"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {project.id === "bitcoin-sentiment-performance" && (
+                  <div className="flex-1 flex flex-col justify-between text-left">
+                    <div className="space-y-3 font-mono text-[10px] text-zinc-300">
+                      <div className="flex items-center justify-between p-2 rounded bg-zinc-950 border border-white/5">
+                        <span className="text-zinc-500">SciPy Regime:</span>
+                        <span className="text-yellow-400 font-bold uppercase">{mockState.regime || "Extreme Greed"}</span>
+                      </div>
+                      <div className="p-3 bg-[#030308] border border-white/5 rounded space-y-2">
+                        <div className="text-zinc-500 font-bold text-[9px] uppercase">Regime Stats:</div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[9px]">
+                            <span>Win Rate:</span>
+                            <span className="text-white font-bold">{mockState.regime === "Extreme Fear" ? "32.1%" : "46.4%"}</span>
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span>Avg Profit/Trade:</span>
+                            <span className="text-white font-bold">{mockState.regime === "Extreme Fear" ? "-$124.50" : "+$482.10"}</span>
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span>ANOVA F-Statistic:</span>
+                            <span className="text-emerald-400">14.82 (p &lt; 0.01)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setMockState((prev: any) => ({ ...prev, regime: "Extreme Greed" }))}
+                          className={`flex-1 py-1.5 rounded text-[8px] font-mono tracking-wider font-bold uppercase transition-all duration-300 ${mockState.regime !== "Extreme Fear" ? "bg-yellow-600 text-white" : "bg-zinc-900 text-zinc-400 border border-white/5"}`}
+                        >
+                          Greed
+                        </button>
+                        <button
+                          onClick={() => setMockState((prev: any) => ({ ...prev, regime: "Extreme Fear" }))}
+                          className={`flex-1 py-1.5 rounded text-[8px] font-mono tracking-wider font-bold uppercase transition-all duration-300 ${mockState.regime === "Extreme Fear" ? "bg-red-600 text-white" : "bg-zinc-900 text-zinc-400 border border-white/5"}`}
+                        >
+                          Fear
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {project.id === "rest-api-backend" && (
+                  <div className="flex-1 flex flex-col justify-between text-left">
+                    <div className="space-y-3 font-mono text-[10px] text-zinc-300">
+                      <div className="p-3 bg-zinc-950 border border-white/5 rounded space-y-1.5 max-h-[160px] overflow-y-auto">
+                        <div className="text-zinc-600 font-bold">{"//"} ASYNC REPO RUNNER:</div>
+                        <div>&gt; FastAPI worker processes active...</div>
+                        {mockState.apiFetched ? (
+                          <>
+                            <div className="text-emerald-400">&gt; GET /api/v1/repos/yashwanth-sri-sai/portfolio 200 OK</div>
+                            <div className="text-zinc-400 font-bold">{`{
+  "name": "portfolio",
+  "stars": 42,
+  "forks": 12,
+  "cached": true
+}`}</div>
+                          </>
+                        ) : (
+                          <div className="text-zinc-500">&gt; Waiting for developer input query request...</div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          setMockState((prev: any) => ({ ...prev, apiFetched: true }));
+                        }}
+                        className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded text-[9px] uppercase tracking-wider transition-colors cursor-pointer"
+                      >
+                        Send REST API Request
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {project.id === "salesforge" && (
+                  <div className="flex-1 flex flex-col justify-between text-left">
+                    <div className="space-y-3 font-mono text-[10px] text-zinc-300">
+                      <div className="flex items-center justify-between p-2 rounded bg-zinc-950 border border-white/5">
+                        <span className="text-zinc-500">Data Model Schema:</span>
+                        <span className="text-purple-400 font-bold">STAR SCHEMA (MYSQL)</span>
+                      </div>
+                      <div className="p-3 bg-zinc-950 border border-white/5 rounded space-y-2">
+                        <div className="text-zinc-500 font-bold text-[9px] uppercase">Tableau Connector Info:</div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[9px]">
+                            <span>Fact Table (Transactions):</span>
+                            <span className="text-white">142,500 rows</span>
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span>Dimension Tables:</span>
+                            <span className="text-white">5 dimensions</span>
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span>Status:</span>
+                            <span className="text-emerald-400">Connected</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setMockState((prev: any) => ({ ...prev, salesRefreshed: true }));
+                          setTimeout(() => {
+                            setMockState((prev: any) => ({ ...prev, salesRefreshed: false }));
+                          }, 1000);
+                        }}
+                        className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/5 rounded text-[9px] uppercase tracking-wider transition-colors cursor-pointer"
+                      >
+                        {mockState.salesRefreshed ? "Model Refreshed ✓" : "Refresh Star Model"}
+                      </button>
                     </div>
                   </div>
                 )}
@@ -724,11 +1012,11 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Synthesizing features list from metadata */}
-            {(project.id === "agentic-ai-assistant" ? [
+            {(project.id === "agentic-ai" ? [
               { title: "Multi-Agent System", desc: "Coordinates CrewAI research and drafting agents.", icon: FiCpu },
               { title: "FAISS Vector DB", desc: "Maintains indexed contextual storage nodes.", icon: FiLayers },
               { title: "Conversational QA", desc: "Translates complex queries using Claude pipelines.", icon: FiCode },
-            ] : project.id === "multi-pdf-chatbot" ? [
+            ] : project.id === "pdf-chatbot" ? [
               { title: "Batch PDF Ingestion", desc: "Extracts character layers from document buffers.", icon: FiFileText },
               { title: "Recursive Tokenizer", desc: "Generates semantic text overlapping boundaries.", icon: FiLayers },
               { title: "Gemini Embedding", desc: "Resolves vector mapping indexes at scale.", icon: FiCpu },
@@ -920,10 +1208,10 @@ export default function ProjectCaseStudy({ params }: { params: Promise<{ id: str
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-            {(project.id === "agentic-ai-assistant" ? [
+            {(project.id === "agentic-ai" ? [
               { step: "LLM Mesh Integration", desc: "Integrating open-source models (like Llama-3.1) locally using Ollama/vLLM endpoints for strict parameter confidentiality." },
               { step: "Hybrid Routing", desc: "Adding semantic vector similarity checks before query routing to prevent routing overhead on simple keyword query profiles." }
-            ] : project.id === "multi-pdf-chatbot" ? [
+            ] : project.id === "pdf-chatbot" ? [
               { step: "Dynamic Metadata Filtering", desc: "Allowing users to filter queries on PDF uploads using custom tag attributes like author, publisher date, or document category." },
               { step: "Semantic Caching", desc: "Integrating Redis Semantic Cache clusters to return vector queries under 10ms for highly correlated query sets." }
             ] : project.id === "ai-resume-analyzer" ? [

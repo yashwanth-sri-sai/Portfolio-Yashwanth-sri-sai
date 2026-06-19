@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 
 interface SectionHeadingProps {
@@ -8,7 +9,11 @@ interface SectionHeadingProps {
   align?: "center" | "left";
 }
 
-export default function SectionHeading({ title, subtitle, align = "center" }: SectionHeadingProps) {
+export default React.memo(function SectionHeading({ 
+  title, 
+  subtitle, 
+  align = "left"
+}: SectionHeadingProps) {
   const isCenter = align === "center";
 
   return (
@@ -54,4 +59,4 @@ export default function SectionHeading({ title, subtitle, align = "center" }: Se
       />
     </div>
   );
-}
+});

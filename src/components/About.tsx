@@ -95,7 +95,7 @@ export default function About() {
                 }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-7xl">🧠</span>
+                <span role="img" aria-label="brain" className="text-7xl">🧠</span>
               </div>
             </div>
           </motion.div>

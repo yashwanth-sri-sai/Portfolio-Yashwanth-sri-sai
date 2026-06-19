@@ -43,14 +43,45 @@ export const metadata: Metadata = {
   },
 };
 
+import GlobalBackground from "@/components/GlobalBackground";
+import SplashCursor from "@/components/SplashCursor";
+import Intro from "@/components/intro/Intro";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} overflow-x-clip max-w-full`}>
-      <body className="noise-overlay overflow-x-clip max-w-full">
+    <html lang="en" className={`${inter.variable} overflow-x-clip max-w-full`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('introSeen') === 'true') {
+                  document.documentElement.classList.add('intro-seen');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="noise-overlay overflow-x-clip max-w-full relative bg-transparent">
+        <Intro />
+        <GlobalBackground />
+        <SplashCursor
+          DENSITY_DISSIPATION={3.5}
+          VELOCITY_DISSIPATION={2}
+          PRESSURE={0.1}
+          CURL={3}
+          SPLAT_RADIUS={0.2}
+          SPLAT_FORCE={6000}
+          COLOR_UPDATE_SPEED={10}
+          SHADING
+          RAINBOW_MODE={false}
+          COLOR="#A855F7"
+        />
         {children}
       </body>
     </html>

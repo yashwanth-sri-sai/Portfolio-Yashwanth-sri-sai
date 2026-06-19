@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { certifications } from "@/data/certifications";
 import { FiExternalLink } from "react-icons/fi";
 import SectionHeading from "./SectionHeading";
+import BorderGlow from "./BorderGlow";
 
 export default function Certifications() {
   return (
@@ -12,6 +13,7 @@ export default function Certifications() {
         <SectionHeading
           title="Certifications"
           subtitle="Professional credentials and continuous learning"
+          align="center"
         />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -22,9 +24,13 @@ export default function Certifications() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="glass-card px-8 py-6 rounded-2xl flex flex-col group relative overflow-hidden"
+              className="relative h-full"
             >
+              <BorderGlow
+                className="relative overflow-hidden group px-8 py-6"
+                innerClassName="flex flex-col w-full"
+                borderRadius={16} backgroundColor="#09090b"
+              >
               {/* Decorative gradient blob on hover */}
               <div
                 className="absolute -inset-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
@@ -73,6 +79,7 @@ export default function Certifications() {
                   {cert.issuer}
                 </p>
               </div>
+              </BorderGlow>
             </motion.div>
           ))}
         </div>

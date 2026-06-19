@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import BorderGlow from "./BorderGlow";
 import { 
   FiCpu, 
   FiLayers, 
@@ -886,8 +887,11 @@ export default function Skills() {
           </div>
 
           {/* Right Column: Cyber Telemetry HUD Inspector */}
-          <div className="lg:col-span-5 flex">
-            <div className="w-full p-8 rounded-3xl glass-card border border-white/10 bg-zinc-950/70 backdrop-blur-2xl flex flex-col justify-between text-left relative overflow-hidden">
+          <div className="lg:col-span-5 flex min-w-0">
+            <BorderGlow 
+              className="w-full relative p-8" 
+              innerClassName="flex flex-col justify-between text-left w-full" 
+              borderRadius={24} backgroundColor="#09090b">
               
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/[0.01] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               
@@ -1033,7 +1037,7 @@ export default function Skills() {
                   <span className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Select a skill node to inspect metrics</span>
                 </div>
               )}
-            </div>
+            </BorderGlow>
           </div>
         </div>
 

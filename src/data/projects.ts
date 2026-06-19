@@ -17,6 +17,9 @@ export interface Project {
   category: ProjectCategory;
   featured: boolean;
   date: string;
+  duration: string;
+  status: string;
+  complexity: string;
   metrics: ProjectMetric[];
   
   // Case Study specific fields
@@ -40,6 +43,9 @@ export const projects: Project[] = [
     category: "AI/ML",
     featured: true,
     date: "2025",
+    duration: "4 Months",
+    status: "Completed",
+    complexity: "Advanced",
     metrics: [
       { label: "Detection Accuracy", value: "96.5%" },
       { label: "Analysis Latency", value: "<80ms" }
@@ -68,6 +74,9 @@ export const projects: Project[] = [
     category: "AI/ML",
     featured: true,
     date: "2025",
+    duration: "3 Months",
+    status: "In Production",
+    complexity: "High",
     metrics: [
       { label: "Query Accuracy", value: "92%" },
       { label: "Factual Precision", value: "95%" }
@@ -96,6 +105,9 @@ export const projects: Project[] = [
     category: "AI/ML",
     featured: true,
     date: "2025",
+    duration: "2 Months",
+    status: "Active",
+    complexity: "Advanced",
     metrics: [
       { label: "Search Index Speed", value: "<100ms" },
       { label: "Document Volume", value: "1000+" }
@@ -124,6 +136,9 @@ export const projects: Project[] = [
     category: "Data Analytics",
     featured: false,
     date: "2023",
+    duration: "5 Weeks",
+    status: "Completed",
+    complexity: "Moderate",
     metrics: [
       { label: "ATS Precision", value: "98%" },
       { label: "File Formats", value: "4" }
@@ -152,6 +167,9 @@ export const projects: Project[] = [
     category: "Web Development",
     featured: false,
     date: "2024",
+    duration: "8 Weeks",
+    status: "Completed",
+    complexity: "High",
     metrics: [
       { label: "API Latency", value: "<50ms" },
       { label: "System Uptime", value: "99.9%" }
@@ -167,5 +185,129 @@ export const projects: Project[] = [
       "Gained deep experience with TypeScript typing for complex relational data."
     ],
     outcome: "Delivered a highly performant web application with API response times under 50ms and a Lighthouse performance score of 98, providing a seamless user experience."
+  },
+  {
+    id: "modern-hr-admin-dashboard",
+    title: "Enterprise HR & Admin Dashboard",
+    shortDescription: "A full-stack, enterprise-grade admin portal featuring JWT authentication, real-time metrics, and an aesthetic dark-themed UI.",
+    description: "A comprehensive solution designed to handle internal operations, compliance records, and employee management. Engineered to be production-ready with a secure REST API backend and a responsive Angular frontend.",
+    tech: ["Angular", "Node.js", "Express", "Angular Material", "SCSS"],
+    github: "https://github.com/yashwanth-sri-sai/modern-hr-admin-dashboard",
+    demo: "https://modern-hr-admin-dashboard.vercel.app/auth/login",
+    image: "/projects/hr-dashboard.png",
+    category: "Web Development",
+    featured: true,
+    date: "2026",
+    duration: "2 Months",
+    status: "Completed",
+    complexity: "Advanced",
+    metrics: [
+      { label: "Architecture", value: "Micro-env" },
+      { label: "Security", value: "JWT Auth" }
+    ],
+    problemStatement: "Internal operations and employee management systems are often fragmented and lack modern, secure, and performant interfaces.",
+    solutionArchitecture: "Clean monorepo structure separating concerns into distinct environments. Best-practice JWT authentication with HttpOnly cookies, CORS protection, and strict rate-limiting. Frontend built with Angular 18+ and Signals for state management.",
+    challenges: [
+      "Designing a highly scalable micro-environment architecture.",
+      "Implementing robust JWT authentication with HttpOnly cookies and rate-limiting."
+    ],
+    learnings: [
+      "Mastered Angular 18+ Standalone Components and Signals.",
+      "Gained experience building secure, production-ready Node.js APIs."
+    ],
+    outcome: "Delivered a comprehensive, secure, and modern enterprise HR portal with a premium user experience."
+  },
+  {
+    id: "bitcoin-sentiment-performance",
+    title: "Bitcoin Sentiment Analysis",
+    shortDescription: "Investigates the relationship between Bitcoin market sentiment and the performance of cryptocurrency traders.",
+    description: "Analyzed historical trade data alongside the Bitcoin Fear & Greed Index to identify actionable patterns and profitable trading behaviors across various market regimes.",
+    tech: ["Python", "Jupyter", "Pandas", "Scipy", "Matplotlib"],
+    github: "https://github.com/yashwanth-sri-sai/bitcoin-sentiment-performance",
+    demo: null,
+    image: "/projects/bitcoin-analysis.png",
+    category: "Data Analytics",
+    featured: true,
+    date: "2026",
+    duration: "4 Weeks",
+    status: "Completed",
+    complexity: "Moderate",
+    metrics: [
+      { label: "Data Records", value: "211k+" },
+      { label: "Win Rate", value: "46.4%" }
+    ],
+    problemStatement: "Traders need empirical evidence to optimize their strategies based on prevailing market sentiment rather than relying on intuition.",
+    solutionArchitecture: "Modular software engineering approach with Python scripts for data processing, visualizations, and statistical testing (ANOVA, T-tests) to validate trading performance variations.",
+    challenges: [
+      "Processing and analyzing over 211,000 trade execution records efficiently.",
+      "Applying rigorous statistical testing to validate findings."
+    ],
+    learnings: [
+      "Improved statistical analysis skills using Scipy.",
+      "Learned to structure data analysis projects modularly for reproducibility."
+    ],
+    outcome: "Identified that the Extreme Greed classification provided the most favorable trading environment, yielding the highest average profit per trade and win rate."
+  },
+  {
+    id: "rest-api-backend",
+    title: "FastAPI GitHub Repo Tracker",
+    shortDescription: "A production-grade, async-first REST API service that integrates with the GitHub REST API to fetch and cache metadata.",
+    description: "Service allowing developers to track and monitor statistics for public GitHub repositories. Fetches metadata asynchronously from the GitHub API and stores it locally in PostgreSQL using SQLAlchemy.",
+    tech: ["Python", "FastAPI", "PostgreSQL", "SQLAlchemy", "Pydantic"],
+    github: "https://github.com/yashwanth-sri-sai/REST-API-backend",
+    demo: null,
+    image: "/projects/fastapi-backend.png",
+    category: "Web Development",
+    featured: false,
+    date: "2026",
+    duration: "3 Weeks",
+    status: "Completed",
+    complexity: "Advanced",
+    metrics: [
+      { label: "Architecture", value: "Async-First" },
+      { label: "Design", value: "Layered" }
+    ],
+    problemStatement: "Needed a robust way to fetch and cache upstream GitHub repository data while handling rate limiting, redirect handling, timeout boundaries, and network reliability.",
+    solutionArchitecture: "Clean, layered architecture (API Layer, Service Layer, Client Layer, Data Access Layer) promoting decoupling. Uses FastAPI for async capabilities, SQLAlchemy Async for non-blocking DB queries, and httpx for async HTTP requests.",
+    challenges: [
+      "Handling concurrent requests and database-level uniqueness constraints.",
+      "Structuring the project with a clean, decoupled layered architecture."
+    ],
+    learnings: [
+      "Mastered async Python programming with FastAPI and SQLAlchemy Async.",
+      "Gained experience with robust service-layer transaction management."
+    ],
+    outcome: "Built a resilient, production-ready backend service capable of reliably tracking GitHub repository statistics."
+  },
+  {
+    id: "salesforge",
+    title: "SalesForge Intelligence",
+    shortDescription: "An end-to-end sales intelligence platform transforming raw transactional data into actionable business insights.",
+    description: "Designed a clean star schema data model from raw OLTP data, running advanced SQL queries for KPI extraction, and building interactive Tableau dashboards for revenue and profit insights.",
+    tech: ["MySQL", "Tableau", "Python", "Pandas", "SQL"],
+    github: "https://github.com/yashwanth-sri-sai/SalesForge",
+    demo: null,
+    image: "/projects/salesforge-dashboard.png",
+    category: "Data Analytics",
+    featured: false,
+    date: "2026",
+    duration: "6 Weeks",
+    status: "Completed",
+    complexity: "Moderate",
+    metrics: [
+      { label: "Data Model", value: "Star Schema" },
+      { label: "Analysis", value: "SQL & EDA" }
+    ],
+    problemStatement: "Modern retail businesses generate enormous volumes of transaction data daily. Without structured analysis, identifying revenue trends and high-value segments is nearly impossible.",
+    solutionArchitecture: "Built a Star Schema optimized for analytical queries with a Fact Table (transactions) and Dimension Tables (customers, products, markets, date). Used MySQL for ETL/SQL analysis and Tableau for dashboard visualizations.",
+    challenges: [
+      "Transforming raw OLTP data into a clean analytical star schema.",
+      "Creating interactive and insightful dashboards that answer key business questions."
+    ],
+    learnings: [
+      "Deepened SQL skills for advanced analytical queries and KPI extraction.",
+      "Improved data visualization capabilities using Tableau."
+    ],
+    outcome: "Empowered sales teams to make data-driven decisions regarding revenue trends, customer segments, and market profitability."
   }
 ];

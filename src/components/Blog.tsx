@@ -70,10 +70,12 @@ export default function Blog() {
           >
             {activeCategory === "All" && (
               <motion.div
-                layoutId="activeCategory"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
                 className="absolute inset-0 bg-gradient-to-r from-violet-600 to-cyan-600 opacity-90"
                 style={{ borderRadius: 9999 }}
-                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                transition={{ duration: 0.2 }}
               />
             )}
             <span className="relative z-10">All Areas</span>
@@ -91,10 +93,12 @@ export default function Blog() {
             >
               {activeCategory === category && (
                 <motion.div
-                  layoutId="activeCategory"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute inset-0 bg-gradient-to-r from-violet-600 to-cyan-600 opacity-90"
                   style={{ borderRadius: 9999 }}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  transition={{ duration: 0.2 }}
                 />
               )}
               <span className="relative z-10">{category}</span>

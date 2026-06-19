@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const sections = ["hero", "about", "timeline", "projects", "skills", "certifications", "contact"];
+const sections = ["hero", "about", "timeline", "projects", "skills", "certifications", "blog", "contact"];
 
 export function useScrollSpy() {
   const [activeSection, setActiveSection] = useState<string>("hero");

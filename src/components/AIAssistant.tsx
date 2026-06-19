@@ -2,17 +2,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { 
   FiSend, 
   FiX, 
   FiNavigation, 
-  FiTerminal, 
   FiLayers, 
-  FiExternalLink,
-  FiChevronRight,
   FiCpu,
-  FiCheckCircle,
-  FiUser,
   FiAlertTriangle
 } from "react-icons/fi";
 import { RESUME_DATA } from "@/data/resumeContext";
@@ -64,11 +60,16 @@ export default function AIAssistant() {
   const handleScrollToSection = (sectionId: string) => {
     const targetElement = document.getElementById(sectionId);
     if (targetElement) {
+      if (window.lenis) {
+        // @ts-expect-error: lenis global type is incomplete
+        window.lenis.scrollTo(targetElement, { offset: 0 });
+      } else {
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
       // Add a brief glow highlight to the section
       targetElement.style.transition = "box-shadow 0.5s ease-in-out";
       targetElement.style.boxShadow = "0 0 50px rgba(96, 165, 250, 0.25)";
-      
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
       
       // Close the assistant on mobile to allow viewing
       if (window.innerWidth < 768) {
@@ -172,6 +173,42 @@ export default function AIAssistant() {
         sectionId: "projects"
       };
     }
+
+    // 8e. Enterprise HR Dashboard
+    if (q.includes("hr") || q.includes("dashboard") || q.includes("admin") || q.includes("enterprise") || q.includes("angular")) {
+      return {
+        content: "Yashwanth engineered an **Enterprise HR & Admin Dashboard** monorepo using **Angular 18+** with **Signals** for state management and a **Node.js/Express** backend, implementing secure JWT validation and micro-environments. I can scroll you to the **Projects** section to view details.",
+        projectId: "modern-hr-admin-dashboard",
+        sectionId: "projects"
+      };
+    }
+
+    // 8f. Bitcoin Sentiment Analysis
+    if (q.includes("bitcoin") || q.includes("sentiment") || q.includes("cryptocurrency") || q.includes("market") || q.includes("scipy")) {
+      return {
+        content: "Yashwanth conducted a statistical **Bitcoin Sentiment Analysis** using **Python**, **Pandas**, **SciPy**, and **Matplotlib** to evaluate correlations between Fear & Greed indices and trader profitability. I can scroll you to the **Projects** section to view details.",
+        projectId: "bitcoin-sentiment-performance",
+        sectionId: "projects"
+      };
+    }
+
+    // 8g. GitHub Repository Tracker REST API
+    if (q.includes("tracker") || q.includes("github repo") || q.includes("rest api") || q.includes("fastapi github") || q.includes("sqlalchemy")) {
+      return {
+        content: "Yashwanth developed a production-grade, async-first **FastAPI GitHub Repo Tracker** REST API featuring database connection pooling, async task fetching via **httpx**, SQLAlchemy caching, and robust rate-limit resilience. I can scroll you to the **Projects** section to view details.",
+        projectId: "rest-api-backend",
+        sectionId: "projects"
+      };
+    }
+
+    // 8h. SalesForge Intelligence
+    if (q.includes("salesforge") || q.includes("sales") || q.includes("tableau") || q.includes("star schema") || q.includes("etl")) {
+      return {
+        content: "Yashwanth designed the **SalesForge Intelligence** ETL pipeline and star-schema analytical model in **MySQL**, using Pandas for data extraction/transformation, and built interactive **Tableau** business intelligence dashboards. I can scroll you to the **Projects** section to view details.",
+        projectId: "salesforge",
+        sectionId: "projects"
+      };
+    }
     
     // 9. Skills
     if (q.includes("skill") || q.includes("tech") || q.includes("framework") || q.includes("programming") || q.includes("languages") || q.includes("databases") || q.includes("devops")) {
@@ -270,6 +307,7 @@ export default function AIAssistant() {
     if (!textToSend.trim()) return;
     
     // Add user message
+    // eslint-disable-next-line react-hooks/purity
     const userMsgId = `user-${Date.now()}`;
     const userMsg: Message = { id: userMsgId, role: "user", content: textToSend };
     setMessages(prev => [...prev, userMsg]);
@@ -278,6 +316,7 @@ export default function AIAssistant() {
     setStatusMessage("Processing Query...");
 
     // Create placeholder for assistant response
+    // eslint-disable-next-line react-hooks/purity
     const assistantMsgId = `assistant-${Date.now()}`;
     const assistantPlaceholder: Message = { 
       id: assistantMsgId, 
@@ -347,6 +386,10 @@ export default function AIAssistant() {
         else if (lowerReply.includes("phishing") || lowerReply.includes("website detection")) projectId = "phishing-detection";
         else if (lowerReply.includes("resume analyzer") || lowerReply.includes("ats")) projectId = "ai-resume-analyzer";
         else if (lowerReply.includes("task management") || lowerReply.includes("task manager") || lowerReply.includes("task-management")) projectId = "task-management-system";
+        else if (lowerReply.includes("hr") || lowerReply.includes("dashboard") || lowerReply.includes("admin")) projectId = "modern-hr-admin-dashboard";
+        else if (lowerReply.includes("bitcoin") || lowerReply.includes("sentiment")) projectId = "bitcoin-sentiment-performance";
+        else if (lowerReply.includes("tracker") || lowerReply.includes("github repo") || lowerReply.includes("rest api")) projectId = "rest-api-backend";
+        else if (lowerReply.includes("salesforge") || lowerReply.includes("sales")) projectId = "salesforge";
 
         typeMessage(reply, assistantMsgId, { projectId, sectionId }, "Neural Link Active");
       } else {
@@ -388,7 +431,7 @@ export default function AIAssistant() {
 
   // Mini project card inside chat
   const renderInlineProjectCard = (projectId: string) => {
-    let project = RESUME_DATA.projects.find(p => p.id === projectId);
+    const project = RESUME_DATA.projects.find(p => p.id === projectId);
     
     if (!project) return null;
 
@@ -427,6 +470,7 @@ export default function AIAssistant() {
       <div className="fixed bottom-6 right-6 z-[999] flex items-center justify-center">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle AI Assistant"
           className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(99,102,241,0.4)] focus:outline-none"
           style={{
             background: "radial-gradient(circle at 35% 35%, rgba(99, 102, 241, 0.8), rgba(59, 130, 246, 0.9))",
@@ -471,7 +515,10 @@ export default function AIAssistant() {
                 transition={{ duration: 0.2 }}
                 className="flex flex-col items-center"
               >
-                <img src="/lost-kd.jpg" alt="Lost KD" className="w-8 h-8 rounded-full border border-indigo-500/30 object-cover shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                <div className="relative shrink-0 mt-1">
+                <Image src="/lost-kd.jpg" alt="Lost KD" width={32} height={32} className="w-8 h-8 rounded-full border border-indigo-500/30 object-cover shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#030308] rounded-full"></div>
+                </div>
                 <span className="text-[8px] text-indigo-200 uppercase font-black tracking-wider mt-0.5">LOST KD</span>
               </motion.div>
             )}
@@ -487,18 +534,15 @@ export default function AIAssistant() {
             animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50, x: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 w-[92vw] sm:w-[400px] h-[550px] z-[998] flex flex-col rounded-3xl overflow-hidden glass-card shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-white/10"
-            style={{
-              background: "linear-gradient(160deg, rgba(8, 8, 14, 0.92) 0%, rgba(13, 13, 25, 0.96) 100%)",
-            }}
+            className="fixed bottom-24 right-6 w-[92vw] sm:w-[400px] h-[550px] z-[998] flex flex-col rounded-3xl overflow-hidden glass-primary"
           >
             {/* Header section with ambient glow background */}
             <div className="relative px-5 py-4 border-b border-white/5 flex items-center justify-between overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[80px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
               
               <div className="flex items-center gap-3 relative z-10">
-                <div className="w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shadow-[inset_0_0_10px_rgba(99,102,241,0.2)] overflow-hidden">
-                  <img src="/lost-kd.jpg" alt="Lost KD" className="w-full h-full object-cover" />
+                <div className="w-12 h-12 rounded-full border border-indigo-500/30 overflow-hidden shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+                  <Image src="/lost-kd.jpg" alt="Lost KD" width={48} height={48} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 className="text-sm font-black tracking-widest text-white flex items-center gap-1.5 uppercase">
@@ -516,6 +560,7 @@ export default function AIAssistant() {
 
               <button 
                 onClick={() => setIsOpen(false)}
+                aria-label="Close AI Assistant"
                 className="p-1.5 rounded-lg hover:bg-white/5 text-white/60 hover:text-white transition-all cursor-pointer"
               >
                 <FiX className="text-base" />
@@ -579,6 +624,7 @@ export default function AIAssistant() {
                       {m.role === "assistant" && m.sectionId && !m.projectId && (
                         <button
                           onClick={() => handleScrollToSection(m.sectionId!)}
+                          aria-label={`Navigate to ${m.sectionId}`}
                           className="self-start mt-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-300 text-[11px] font-medium flex items-center gap-1 transition-all"
                         >
                           <FiNavigation className="text-[9px]" /> Navigate to {m.sectionId.toUpperCase()}
@@ -618,6 +664,7 @@ export default function AIAssistant() {
                 <button
                   key={index}
                   onClick={() => handleSendMessage(s.query)}
+                  aria-label={`Suggestion: ${s.label}`}
                   className="px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-white/80 hover:text-white text-xs whitespace-nowrap cursor-pointer transition-all shrink-0"
                 >
                   {s.label}
@@ -643,6 +690,7 @@ export default function AIAssistant() {
               />
               <button
                 type="submit"
+                aria-label="Send Message"
                 className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/20 cursor-pointer disabled:opacity-50 transition-all"
                 disabled={isLoading || !inputValue.trim()}
               >
