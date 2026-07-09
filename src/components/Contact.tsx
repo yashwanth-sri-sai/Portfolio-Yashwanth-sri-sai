@@ -13,7 +13,8 @@ import {
   FiCpu, 
   FiLayers, 
   FiArrowUpRight, 
-  FiZap 
+  FiZap,
+  FiAward
 } from "react-icons/fi";
 import emailjs from "@emailjs/browser";
 
@@ -637,122 +638,114 @@ export default function Contact() {
           </motion.div>
 
           {/* Right Column: Interactive Connection Cards (2/5 Columns) */}
-          <div className="lg:col-span-2 flex flex-col gap-4 relative z-10">
+          {/* Right Column: Recruiter Experience Layer (2/5 Columns) */}
+          <div className="lg:col-span-2 flex flex-col gap-5 relative z-10">
             
-            {/* CTA availability callout banner (Section 4) */}
+            {/* 1. Availability Card */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="p-5 rounded-2xl border border-zinc-800/40 text-center relative overflow-hidden"
-              style={{
-                background: "rgba(168, 85, 247, 0.04)",
-                border: "1px solid rgba(168, 85, 247, 0.15)",
-                backdropFilter: "blur(20px)"
-              }}
+              transition={{ duration: 0.6 }}
             >
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-500" />
-              <p className="text-xs font-mono text-purple-400 font-bold uppercase tracking-wider mb-1">CONTRACT AVAILABILITY</p>
-              <p className="text-sm font-semibold text-zinc-200">
-                Open to <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">AI/ML engineering & Full-Stack SDE</span> opportunities.
-              </p>
+              <BorderGlow className="p-5 text-left" borderRadius={16} backgroundColor="#09090b" colors={["#3b82f6", "#1d4ed8"]}>
+                <div className="flex items-center gap-2 text-blue-400 text-xs font-mono tracking-wider uppercase mb-3 select-none">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Hiring Telemetry
+                </div>
+                <h4 className="text-base font-extrabold text-white mb-3">Availability Details</h4>
+                <ul className="space-y-2.5 text-xs text-zinc-400 font-sans">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 shrink-0">▪</span>
+                    <span><strong>Roles:</strong> Software Engineering, Backend Engineering, AI/ML Engineering</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 shrink-0">▪</span>
+                    <span><strong>Types:</strong> Internships (CY.2026) & Full-Time Careers</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 shrink-0">▪</span>
+                    <span><strong>Location:</strong> Remote / On-Site (Hybrid)</span>
+                  </li>
+                </ul>
+              </BorderGlow>
             </motion.div>
 
-            {/* Email Card */}
+            {/* 2. Premium Resume Summary Card */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <MagneticCard 
-                href="mailto:k.yashwanthsrisai09@gmail.com" 
-                id="social-link-email" 
-                color="#8b5cf6"
-              >
-                <div className="p-3 rounded-xl border border-purple-500/20 text-purple-400 bg-purple-500/10">
-                  <FiMail size={20} />
+              <BorderGlow className="p-5 text-left" borderRadius={16} backgroundColor="#09090b" colors={["#c084fc", "#60a5fa"]}>
+                <div className="flex items-center gap-2 text-purple-400 text-xs font-mono tracking-wider uppercase mb-3.5 select-none">
+                  <FiAward /> Credentials Preview
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider">Email Channels</p>
-                  <p className="text-sm font-bold text-zinc-100 truncate mt-0.5">k.yashwanthsrisai09@gmail.com</p>
+                <h4 className="text-base font-extrabold text-white mb-2">Yashwanth Sri Sai</h4>
+                <p className="text-[11px] text-zinc-500 font-mono mb-4">B.Tech Computer Science & Eng. (IIIT Kottayam)</p>
+                
+                <div className="space-y-3 mb-5 text-xs text-zinc-400 font-sans">
+                  <div>
+                    <span className="font-bold text-zinc-300 block mb-1">Core Capability:</span>
+                    <p className="leading-relaxed">Building secure LLM applications, custom RAG pipelines, and high-performance FastAPI backends.</p>
+                  </div>
+                  <div>
+                    <span className="font-bold text-zinc-300 block mb-1">Technical Stack:</span>
+                    <p className="leading-relaxed">Python, LangChain, Next.js, FAISS, PostgreSQL, AWS, Docker.</p>
+                  </div>
                 </div>
-                <FiArrowUpRight size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-              </MagneticCard>
+
+                <a 
+                  href="https://drive.google.com/file/d/1z9KBC7yT0dVYz2OHQpa44-e9SHqPTC1K/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary w-full text-center flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <FiDownload size={14} /> Download Resume PDF
+                </a>
+              </BorderGlow>
             </motion.div>
 
-            {/* LinkedIn Card */}
+            {/* 3. Direct Contact Socials Card */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <MagneticCard 
-                href="https://www.linkedin.com/in/yashwanth-srisai-7a1078252/" 
-                id="social-link-linkedin" 
-                color="#06b6d4"
-              >
-                <div className="p-3 rounded-xl border border-cyan-500/20 text-cyan-400 bg-cyan-500/10">
-                  <FiLinkedin size={20} />
+              <BorderGlow className="p-5 text-left" borderRadius={16} backgroundColor="#09090b" colors={["#34d399", "#06b6d4"]}>
+                <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono tracking-wider uppercase mb-3.5 select-none">
+                  <FiZap /> Contact Channels
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider">LinkedIn Network</p>
-                  <p className="text-sm font-bold text-zinc-100 truncate mt-0.5">in/yashwanth-srisai-7a1078252</p>
+                <div className="flex flex-col gap-2.5">
+                  <a
+                    href="mailto:k.yashwanthsrisai09@gmail.com"
+                    className="btn-secondary w-full text-center flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <FiMail size={14} /> Email Pre-filled Link
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/yashwanth-srisai-7a1078252/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary w-full text-center flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <FiLinkedin size={14} /> Connect on LinkedIn
+                  </a>
                 </div>
-                <FiArrowUpRight size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-              </MagneticCard>
-            </motion.div>
-
-            {/* GitHub Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <MagneticCard 
-                href="https://github.com/yashwanth-sri-sai" 
-                id="social-link-github" 
-                color="#e2e8f0"
-              >
-                <div className="p-3 rounded-xl border border-zinc-500/20 text-zinc-300 bg-zinc-500/10">
-                  <FiGithub size={20} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider">GitHub Portals</p>
-                  <p className="text-sm font-bold text-zinc-100 truncate mt-0.5">github.com/yashwanth-sri-sai</p>
-                </div>
-                <FiArrowUpRight size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-              </MagneticCard>
-            </motion.div>
-
-            {/* Resume Download Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <MagneticCard 
-                href="https://drive.google.com/file/d/1z9KBC7yT0dVYz2OHQpa44-e9SHqPTC1K/view?usp=sharing" 
-                id="social-link-resume" 
-                color="#3b82f6"
-              >
-                <div className="p-3 rounded-xl border border-blue-500/20 text-blue-400 bg-blue-500/10">
-                  <FiDownload size={20} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider">Curriculum Vitae</p>
-                  <p className="text-sm font-bold text-zinc-100 truncate mt-0.5">Download Yashwanth&apos;s Resume</p>
-                </div>
-                <FiArrowUpRight size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-              </MagneticCard>
+              </BorderGlow>
             </motion.div>
 
           </div>
 
+        </div>
+
+        {/* 4. Final Conversion CTA Banner */}
+        <div className="w-full text-center mt-16 pt-8 border-t border-zinc-900/60 z-10 relative">
+          <p className="text-zinc-400 text-[10px] font-mono tracking-widest uppercase mb-3 select-none">Hiring Terminal</p>
+          <p className="text-zinc-200 text-lg sm:text-xl font-bold max-w-2xl mx-auto leading-relaxed select-none">
+            &ldquo;I&apos;m excited to build intelligent software that solves real-world problems.&rdquo;
+          </p>
         </div>
 
       </div>

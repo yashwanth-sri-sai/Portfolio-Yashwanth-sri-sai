@@ -244,6 +244,20 @@ export default function Hero() {
           Building intelligent, high-performance systems with LLMs, RAG pipelines, and scalable backend APIs.
         </motion.p>
 
+        {/* Recruiter Quick Intel Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
+          className="flex flex-wrap justify-center gap-x-6 gap-y-2.5 max-w-xl text-xs font-mono text-zinc-500 mb-8 select-none pointer-events-auto"
+        >
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" /> AI Engineer</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-purple-400" /> Backend Developer</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> LLM Applications</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Production AI Systems</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-pink-400" /> Open to Internships & Full-Time</span>
+        </motion.div>
+
         {/* 4. CTA (View Projects & Recruiter cluster) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
