@@ -485,7 +485,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("name")}
                       onBlur={() => setFocusedField(null)}
                       placeholder="e.g. John Doe"
-                      className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
+                      className="w-full py-3 px-4 rounded-[var(--radius-sm)] text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: focusedField === "name" ? "1px solid #06b6d4" : "1px solid rgba(255,255,255,0.15)",
@@ -514,7 +514,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("email")}
                       onBlur={() => setFocusedField(null)}
                       placeholder="e.g. john@example.com"
-                      className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
+                      className="w-full py-3 px-4 rounded-[var(--radius-sm)] text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: focusedField === "email" ? "1px solid #06b6d4" : "1px solid rgba(255,255,255,0.15)",
@@ -543,7 +543,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("subject")}
                       onBlur={() => setFocusedField(null)}
                       placeholder="e.g. AI internship opportunity"
-                      className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
+                      className="w-full py-3 px-4 rounded-[var(--radius-sm)] text-sm outline-none transition-all duration-300 text-white font-medium placeholder:text-zinc-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: focusedField === "subject" ? "1px solid #06b6d4" : "1px solid rgba(255,255,255,0.15)",
@@ -572,7 +572,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("message")}
                       onBlur={() => setFocusedField(null)}
                       placeholder="Tell me about your project, idea or opportunity..."
-                      className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all duration-300 resize-none text-white font-medium placeholder:text-zinc-500"
+                      className="w-full py-3 px-4 rounded-[var(--radius-sm)] text-sm outline-none transition-all duration-300 resize-none text-white font-medium placeholder:text-zinc-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: focusedField === "message" ? "1px solid #06b6d4" : "1px solid rgba(255,255,255,0.15)",
@@ -591,7 +591,7 @@ export default function Contact() {
                   disabled={status === "sending"}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
-                  className="w-full py-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-500 disabled:opacity-60 relative overflow-hidden"
+                  className="w-full py-4 rounded-[var(--radius-sm)] font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-500 disabled:opacity-60 relative overflow-hidden"
                   style={{
                     background:
                       status === "sent"

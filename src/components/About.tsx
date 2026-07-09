@@ -136,7 +136,7 @@ export default function About() {
                 >
                   <BorderGlow
                     className="p-6 h-full flex flex-col justify-between"
-                    borderRadius={20}
+                    borderRadius={16}
                     backgroundColor="#07070a"
                     colors={[spec.color, `${spec.color}40`, "#ffffff10"]}
                   >

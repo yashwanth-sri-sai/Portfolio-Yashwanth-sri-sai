@@ -182,7 +182,7 @@ export default function Projects() {
                       href={activeProject.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5.5 py-2.5 rounded-full bg-cyan-500 text-black font-extrabold hover:bg-cyan-400 transition-all text-xs shadow-[0_0_15px_rgba(6,182,212,0.3)] cursor-pointer"
+                      className="btn-primary"
                     >
                       <FiExternalLink size={13} /> Live Demo
                     </a>
@@ -192,16 +192,16 @@ export default function Projects() {
                       href={activeProject.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5.5 py-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-white hover:border-zinc-700 hover:bg-zinc-800/80 transition-all text-xs font-bold cursor-pointer"
+                      className="btn-secondary"
                     >
                       <FiGithub size={13} /> GitHub Code
                     </a>
                   )}
                   <Link
                     href={`/projects/${activeProject.id}`}
-                    className="group inline-flex items-center gap-1.5 px-5.5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors text-xs font-bold"
+                    className="btn-secondary"
                   >
-                    Read Case Study <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    Read Case Study <FiArrowRight />
                   </Link>
                 </div>
               </motion.div>
@@ -413,7 +413,7 @@ export default function Projects() {
                         href={activeProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex justify-center items-center gap-2 px-6 py-4.5 rounded-2xl bg-cyan-500 text-black font-extrabold hover:bg-cyan-400 transition-colors shadow-lg cursor-pointer"
+                        className="btn-primary w-full"
                       >
                         <FiExternalLink /> Live Demo
                       </a>
@@ -423,14 +423,14 @@ export default function Projects() {
                         href={activeProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex justify-center items-center gap-2 px-6 py-4.5 rounded-2xl bg-zinc-900 border border-zinc-800 text-white font-bold hover:bg-zinc-800 transition-all cursor-pointer"
+                        className="btn-secondary w-full"
                       >
-                        <FiGithub size={18} /> GitHub Code
+                        <FiGithub size={14} /> GitHub Code
                       </a>
                     )}
                     <Link
                       href={`/projects/${activeProject.id}`}
-                      className="w-full flex justify-center items-center gap-2 px-6 py-4.5 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-colors"
+                      className="btn-secondary w-full"
                     >
                       Read Case Study <FiArrowRight />
                     </Link>

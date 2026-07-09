@@ -331,7 +331,7 @@ export default function Timeline() {
                 <BorderGlow
                   className="relative p-8"
                   innerClassName="flex flex-col justify-between w-full"
-                  borderRadius={22} backgroundColor="#09090b"
+                  borderRadius={16} backgroundColor="#09090b"
                   style={{ borderColor: vision.borderColor }}
                 >
                 <div 

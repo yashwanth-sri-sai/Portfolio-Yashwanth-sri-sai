@@ -278,7 +278,7 @@ export default function Certifications() {
                 <div className="pt-6">
                   <button
                     onClick={() => setSelectedCert(cert)}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 text-xs font-bold text-white transition-all duration-300 hover:bg-white/10 hover:border-cyan-500/30 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)] cursor-pointer"
+                    className="btn-secondary w-full"
                   >
                     View Certificate
                   </button>
@@ -350,7 +350,7 @@ export default function Certifications() {
                       href={selectedCert.verificationLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-black font-extrabold text-xs tracking-wide hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] cursor-pointer hover:-translate-y-0.5 active:translate-y-0 flex-shrink-0"
+                      className="btn-primary flex-shrink-0"
                     >
                       Verify Online <FiExternalLink size={14} />
                     </a>
