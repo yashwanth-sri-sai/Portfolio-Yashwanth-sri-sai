@@ -1,13 +1,27 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { certifications, Certification } from "@/data/certifications";
-import { FiExternalLink, FiX, FiCalendar, FiAward, FiCheckCircle, FiLock } from "react-icons/fi";
+import { FiExternalLink, FiX, FiCalendar, FiAward, FiCheckCircle, FiLock, FiFilter, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SectionHeading from "./SectionHeading";
+import BorderGlow from "./BorderGlow";
 
-// Custom Dynamic Certificate Renderer that layers high-fidelity metadata on top of the generated digital template.
-// This allows 100% vector-sharp texts, customizable color palettes via CSS filters, and responsive scaling.
+type FilterCategory = "All" | "AI" | "Backend" | "Cloud" | "Cybersecurity" | "Data Analytics" | "Professional Development";
+
+const FILTER_CATEGORIES: FilterCategory[] = [
+  "All",
+  "AI",
+  "Backend",
+  "Cloud",
+  "Cybersecurity",
+  "Data Analytics",
+  "Professional Development"
+];
+
+// Helper to determine featured items (top 6 highest quality certifications)
+const FEATURED_IDS = [7, 8, 2, 1, 3, 4];
+
 interface CertificateRendererProps {
   cert: Certification;
   size?: "small" | "large";
@@ -27,11 +41,11 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
       {/* Background Certificate Template with hue adjustment */}
       <img
         src={cert.image}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover opacity-60 transition-all duration-700"
+        alt={`${cert.title} Certificate Background Template`}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         style={{
-          filter: `hue-rotate(${cert.hueRotate}) saturate(1.1) brightness(0.8) contrast(1.15)`,
+          filter: `hue-rotate(${cert.hueRotate}) saturate(1.1) brightness(0.85) contrast(1.15)`,
         }}
       />
 
@@ -142,26 +156,28 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
     },
   },
 };
 
 // Certification card entrance variants
 const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
-      ease: [0.16, 1, 0.3, 1] as const, // Custom cubic-bezier (easeOutExpo) for high-end cinematic glide
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
     },
   },
 };
 
 export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
+  const [showAll, setShowAll] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Close modal on escape key press
@@ -174,7 +190,6 @@ export default function Certifications() {
     if (selectedCert) {
       window.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
-      // Auto-focus close button for screen reader convenience
       setTimeout(() => closeButtonRef.current?.focus(), 50);
     }
     return () => {
@@ -183,8 +198,31 @@ export default function Certifications() {
     };
   }, [selectedCert]);
 
+  // Route classifications
+  const matchesFilter = (cert: Certification, filter: FilterCategory) => {
+    if (filter === "All") return true;
+    if (filter === "AI") return cert.category === "AI/ML";
+    if (filter === "Cybersecurity") return cert.category === "Cybersecurity";
+    if (filter === "Data Analytics") return cert.category === "Data Analytics";
+    if (filter === "Professional Development") return cert.category === "Business Analytics" || cert.issuer === "HP Life";
+    if (filter === "Backend") return cert.skills.includes("Python") || cert.skills.includes("SQL") || cert.skills.includes("API Integration");
+    if (filter === "Cloud") return cert.skills.includes("Automation") || cert.skills.includes("API Integration");
+    return false;
+  };
+
+  // Filtered & Featured selections
+  const visibleCertifications = useMemo(() => {
+    let result = certifications.filter((cert) => matchesFilter(cert, activeFilter));
+    
+    // If showing featured and filter is "All", slice it to featured items only
+    if (!showAll && activeFilter === "All") {
+      result = result.filter((cert) => FEATURED_IDS.includes(cert.id));
+    }
+    return result;
+  }, [activeFilter, showAll]);
+
   return (
-    <section id="certifications" className="section-padding relative overflow-hidden bg-transparent">
+    <section id="certifications" className="section-padding relative overflow-hidden bg-[#030308] py-24">
       {/* Background Subtle Ambient Accents */}
       <div
         className="ambient-orb w-[500px] h-[500px] top-1/4 left-1/4 -translate-x-1/2 pointer-events-none"
@@ -198,9 +236,33 @@ export default function Certifications() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <SectionHeading
           title="Certification Vault"
-          subtitle="Cryptographically verified professional credentials and specialized simulations."
+          subtitle="Cryptographically verified professional credentials validating practical engineering skillsets."
           align="center"
         />
+
+        {/* Filter Chips Panel */}
+        <div className="flex flex-wrap justify-center gap-2.5 mt-10 mb-12 relative z-20">
+          <div className="flex items-center gap-2 mr-2 text-zinc-500 text-xs font-mono tracking-wider uppercase select-none">
+            <FiFilter className="text-cyan-400" /> Filter
+          </div>
+          {FILTER_CATEGORIES.map((category) => (
+            <button
+              key={category}
+              onClick={() => {
+                setActiveFilter(category);
+                // When selecting a specific filter area, reset showAll to avoid confusion
+                if (category !== "All") setShowAll(true);
+              }}
+              className={`px-4 py-2 rounded-full border text-xs font-mono font-medium tracking-wide transition-all duration-300 relative overflow-hidden cursor-pointer ${
+                activeFilter === category
+                  ? "bg-cyan-950/60 border-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                  : "glass-interactive text-white/50 hover:text-white border-white/5"
+              }`}
+            >
+              {category === "All" ? "Featured" : category}
+            </button>
+          ))}
+        </div>
 
         {/* Certificate Card Grid */}
         <motion.div
@@ -208,85 +270,110 @@ export default function Certifications() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
         >
-          {certifications.map((cert) => (
-            <motion.div
-              key={cert.id}
-              variants={cardVariants}
-              className="group relative flex flex-col h-full rounded-2xl border border-white/5 bg-[#0a0a0c]/40 backdrop-blur-xl transition-all duration-500 overflow-hidden hover:border-cyan-500/20 hover:shadow-[0_0_30px_rgba(6,182,212,0.08)] hover:-translate-y-2"
-            >
-              {/* Preview Compartment */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden p-3 pb-0">
-                <div
-                  className="relative w-full h-full overflow-hidden rounded-xl border border-white/10 bg-black/60"
-                  style={{
-                    clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%)",
-                  }}
-                >
-                  <div className="w-full h-full relative overflow-hidden transition-transform duration-700 ease-out group-hover:scale-[1.02]">
-                    {/* Rendered Certificate Canvas */}
-                    <CertificateRenderer cert={cert} size="small" />
-
-                    {/* Gradient Inner Shadow overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-40 pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Glass Verification Badge */}
-                <div className="absolute top-4.5 right-4.5 z-20">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border border-cyan-500/20 bg-black/75 backdrop-blur-md text-[9px] font-mono font-bold tracking-wider text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.15)]">
-                    VERIFIED ✓
-                  </span>
-                </div>
-              </div>
-
-              {/* Card Meta Content */}
-              <div className="flex flex-col flex-grow p-5 justify-between">
-                <div className="space-y-4">
-                  {/* Category & Year */}
-                  <div className="flex items-center justify-between text-[10px] font-mono text-white/40 tracking-wider">
-                    <span className="uppercase">{cert.category}</span>
-                    <span>CY.{cert.year}</span>
-                  </div>
-
-                  {/* Title & Issuer */}
-                  <div>
-                    <h3 className="text-base font-extrabold text-white leading-snug group-hover:text-cyan-400 transition-colors duration-300">
-                      {cert.title}
-                    </h3>
-                    <p className="text-xs font-semibold text-white/50 mt-1 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cert.color }} />
-                      {cert.issuer}
-                    </p>
-                  </div>
-
-                  {/* Glass Tech/Skill Tags */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {cert.skills.map((skill, sIdx) => (
-                      <span
-                        key={sIdx}
-                        className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/5 bg-white/[0.02] text-white/40 transition-colors duration-300 group-hover:text-white/60 group-hover:border-white/10"
-                      >
-                        [ {skill} ]
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Trigger */}
-                <div className="pt-6">
-                  <button
-                    onClick={() => setSelectedCert(cert)}
-                    className="btn-secondary w-full"
+          <AnimatePresence mode="popLayout">
+            {visibleCertifications.map((cert) => (
+              <motion.div
+                key={cert.id}
+                variants={cardVariants}
+                layout
+                className="group relative flex flex-col h-full rounded-2xl border border-white/5 bg-[#0a0a0c]/40 backdrop-blur-xl transition-all duration-500 overflow-hidden hover:border-cyan-500/20 hover:shadow-[0_0_30px_rgba(6,182,212,0.08)] hover:-translate-y-1.5 cursor-pointer"
+                onClick={() => setSelectedCert(cert)}
+              >
+                {/* Preview Compartment */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden p-3 pb-0 select-none">
+                  <div
+                    className="relative w-full h-full overflow-hidden rounded-xl border border-white/10 bg-black/60"
+                    style={{
+                      clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%)",
+                    }}
                   >
-                    View Certificate
-                  </button>
+                    <div className="w-full h-full relative overflow-hidden">
+                      <CertificateRenderer cert={cert} size="small" />
+                      {/* Gradient Inner Shadow overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-40 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Glass Verification Badge */}
+                  <div className="absolute top-4.5 right-4.5 z-20">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border border-cyan-500/20 bg-black/75 backdrop-blur-md text-[9px] font-mono font-bold tracking-wider text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.15)]">
+                      VERIFIED ✓
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Card Meta Content */}
+                <div className="flex flex-col flex-grow p-5 justify-between">
+                  <div className="space-y-4 text-left">
+                    {/* Category & Year */}
+                    <div className="flex items-center justify-between text-[10px] font-mono text-white/40 tracking-wider select-none">
+                      <span className="uppercase">{cert.category}</span>
+                      <span>CY.{cert.year}</span>
+                    </div>
+
+                    {/* Title & Issuer */}
+                    <div>
+                      <h3 className="text-sm sm:text-base font-extrabold text-white leading-snug group-hover:text-cyan-400 transition-colors duration-300 line-clamp-2">
+                        {cert.title}
+                      </h3>
+                      <p className="text-xs font-semibold text-white/50 mt-1 flex items-center gap-1.5 select-none">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cert.color }} />
+                        {cert.issuer}
+                      </p>
+                    </div>
+
+                    {/* Glass Tech/Skill Tags */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {cert.skills.slice(0, 4).map((skill, sIdx) => (
+                        <span
+                          key={sIdx}
+                          className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/5 bg-white/[0.02] text-white/40 transition-colors duration-300 group-hover:text-white/60 group-hover:border-white/10 select-none"
+                        >
+                          [ {skill} ]
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Action Trigger button */}
+                  <div className="pt-6">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCert(cert);
+                      }}
+                      className="btn-secondary w-full"
+                    >
+                      View Certificate
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
+
+        {/* View All / Toggle Button (Only visible on All filter category) */}
+        {activeFilter === "All" && (
+          <div className="mt-12 flex justify-center relative z-20">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="btn-secondary flex items-center gap-2 px-6 py-2.5"
+            >
+              {showAll ? (
+                <>
+                  Show Featured <FiChevronUp />
+                </>
+              ) : (
+                <>
+                  View All Certificates ({certifications.length}) <FiChevronDown />
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Vault Lightbox Modal */}
@@ -336,10 +423,10 @@ export default function Certifications() {
 
               {/* Meta details footer in the Modal */}
               <div className="p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-left">
                   <div>
-                    <h3 className="text-xl font-black text-white leading-tight">{selectedCert.title}</h3>
-                    <p className="text-sm font-semibold text-white/50 mt-1 flex items-center gap-1.5">
+                    <h3 className="text-lg sm:text-xl font-black text-white leading-tight">{selectedCert.title}</h3>
+                    <p className="text-xs sm:text-sm font-semibold text-white/50 mt-1 flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: selectedCert.color }} />
                       Issued by {selectedCert.issuer} — CY.{selectedCert.year}
                     </p>
@@ -357,7 +444,7 @@ export default function Certifications() {
                   )}
                 </div>
 
-                <div className="border-t border-white/5 pt-4">
+                <div className="border-t border-white/5 pt-4 text-left">
                   <h4 className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-2">Acquired Skillsets</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedCert.skills.map((skill, sIdx) => (

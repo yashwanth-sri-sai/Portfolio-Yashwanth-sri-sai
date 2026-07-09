@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Yashwanth Sri Sai — AI/LLM Engineer & Backend Developer",
@@ -53,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} overflow-x-clip max-w-full`} suppressHydrationWarning>
+    <html lang="en" className="overflow-x-clip max-w-full font-sans" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
