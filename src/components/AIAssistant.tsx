@@ -9,7 +9,9 @@ import {
   FiNavigation, 
   FiLayers, 
   FiCpu,
-  FiAlertTriangle
+  FiAlertTriangle,
+  FiBriefcase,
+  FiAward
 } from "react-icons/fi";
 import { RESUME_DATA } from "@/data/resumeContext";
 
@@ -23,12 +25,16 @@ interface Message {
   isStreaming?: boolean;
 }
 
-// Suggestion Chips
+// Suggestion Chips aligned with portfolio guide
 const SUGGESTIONS = [
-  { label: "🚀 Agentic AI Project", query: "Tell me about the Agentic AI Chat Assistant" },
-  { label: "🛡️ Phishing ML Shield", query: "Tell me about the Phishing Website Detection System" },
-  { label: "📊 Skills Breakdown", query: "What are your core technical skills?" },
-  { label: "✉️ Contact Info", query: "How can I contact Yashwanth?" }
+  { label: "🤖 Best AI Project", query: "Show best AI project" },
+  { label: "💡 Explain NoteAI", query: "Explain NoteAI" },
+  { label: "⚙️ Backend Stack", query: "Backend experience" },
+  { label: "🧠 AI Projects", query: "AI projects" },
+  { label: "📄 Resume Summary", query: "Resume summary" },
+  { label: "🔒 Certifications", query: "Certifications" },
+  { label: "💼 Mock Interview", query: "Start mock interview" },
+  { label: "✉️ Contact Info", query: "Contact" }
 ];
 
 export default function AIAssistant() {
@@ -37,7 +43,7 @@ export default function AIAssistant() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Greetings. I am **Lost KD**, Yashwanth's AI guide. Ask me about his projects, professional experience, or technical skills, and I can navigate the page for you. How can I help you today?",
+      content: "Greetings. I am **Lost KD**, K. Yashwanth Sri Sai's AI Portfolio Guide. Ask me about his projects, architecture, certifications, or technical stack. I can also evaluate your skills in **Mock Interview Mode**! How can I help you today?",
     }
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -45,6 +51,7 @@ export default function AIAssistant() {
   const [statusMessage, setStatusMessage] = useState("System Ready");
   const [isLocalMode, setIsLocalMode] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [interviewStep, setInterviewStep] = useState<number>(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -62,14 +69,14 @@ export default function AIAssistant() {
     if (targetElement) {
       if (window.lenis) {
         // @ts-expect-error: lenis global type is incomplete
-        window.lenis.scrollTo(targetElement, { offset: 0 });
+        window.lenis.scrollTo(targetElement, { offset: -50 });
       } else {
         targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       // Add a brief glow highlight to the section
       targetElement.style.transition = "box-shadow 0.5s ease-in-out";
-      targetElement.style.boxShadow = "0 0 50px rgba(96, 165, 250, 0.25)";
+      targetElement.style.boxShadow = "0 0 50px rgba(6, 182, 212, 0.25)";
       
       // Close the assistant on mobile to allow viewing
       if (window.innerWidth < 768) {
@@ -86,173 +93,128 @@ export default function AIAssistant() {
   const getLocalResponse = (query: string): { content: string; projectId?: string; sectionId?: string } => {
     const q = query.toLowerCase().trim();
     
-    // 1. Quota / API Errors / Not behaving like chatbot / Same answer
-    if (q.includes("quota") || q.includes("api") || q.includes("key") || q.includes("offline") || q.includes("error") || q.includes("same answer") || q.includes("behaving") || q.includes("openai") || q.includes("gemini") || q.includes("working")) {
+    // 1. Diagnostics / Quota fallback
+    if (q.includes("quota") || q.includes("api") || q.includes("key") || q.includes("offline") || q.includes("error")) {
       return {
-        content: "⚠️ **Offline Mode Active**: I am running in local pre-programmed mode because the cloud AI API key is offline or has exceeded its usage quota (HTTP 429).\n\nTo restore full AI conversational capability, you can create a free **GEMINI_API_KEY** on Google AI Studio and place it in the `.env.local` file, then restart the dev server! In the meantime, I can answer questions about Yashwanth's projects, experience, skills, or scroll you to any section of the page."
+        content: "⚠️ **Offline Mode Active**: I am running in local pre-programmed mode because the cloud AI API key is offline or has exceeded its usage quota (HTTP 429).\n\nTo restore full AI conversational capability, you can create a free **GEMINI_API_KEY** on Google AI Studio and place it in the `.env.local` file! In the meantime, I can answer questions about Yashwanth's projects, experience, skills, or scroll you to any section of the page."
       };
     }
 
     // 2. Greetings
     if (q === "hi" || q === "hello" || q === "hey" || q === "greetings" || q.startsWith("hello ") || q.startsWith("hi ")) {
       return {
-        content: "Greetings! I am **Lost KD**, Yashwanth's AI guide. I'm currently running in **Local Offline Mode** (API quota exceeded). I can still navigate the page and tell you about his work. Try asking about **'projects'**, **'resume analyzer'**, **'task manager'**, **'sports lead'**, or **'skills'**!"
+        content: "Greetings! I am **Lost KD**, K. Yashwanth's AI guide. I'm currently running in **Local Offline Mode** (API quota exceeded). I can still navigate the page and tell you about his work. Try asking about **'projects'**, **'resume summary'**, or type **'start mock interview'**!"
       };
     }
 
     // 3. Conversational / Help / Commands
-    if (q.includes("help") || q.includes("who are you") || q.includes("what can you do") || q.includes("commands") || q === "what") {
+    if (q.includes("help") || q.includes("who are you") || q.includes("what can you do") || q.includes("commands")) {
       return {
-        content: "I am **Lost KD**, K. Yashwanth Sri Sai's AI Assistant. Currently in **Offline Mode** (quota exceeded).\n\nHere are commands I recognize:\n- **Projects**: 'agentic ai', 'pdf chatbot', 'phishing detection', 'resume analyzer', 'task manager'\n- **Leadership**: 'sports', 'design', 'social media'\n- **Skills / Certificates**: 'skills', 'certifications', 'deloitte', 'tata'\n- **Milestones**: 'growth milestones', '2022', '2024', '2025', '2026'\n- **Navigation**: 'scroll to contact', 'scroll to projects', etc."
+        content: "I am **Lost KD**, K. Yashwanth Sri Sai's AI Assistant. Currently in **Offline Mode** (quota exceeded).\n\nHere are commands I recognize:\n- **Overview**: 'projects', 'skills', 'certifications', 'resume summary', 'contact'\n- **Specific Projects**: 'explain noteai', 'agentic ai', 'pdf chatbot', 'phishing detection'\n- **Recruiter**: 'why hire', 'strongest skills', 'best SDE project'\n- **Interaction**: 'start mock interview' for interactive developer testing!"
       };
     }
 
-    // 4. Growth Milestones / Year-specific queries
-    if (q.includes("milestone") || q.includes("growth") || q.includes("2022") || q.includes("2023") || q.includes("2024") || q.includes("2025") || q.includes("2026")) {
-      let yearText = "starting from **2022** when he began his engineering degree.";
-      if (q.includes("2022")) yearText = "specifically highlighting **2022** when he started his engineering journey.";
-      if (q.includes("2024")) yearText = "specifically highlighting **2024** (his Sports Design & Media Leadership).";
-      if (q.includes("2025")) yearText = "specifically highlighting **2025** (the Phishing Website Detection System and AI agent architectures).";
-      if (q.includes("2026")) yearText = "specifically highlighting **2026** (graduation and futuristic engineering solutions).";
-      
+    // 4. Best AI Project / AI projects
+    if (q.includes("best ai") || (q.includes("ai project") && !q.includes("explain"))) {
       return {
-        content: `Yashwanth's **Growth Milestones** trace his engineering and development timeline ${yearText} I can scroll you to the **Growth Milestones / Timeline** section to view it interactively!`,
-        sectionId: "timeline"
-      };
-    }
-
-    // 5. Agentic AI Project
-    if (q.includes("agentic") || q.includes("crew") || q.includes("decision") || q.includes("reasoning")) {
-      return {
-        content: "Yashwanth developed a state-of-the-art **Agentic AI Chat Assistant** utilizing **Python**, **LangChain**, **FAISS**, and **CrewAI** for autonomous task delegation and reasoning. I can scroll you to the **Projects** section to view this project in detail.",
-        projectId: "agentic-ai",
-        sectionId: "projects"
-      };
-    }
-    
-    // 6. PDF Chatbot
-    if (q.includes("pdf") || q.includes("chatbot") || q.includes("rag") || q.includes("generative")) {
-      return {
-        content: "He built a **Generative AI Multi-PDF Chatbot** that serves as a scalable RAG pipeline, allowing users to query multiple complex PDFs concurrently. It employs **FAISS** vector search and integrates **Gemini/GPT** APIs. I can scroll you to the **Projects** section to explore it.",
-        projectId: "pdf-chatbot",
-        sectionId: "projects"
-      };
-    }
-    
-    // 8. Sports Design Leadership
-    if (q.includes("sports") || q.includes("design") || q.includes("lead") || q.includes("media") || q.includes("branding")) {
-      return {
-        content: "Yashwanth served as the Sports Design and Social Media Lead at IIIT Kottayam (Sep 2024 - Sep 2025). He led digital branding, social media layouts, and graphic assets for sports events, coordinating media schedules and managing collaborative visual teams. I can scroll you to the **Timeline** section.",
-        sectionId: "timeline"
-      };
-    }
-
-    // 8b. Phishing Detection Project
-    if (q.includes("phishing") || q.includes("domain") || q.includes("url") || q.includes("xgboost") || q.includes("random forest")) {
-      return {
-        content: "Yashwanth engineered a Phishing Website Detection System utilizing Python, Scikit-learn, Flask, Pandas, XGBoost, and Random Forest classification models to identify malicious URLs and domains. I can scroll you to the **Projects** section to show you details.",
-        projectId: "phishing-detection",
+        content: "Yashwanth's best AI project is **NoteAI (AI-Powered Smart Note Taking SaaS)**. It leverages **FastAPI**, **Next.js**, **PostgreSQL**, and **Gemini AI** to transcribe voice notes, summarize meeting logs, and run high-performance similarity search lookups. I will scroll you to the Projects section to check it out.",
+        projectId: "noteai",
         sectionId: "projects"
       };
     }
 
-    // 8c. AI Resume Analyzer Project
-    if (q.includes("resume") || q.includes("analyzer") || q.includes("ats") || q.includes("parsing") || q.includes("streamlit")) {
+    // 5. Explain NoteAI
+    if (q.includes("explain noteai") || q.includes("noteai architecture")) {
+      // Dispatches open arch view event
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("open-project-architecture", { detail: { projectId: "noteai" } }));
+      }
       return {
-        content: "Yashwanth created an **AI Resume Analyzer**, a production-grade ATS evaluation tool that extracts data from PDF/DOCX/TXT files, utilizes LLMs to calculate match percentages against job descriptions, and identifies keyword gaps with Streamlit. I can scroll you to the **Projects** section to view details.",
-        projectId: "ai-resume-analyzer",
+        content: "I've automatically opened the **Interactive Architecture Explorer** for **NoteAI**! \n\nHere is how the NoteAI ecosystem operates:\n1. **Next.js Client** handles voice memo capturing and Markdown editing.\n2. **FastAPI Gateway** validates JSON payloads asynchronously.\n3. **Auth Service** validates session JWT tokens stored in HttpOnly cookies.\n4. **PostgreSQL** handles CRUD operations on user notes.\n5. **FAISS Vector Engine** runs context similarity lookups.\n6. **Gemini AI** transcribes and summarizes raw audio files.",
+        projectId: "noteai",
         sectionId: "projects"
       };
     }
 
-    // 8d. Task Management System Project
-    if (q.includes("task") || q.includes("manager") || q.includes("prisma") || q.includes("postgresql") || q.includes("next.js") || q.includes("typescript")) {
+    // 6. Where FastAPI used
+    if (q.includes("where has he used fastapi") || q.includes("used fastapi") || q.includes("fastapi")) {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("highlight-skill-node", { detail: { skillId: "fastapi" } }));
+      }
       return {
-        content: "Yashwanth built a full-stack **Task Management System** using Next.js 14 App Router, TypeScript, Tailwind CSS, Prisma ORM, and PostgreSQL. It features secure JWT authentication, optimistic UI updates, and collaborative workspaces. I can scroll you to the **Projects** section to explore it.",
-        projectId: "task-management-system",
-        sectionId: "projects"
-      };
-    }
-
-    // 8e. Enterprise HR Dashboard
-    if (q.includes("hr") || q.includes("dashboard") || q.includes("admin") || q.includes("enterprise") || q.includes("angular")) {
-      return {
-        content: "Yashwanth engineered an **Enterprise HR & Admin Dashboard** monorepo using **Angular 18+** with **Signals** for state management and a **Node.js/Express** backend, implementing secure JWT validation and micro-environments. I can scroll you to the **Projects** section to view details.",
-        projectId: "modern-hr-admin-dashboard",
-        sectionId: "projects"
-      };
-    }
-
-    // 8f. Bitcoin Sentiment Analysis
-    if (q.includes("bitcoin") || q.includes("sentiment") || q.includes("cryptocurrency") || q.includes("market") || q.includes("scipy")) {
-      return {
-        content: "Yashwanth conducted a statistical **Bitcoin Sentiment Analysis** using **Python**, **Pandas**, **SciPy**, and **Matplotlib** to evaluate correlations between Fear & Greed indices and trader profitability. I can scroll you to the **Projects** section to view details.",
-        projectId: "bitcoin-sentiment-performance",
-        sectionId: "projects"
-      };
-    }
-
-    // 8g. GitHub Repository Tracker REST API
-    if (q.includes("tracker") || q.includes("github repo") || q.includes("rest api") || q.includes("fastapi github") || q.includes("sqlalchemy")) {
-      return {
-        content: "Yashwanth developed a production-grade, async-first **FastAPI GitHub Repo Tracker** REST API featuring database connection pooling, async task fetching via **httpx**, SQLAlchemy caching, and robust rate-limit resilience. I can scroll you to the **Projects** section to view details.",
-        projectId: "rest-api-backend",
-        sectionId: "projects"
-      };
-    }
-
-    // 8h. SalesForge Intelligence
-    if (q.includes("salesforge") || q.includes("sales") || q.includes("tableau") || q.includes("star schema") || q.includes("etl")) {
-      return {
-        content: "Yashwanth designed the **SalesForge Intelligence** ETL pipeline and star-schema analytical model in **MySQL**, using Pandas for data extraction/transformation, and built interactive **Tableau** business intelligence dashboards. I can scroll you to the **Projects** section to view details.",
-        projectId: "salesforge",
-        sectionId: "projects"
-      };
-    }
-    
-    // 9. Skills
-    if (q.includes("skill") || q.includes("tech") || q.includes("framework") || q.includes("programming") || q.includes("languages") || q.includes("databases") || q.includes("devops")) {
-      return {
-        content: "Yashwanth is highly skilled in **Python**, **LangChain**, **CrewAI**, **FAISS**, **Scikit-learn**, **XGBoost**, **FastAPI**, **React**, and **SQL/NoSQL**. I can scroll you to the interactive **Skills** breakdown section on the page.",
+        content: "I've highlighted **FastAPI** on the **Engineering Knowledge Graph**! \n\nYashwanth applied FastAPI to:\n1. **NoteAI**: Asynchronous REST endpoints for note transcribing and folder operations.\n2. **Agentic AI Chatbot**: Backend APIs handling agent workflows and data collection.\n3. **GitHub Repo Tracker**: Caching metadata to local PostgreSQL connection pools.",
         sectionId: "skills"
       };
     }
-    
-    // 10. Education
-    if (q.includes("education") || q.includes("iiit") || q.includes("kottayam") || q.includes("college") || q.includes("btech") || q.includes("study") || q.includes("degree")) {
+
+    // 7. Backend experience
+    if (q.includes("backend") || q.includes("sde")) {
       return {
-        content: "Yashwanth is pursuing a B.Tech in **Computer Science Engineering (Cyber Security)** at the **Indian Institute of Information Technology Kottayam** (2022 - Present), combining deep computer science fundamentals with advanced threat modeling and security principles.",
-        sectionId: "about"
+        content: "Yashwanth has strong backend experience in **Python**, **FastAPI**, **PostgreSQL**, and async APIs. He built the **GitHub Repo Tracker** to cache stats using SQLAlchemy, and FastAPI pipelines for **NoteAI** and **Agentic AI**. I will scroll you to the Skills map.",
+        sectionId: "skills"
       };
     }
-    
-    // 11. Contact
-    if (q.includes("contact") || q.includes("email") || q.includes("phone") || q.includes("reach") || q.includes("hire") || q.includes("linkedin") || q.includes("github")) {
+
+    // 8. AI Projects list
+    if (q.includes("ai projects") || q.includes("machine learning")) {
       return {
-        content: "You can reach Yashwanth at **k.yashwanthsrisai09@gmail.com** or call **+91 9703545822**. You can also explore his profiles on GitHub and LinkedIn. Let me scroll you to the **Contact** form at the bottom of the page.",
-        sectionId: "contact"
+        content: "Yashwanth has developed multiple advanced AI/ML systems: **NoteAI** (smart audio notes), **Agentic AI Chatbot** (LangChain router, FAISS), **Generative AI Multi-PDF Chatbot** (RAG, Streamlit), and **Phishing website classifier** (XGBoost). I will scroll you to the Projects list.",
+        sectionId: "projects"
       };
     }
-    
+
+    // 9. Recruiter Mode: Why hire
+    if (q.includes("why should i hire you") || q.includes("why hire") || q.includes("hire yashwanth")) {
+      return {
+        content: "You should hire Yashwanth because he bridges the gap between **AI engineering** (RAG pipelines, LangChain router agents) and **robust backend architecture** (async FastAPI services, transactional PostgreSQL, secure HttpOnly cookie auth). He holds B.Tech specialization in Cyber Security, meaning all his apps are built with security first-principles."
+      };
+    }
+
+    // 10. Recruiter Mode: Strongest skills
+    if (q.includes("strongest skills") || q.includes("core skills") || q.includes("expertise")) {
+      return {
+        content: "His strongest engineering domains are **AI Engineering** (LangChain, FAISS, LLM prompts tuning), **Backend Engineering** (FastAPI, Python, PostgreSQL, System Design), and **Security** (secure API routing, CORS validations, threat mitigation).",
+        sectionId: "skills"
+      };
+    }
+
+    // 11. Resume Mode: Summaries
+    if (q.includes("resume summary") || q.includes("summary")) {
+      if (q.includes("30") || q.includes("thirty")) {
+        return {
+          content: "**30-Second Summary**: K. Yashwanth Sri Sai is a Computer Science undergraduate at IIIT Kottayam specializing in AI/LLM systems and Backend engineering. He builds secure RAG pipelines (FAISS, LangChain) and async API services (FastAPI, Python, PostgreSQL)."
+        };
+      }
+      if (q.includes("detailed") || q.includes("long")) {
+        return {
+          content: "**Detailed Summary**: K. Yashwanth Sri Sai combines advanced AI development (LLMs prompts, vector searches, agentic routers) with secure backend system design. Pursuing B.Tech CSE (Cyber Security) at IIIT Kottayam, his portfolio showcases NoteAI SaaS, LangChain-based institutional agents, and XGBoost URL features classifiers. He specializes in designing low-latency, scalable APIs using FastAPI, PostgreSQL, AWS, and Docker."
+        };
+      }
+      // default 1-minute
+      return {
+        content: "**1-Minute Summary**: K. Yashwanth Sri Sai is an AI & Backend Engineer pursuing a B.Tech in CSE (Cyber Security) at IIIT Kottayam. He has built NoteAI (a smart note-taking SaaS), Agentic AI chatbots with LangChain, and machine learning phishing URL classifiers. He is proficient in Python, FastAPI, Next.js, and SQL, and is open to Internships and Full-Time roles."
+      };
+    }
+
     // 12. Certifications
-    if (q.includes("certif") || q.includes("deloitte") || q.includes("tata") || q.includes("license")) {
+    if (q.includes("certif") || q.includes("deloitte") || q.includes("tata") || q.includes("credential")) {
       return {
-        content: "Yashwanth holds certifications in **Data Analytics** (Deloitte), **Cybersecurity Analyst** (Tata), **Data Visualisation** (Tata), **Business Analytics** (Microsoft), and **Google Analytics**. I can scroll you to the **Certifications** section.",
+        content: "Yashwanth holds verified credentials including: **Data Analytics** (Deloitte), **Cybersecurity Analyst** (Tata), **Data Visualisation** (Tata), and **Business Analytics** (Microsoft). I will scroll you to the Certification Vault.",
         sectionId: "certifications"
       };
     }
-    
-    // 13. About / General
-    if (q.includes("about") || q.includes("who is") || q.includes("yashwanth") || q.includes("profile")) {
+
+    // 13. Contact
+    if (q.includes("contact") || q.includes("email") || q.includes("phone") || q.includes("linkedin")) {
       return {
-        content: "Yashwanth Sri Sai is an **AI/LLM Engineer** with strong foundations in Python, RAG systems, NLP, and backend engineering. He has developed several multi-agent systems and worked in web experience architecture.",
-        sectionId: "about"
+        content: "You can reach Yashwanth at **k.yashwanthsrisai09@gmail.com** or call **+91 9703545822**. Let me scroll you to the hiring form.",
+        sectionId: "contact"
       };
     }
-    
-    // Default fallback error message (extremely descriptive instead of generic intro)
+
+    // Default fallback
     return {
-      content: "I am running in **Local Heuristics Mode** (API quota exceeded). I didn't quite match your phrase, but you can explore my pre-programmed knowledge about Yashwanth.\n\nTry asking me about:\n- Yashwanth's **'Agentic AI'**, **'PDF Chatbot'**, **'Phishing ML Shield'**, **'Resume Analyzer'**, or **'Task Manager'** projects\n- His **'Sports Leadership'** role\n- His **'skills'** or **'growth milestones'**\n- Or type **'help'** for a full list of offline commands!"
+      content: "I am running in **Local Heuristics Mode** (API quota exceeded). I didn't quite match your phrase, but you can explore my pre-programmed knowledge about Yashwanth.\n\nTry asking me about:\n- **'Explain NoteAI'** to launch the Architecture Explorer\n- **'Where have you used FastAPI?'** to highlight the Skills Graph\n- **'Why should I hire you?'** or **'Strongest skills'**\n- **'Start mock interview'** to test developer knowledge!"
     };
   };
 
@@ -261,9 +223,9 @@ export default function AIAssistant() {
     const lowerText = text.toLowerCase();
     if (lowerText.includes("projects section") || lowerText.includes("projects view") || lowerText.includes("#projects")) return "projects";
     if (lowerText.includes("timeline section") || lowerText.includes("timeline view") || lowerText.includes("#timeline")) return "timeline";
-    if (lowerText.includes("experience section") || lowerText.includes("work experience") || lowerText.includes("#experience")) return "experience";
-    if (lowerText.includes("skills section") || lowerText.includes("skills breakdown") || lowerText.includes("#skills")) return "skills";
-    if (lowerText.includes("contact section") || lowerText.includes("contact form") || lowerText.includes("#contact")) return "contact";
+    if (lowerText.includes("experience section") || lowerText.includes("#experience")) return "experience";
+    if (lowerText.includes("skills section") || lowerText.includes("#skills")) return "skills";
+    if (lowerText.includes("contact section") || lowerText.includes("#contact")) return "contact";
     if (lowerText.includes("certifications section") || lowerText.includes("#certifications")) return "certifications";
     if (lowerText.includes("about section") || lowerText.includes("#about")) return "about";
     return undefined;
@@ -298,6 +260,12 @@ export default function AIAssistant() {
             ? { ...m, content: text, isStreaming: false, ...extraData } 
             : m
         ));
+        
+        // Auto scroll to section if matched
+        if (extraData.sectionId) {
+          handleScrollToSection(extraData.sectionId);
+        }
+
         setStatusMessage(finalStatus || (isLocalMode ? "Local Core Node Active" : "Neural Link Active"));
       }
     }, 45); // Speed multiplier per word
@@ -307,7 +275,6 @@ export default function AIAssistant() {
     if (!textToSend.trim()) return;
     
     // Add user message
-    // eslint-disable-next-line react-hooks/purity
     const userMsgId = `user-${Date.now()}`;
     const userMsg: Message = { id: userMsgId, role: "user", content: textToSend };
     setMessages(prev => [...prev, userMsg]);
@@ -316,7 +283,6 @@ export default function AIAssistant() {
     setStatusMessage("Processing Query...");
 
     // Create placeholder for assistant response
-    // eslint-disable-next-line react-hooks/purity
     const assistantMsgId = `assistant-${Date.now()}`;
     const assistantPlaceholder: Message = { 
       id: assistantMsgId, 
@@ -324,8 +290,51 @@ export default function AIAssistant() {
       content: "", 
       isStreaming: true 
     };
-    
     setMessages(prev => [...prev, assistantPlaceholder]);
+
+    const q = textToSend.toLowerCase().trim();
+
+    // ─── INTERVIEW MODE ROUTING ───
+    if (q.includes("interview") || q.includes("mock") || q.includes("start mock")) {
+      setInterviewStep(1);
+      setIsLoading(false);
+      const startMsg = "Let's begin the mock interview! I will evaluate your knowledge in Python, FastAPI, React, RAG, LLMs, and System Design. \n\n**Question 1**: What is the main benefit of FastAPI's async/await structure compared to standard WSGI frameworks like Flask?";
+      typeMessage(startMsg, assistantMsgId, {}, "Mock Interview Active");
+      return;
+    }
+
+    if (interviewStep > 0) {
+      setIsLoading(false);
+      let replyText = "";
+      let nextStep = interviewStep + 1;
+      
+      if (interviewStep === 1) {
+        replyText = "Good response! FastAPI is built on ASGI (Asynchronous Server Gateway Interface), which natively handles concurrent requests asynchronously using Python's async/await. Flask is classically a WSGI framework which blocks execution threads unless configured with multi-worker threads.\n\n**Question 2**: What is the purpose of 'token overlap' when chunking documents in a Retrieval-Augmented Generation (RAG) pipeline?";
+      } else if (interviewStep === 2) {
+        replyText = "Spot on! Token overlap preserves semantic context boundaries. Without overlap, a critical sentence split in half across two chunks might lose its context, leading to poor embeddings and similarity search failure.\n\n**Question 3**: How does React's virtual DOM reconciliation optimize render performance?";
+      } else if (interviewStep === 3) {
+        replyText = "Excellent. React constructs a Virtual DOM tree in memory, diffs it with the previous snapshot, and applies only the minimum necessary changes (patches) to the real browser DOM, saving expensive DOM paint operations.\n\n**Question 4**: In system design, what security measures defend against prompt injection attacks on LLM API endpoints?";
+      } else {
+        replyText = "Precisely! Validating input schemas, implementing strict system instructions boundaries, utilizing prompt defenses models, and parsing output outputs as structured JSON are key security practices. \n\n**Mock Interview Completed!** You demonstrated strong proficiency in async APIs, semantic chunking strategy, rendering performance, and secure prompt sanitization. You are highly aligned with Yashwanth's engineering standards!";
+        nextStep = 0; // reset
+      }
+      
+      setInterviewStep(nextStep);
+      typeMessage(replyText, assistantMsgId, {}, nextStep > 0 ? "Mock Interview Active" : "System Ready");
+      return;
+    }
+
+    // ─── DYNAMIC NAVIGATION EVENTS TRIGGER ───
+    if (q.includes("explain noteai") || q.includes("noteai architecture")) {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("open-project-architecture", { detail: { projectId: "noteai" } }));
+      }
+    }
+    if (q.includes("where has he used fastapi") || q.includes("used fastapi") || q.includes("fastapi")) {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("highlight-skill-node", { detail: { skillId: "fastapi" } }));
+      }
+    }
 
     try {
       // Send API request
@@ -456,7 +465,7 @@ export default function AIAssistant() {
         </div>
         <button
           onClick={() => handleScrollToSection(project.sectionId || "projects")}
-          className="w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs flex items-center justify-center gap-1 transition-all"
+          className="w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs flex items-center justify-center gap-1 transition-all cursor-pointer"
         >
           <FiNavigation className="text-[10px]" /> View on Page
         </button>
@@ -516,8 +525,8 @@ export default function AIAssistant() {
                 className="flex flex-col items-center"
               >
                 <div className="relative shrink-0 mt-1">
-                <Image src="/lost-kd.jpg" alt="Lost KD" width={32} height={32} className="w-8 h-8 rounded-full border border-indigo-500/30 object-cover shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-                <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#030308] rounded-full"></div>
+                  <Image src="/lost-kd.jpg" alt="Lost KD" width={32} height={32} className="w-8 h-8 rounded-full border border-indigo-500/30 object-cover shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                  <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#030308] rounded-full"></div>
                 </div>
                 <span className="text-[8px] text-indigo-200 uppercase font-black tracking-wider mt-0.5">LOST KD</span>
               </motion.div>
@@ -546,7 +555,7 @@ export default function AIAssistant() {
                 </div>
                 <div>
                   <h3 className="text-sm font-black tracking-widest text-white flex items-center gap-1.5 uppercase">
-                    LOST KD <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-normal tracking-normal lowercase">v1.2</span>
+                    LOST KD <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-normal tracking-normal lowercase">v2.0</span>
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="relative flex h-2 w-2">
@@ -603,7 +612,7 @@ export default function AIAssistant() {
                   key={m.id}
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  <div className="flex gap-2.5 max-w-[85%] items-start">
+                  <div className="flex gap-2.5 max-w-[85%] items-start text-left">
                     {m.role === "assistant" && (
                       <div className="w-6 h-6 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <FiCpu className="text-indigo-400 text-xs" />
@@ -625,13 +634,13 @@ export default function AIAssistant() {
                         <button
                           onClick={() => handleScrollToSection(m.sectionId!)}
                           aria-label={`Navigate to ${m.sectionId}`}
-                          className="self-start mt-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-300 text-[11px] font-medium flex items-center gap-1 transition-all"
+                          className="self-start mt-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-300 text-[11px] font-medium flex items-center gap-1 transition-all cursor-pointer"
                         >
                           <FiNavigation className="text-[9px]" /> Navigate to {m.sectionId.toUpperCase()}
                         </button>
                       )}
 
-                      {/* Render custom detailed project/internship card inside helper responses */}
+                      {/* Render custom detailed project card inside helper responses */}
                       {m.role === "assistant" && m.projectId && (
                         renderInlineProjectCard(m.projectId)
                       )}
@@ -665,7 +674,7 @@ export default function AIAssistant() {
                   key={index}
                   onClick={() => handleSendMessage(s.query)}
                   aria-label={`Suggestion: ${s.label}`}
-                  className="px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-white/80 hover:text-white text-xs whitespace-nowrap cursor-pointer transition-all shrink-0"
+                  className="px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-white/80 hover:text-white text-xs whitespace-nowrap cursor-pointer transition-all shrink-0 animate-pulse-glow"
                 >
                   {s.label}
                 </button>
@@ -684,7 +693,7 @@ export default function AIAssistant() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask Lost KD about projects, skills, history..."
+                placeholder={interviewStep > 0 ? "Type your interview response..." : "Ask Lost KD about projects, skills, history..."}
                 className="flex-1 bg-white/5 border border-white/10 hover:border-white/15 focus:border-indigo-500/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none font-sans placeholder-white/35 transition-all"
                 disabled={isLoading}
               />

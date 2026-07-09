@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -278,6 +278,34 @@ export default function Projects() {
     const arch = PROJECT_ARCHITECTURES[activeProject.id] || generateFallbackArch(activeProject.title);
     return arch;
   }, [activeProject]);
+
+  // Listen for AI assistant triggers to open specific project architecture explorer
+  useEffect(() => {
+    const handleOpenArch = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.projectId) {
+        setActiveProjectId(detail.projectId);
+        setActiveTab("architecture");
+        setActiveArchView("nodes");
+        scrollToSection("projects");
+      }
+    };
+
+    const scrollToSection = (id: string) => {
+      const element = document.getElementById(id);
+      if (element) {
+        if (window.lenis) {
+          // @ts-expect-error: lenis global type is incomplete
+          window.lenis.scrollTo(element, { offset: -50 });
+        } else {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    };
+
+    window.addEventListener("open-project-architecture", handleOpenArch);
+    return () => window.removeEventListener("open-project-architecture", handleOpenArch);
+  }, []);
 
   // Handle setting active project: reset internal view tabs
   const handleSelectProject = (id: string) => {

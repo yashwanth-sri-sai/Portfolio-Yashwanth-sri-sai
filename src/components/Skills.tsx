@@ -537,6 +537,25 @@ export default function Skills() {
     return () => media.removeEventListener("change", listener);
   }, []);
 
+  useEffect(() => {
+    const handleHighlightSkill = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.skillId) {
+        const matched = SKILL_NODES.find(
+          (n) => n.id === detail.skillId || n.name.toLowerCase() === detail.skillId.toLowerCase()
+        );
+        if (matched) {
+          setSelectedNode(matched);
+          setSelectedDomain("All");
+          setSearchQuery("");
+          scrollToSection("skills");
+        }
+      }
+    };
+    window.addEventListener("highlight-skill-node", handleHighlightSkill);
+    return () => window.removeEventListener("highlight-skill-node", handleHighlightSkill);
+  }, []);
+
   // Filter & Search matching logic
   const filteredNodes = useMemo(() => {
     return SKILL_NODES.filter((node) => {
