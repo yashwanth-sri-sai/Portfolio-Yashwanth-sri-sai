@@ -63,6 +63,35 @@ export default function AIAssistant() {
     }
   }, [messages, isLoading]);
 
+  // Load configuration check on mount to set correct initial state
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch("/api/chat");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.online) {
+            setIsLocalMode(false);
+            setApiError(null);
+            setStatusMessage("🟢 Online");
+          } else {
+            setIsLocalMode(true);
+            setApiError("MISSING_KEYS");
+            setStatusMessage("Offline (Missing Keys)");
+          }
+        } else {
+          throw new Error("Status check failed");
+        }
+      } catch (err) {
+        console.warn("Could not retrieve AI Assistant online status:", err);
+        // Do not force Local Mode unless status returns no keys, default to online if connection fails during initial loading
+        setIsLocalMode(false);
+        setStatusMessage("🟢 Online");
+      }
+    };
+    checkStatus();
+  }, []);
+
   // Handle smooth scroll to section
   const handleScrollToSection = (sectionId: string) => {
     const targetElement = document.getElementById(sectionId);
@@ -266,7 +295,7 @@ export default function AIAssistant() {
           handleScrollToSection(extraData.sectionId);
         }
 
-        setStatusMessage(finalStatus || (isLocalMode ? "Local Core Node Active" : "Neural Link Active"));
+        setStatusMessage(finalStatus || (isLocalMode ? "Local Core Node Active" : "🟢 Online"));
       }
     }, 45); // Speed multiplier per word
   };
@@ -320,7 +349,7 @@ export default function AIAssistant() {
       }
       
       setInterviewStep(nextStep);
-      typeMessage(replyText, assistantMsgId, {}, nextStep > 0 ? "Mock Interview Active" : "System Ready");
+      typeMessage(replyText, assistantMsgId, {}, nextStep > 0 ? "Mock Interview Active" : "🟢 Online");
       return;
     }
 
@@ -358,19 +387,18 @@ export default function AIAssistant() {
       const data = await response.json();
 
       if (data.fallback) {
-        // API key not configured, run local matching
+        // API key failed / configured local fallback
         setIsLocalMode(true);
-        let finalStatus = "Offline (Local Core)";
-        let errorType = "API_OFFLINE";
-        const reason = data.reason || "";
-        if (reason.toLowerCase().includes("quota")) {
-          errorType = "QUOTA_EXCEEDED";
-          finalStatus = "Offline (Quota Exceeded)";
-        } else if (reason.toLowerCase().includes("key") || reason.toLowerCase().includes("unauthorized") || reason.toLowerCase().includes("401")) {
-          errorType = "KEY_INVALID";
-          finalStatus = "Offline (Key Invalid)";
-        }
+        const errorType = data.errorType || "SERVER_ERROR";
         setApiError(errorType);
+
+        let finalStatus = "Offline (Local Core)";
+        if (errorType === "QUOTA_EXCEEDED") finalStatus = "Offline (Quota Exceeded)";
+        else if (errorType === "KEY_INVALID") finalStatus = "Offline (Key Invalid)";
+        else if (errorType === "RATE_LIMITED") finalStatus = "Offline (Rate Limited)";
+        else if (errorType === "WRONG_MODEL") finalStatus = "Offline (Wrong Model)";
+        else if (errorType === "MISSING_KEYS") finalStatus = "Offline (Missing Keys)";
+
         setStatusMessage(finalStatus);
 
         const fallbackRes = getLocalResponse(textToSend);
@@ -383,7 +411,7 @@ export default function AIAssistant() {
       } else if (data.response) {
         setIsLocalMode(false);
         setApiError(null);
-        setStatusMessage("Neural Link Active");
+        setStatusMessage("🟢 Online");
         const reply = data.response;
         const sectionId = parseNavigation(reply);
         
@@ -400,16 +428,17 @@ export default function AIAssistant() {
         else if (lowerReply.includes("tracker") || lowerReply.includes("github repo") || lowerReply.includes("rest api")) projectId = "rest-api-backend";
         else if (lowerReply.includes("salesforge") || lowerReply.includes("sales")) projectId = "salesforge";
 
-        typeMessage(reply, assistantMsgId, { projectId, sectionId }, "Neural Link Active");
+        typeMessage(reply, assistantMsgId, { projectId, sectionId }, "🟢 Online");
       } else {
         throw new Error("Malformed response");
       }
     } catch (err) {
-      console.warn("Re-routing to offline local nodes:", err);
+      console.warn("API Request exception encountered:", err);
       setIsLoading(false);
-      setIsLocalMode(true);
-      setApiError("CONNECTION_ERROR");
-      const finalStatus = "Offline (Connection Error)";
+      // ONLY set local mode if there was no active provider keys found.
+      // If there are keys, keep isLocalMode false and let them retry.
+      setApiError("NETWORK_ERROR");
+      const finalStatus = "Offline (Network Error)";
       setStatusMessage(finalStatus);
       const fallbackRes = getLocalResponse(textToSend);
       typeMessage(
@@ -578,23 +607,45 @@ export default function AIAssistant() {
 
             {/* Diagnostic Banner if API fails */}
             {apiError && (
-              <div className="mx-5 mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-200/90 flex flex-col gap-1.5 shadow-[0_4px_12px_rgba(239,68,68,0.15)]">
+              <div className="mx-5 mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-200/90 flex flex-col gap-1.5 shadow-[0_4px_12px_rgba(239,68,68,0.15)] text-left">
                 <div className="flex items-center gap-1.5 font-bold text-red-400">
                   <FiAlertTriangle className="shrink-0 text-sm" />
-                  <span>API OFFLINE: {apiError === "QUOTA_EXCEEDED" ? "QUOTA EXCEEDED" : apiError === "KEY_INVALID" ? "KEY INVALID" : "CONNECTION ERROR"}</span>
+                  <span>API OFFLINE: {apiError.replace("_", " ")}</span>
                 </div>
                 <p className="text-[11px] leading-relaxed text-red-200/70">
-                  {apiError === "QUOTA_EXCEEDED" ? (
+                  {apiError === "QUOTA_EXCEEDED" && (
                     <>
-                      Your OpenAI API key has exceeded its quota (out of credits). Set a free <strong className="text-white">GEMINI_API_KEY</strong> from Google AI Studio in your `.env.local` to enable full chatbot capabilities!
+                      Your API key has exceeded its quota (out of credits). Set a free <strong className="text-white">GEMINI_API_KEY</strong> from Google AI Studio in your `.env.local` to restore chat.
                     </>
-                  ) : apiError === "KEY_INVALID" ? (
+                  )}
+                  {apiError === "KEY_INVALID" && (
                     <>
-                      The configured OpenAI API key is invalid. Please double-check <strong className="text-white">.env.local</strong> or provide a free Gemini API key to restore chat.
+                      The configured API key is invalid or unauthorized. Please verify the key values in your `.env.local` file.
                     </>
-                  ) : (
+                  )}
+                  {apiError === "MISSING_KEYS" && (
                     <>
-                      Failed to connect to the cloud AI network. Falling back to the local pre-programmed guide.
+                      No API keys are configured on the server. Please add <strong className="text-white">GEMINI_API_KEY</strong> or <strong className="text-white">OPENAI_API_KEY</strong> to your environment variables.
+                    </>
+                  )}
+                  {apiError === "RATE_LIMITED" && (
+                    <>
+                      API rate limit reached. Please wait a moment before sending another query.
+                    </>
+                  )}
+                  {apiError === "WRONG_MODEL" && (
+                    <>
+                      The selected model name is not recognized by the provider endpoint.
+                    </>
+                  )}
+                  {apiError === "NETWORK_ERROR" && (
+                    <>
+                      Failed to establish network connection to the AI provider server. Check internet availability.
+                    </>
+                  )}
+                  {apiError === "SERVER_ERROR" && (
+                    <>
+                      The AI model provider endpoint returned a server exception (HTTP 500).
                     </>
                   )}
                 </p>

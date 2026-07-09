@@ -1,6 +1,30 @@
 import { NextResponse } from "next/server";
 import { generateSystemPrompt } from "@/data/resumeContext";
 
+export async function GET() {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  
+  const providers: string[] = [];
+  if (geminiKey) providers.push("Gemini");
+  if (openaiKey) providers.push("OpenAI");
+
+  console.log(`[API Chat Status] GET check. Active providers: ${providers.join(", ") || "None"}`);
+
+  return NextResponse.json({
+    online: providers.length > 0,
+    providers,
+    hasKeys: providers.length > 0
+  });
+}
+
+interface AttemptedError {
+  provider: "Gemini" | "OpenAI";
+  status?: number;
+  errorType: "KEY_INVALID" | "QUOTA_EXCEEDED" | "RATE_LIMITED" | "WRONG_MODEL" | "NETWORK_ERROR" | "TIMEOUT" | "SERVER_ERROR";
+  message: string;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -16,10 +40,14 @@ export async function POST(request: Request) {
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     const systemPrompt = generateSystemPrompt();
-    let errorReason = "";
+    
+    const errorsList: AttemptedError[] = [];
 
     // 1. Try Google Gemini API first
     if (geminiKey) {
+      const startTime = Date.now();
+      const model = "gemini-2.5-flash";
+      console.log(`[API Chat] Attempting Gemini | Model: ${model} | Key Exists: true`);
       try {
         const contents = messages.map((m: Record<string, string>) => ({
           role: m.role === "assistant" ? "model" : "user",
@@ -27,7 +55,7 @@ export async function POST(request: Request) {
         }));
 
         const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
           {
             method: "POST",
             headers: {
@@ -46,26 +74,60 @@ export async function POST(request: Request) {
           }
         );
 
-        if (!response.ok) {
+        const duration = Date.now() - startTime;
+
+        if (response.ok) {
+          const data = await response.json();
+          const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (responseText) {
+            console.log(`[API Chat] Gemini SUCCESS in ${duration}ms. Status: ${response.status}`);
+            return NextResponse.json({ response: responseText });
+          } else {
+            console.warn(`[API Chat] Gemini returned empty response candidates. Data:`, JSON.stringify(data));
+            errorsList.push({
+              provider: "Gemini",
+              status: response.status,
+              errorType: "SERVER_ERROR",
+              message: "Empty response text candidates received from model."
+            });
+          }
+        } else {
           const errText = await response.text();
-          console.error("Gemini API error status:", response.status, errText);
-          throw new Error(`Gemini API error ${response.status}`);
-        }
+          console.error(`[API Chat] Gemini FAILED in ${duration}ms. Status: ${response.status}. Error: ${errText}`);
+          
+          let errorType: AttemptedError["errorType"] = "SERVER_ERROR";
+          if (response.status === 400) {
+            errorType = "KEY_INVALID";
+          } else if (response.status === 403) {
+            errorType = "KEY_INVALID";
+          } else if (response.status === 429) {
+            errorType = errText.toLowerCase().includes("quota") ? "QUOTA_EXCEEDED" : "RATE_LIMITED";
+          }
 
-        const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (responseText) {
-          return NextResponse.json({ response: responseText });
+          errorsList.push({
+            provider: "Gemini",
+            status: response.status,
+            errorType,
+            message: errText
+          });
         }
       } catch (geminiError: unknown) {
-        console.error("Failed call to Gemini, falling back to OpenAI/Offline:", geminiError);
-        errorReason = (geminiError as Error).message || "Gemini API failed";
+        const duration = Date.now() - startTime;
+        console.error(`[API Chat] Gemini Connection Exception after ${duration}ms:`, geminiError);
+        errorsList.push({
+          provider: "Gemini",
+          errorType: "NETWORK_ERROR",
+          message: (geminiError as Error).message || "Gemini connection error"
+        });
       }
     }
 
     // 2. Try OpenAI API second
     if (openaiKey) {
+      const startTime = Date.now();
+      const model = "gpt-4o-mini";
+      console.log(`[API Chat] Attempting OpenAI | Model: ${model} | Key Exists: true`);
       try {
         const openAIMessages = [
           { role: "system", content: systemPrompt },
@@ -82,44 +144,94 @@ export async function POST(request: Request) {
             "Authorization": `Bearer ${openaiKey}`
           },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model,
             messages: openAIMessages,
             temperature: 0.7,
             max_tokens: 500
           })
         });
 
-        if (!response.ok) {
+        const duration = Date.now() - startTime;
+
+        if (response.ok) {
+          const data = await response.json();
+          const responseText = data.choices?.[0]?.message?.content;
+
+          if (responseText) {
+            console.log(`[API Chat] OpenAI SUCCESS in ${duration}ms. Status: ${response.status}`);
+            return NextResponse.json({ response: responseText });
+          } else {
+            console.warn(`[API Chat] OpenAI returned empty choices response.`);
+            errorsList.push({
+              provider: "OpenAI",
+              status: response.status,
+              errorType: "SERVER_ERROR",
+              message: "Empty choices list returned by OpenAI completions."
+            });
+          }
+        } else {
           const errText = await response.text();
-          let parsedError = "";
+          console.error(`[API Chat] OpenAI FAILED in ${duration}ms. Status: ${response.status}. Error: ${errText}`);
+          
+          let errorType: AttemptedError["errorType"] = "SERVER_ERROR";
+          let parsedError = errText;
           try {
             const errJson = JSON.parse(errText);
             parsedError = errJson.error?.message || errText;
+            if (errJson.error?.code === "insufficient_quota") {
+              errorType = "QUOTA_EXCEEDED";
+            } else if (response.status === 401) {
+              errorType = "KEY_INVALID";
+            } else if (response.status === 429) {
+              errorType = "RATE_LIMITED";
+            } else if (response.status === 404) {
+              errorType = "WRONG_MODEL";
+            }
           } catch {
-            parsedError = errText;
+            // non-json error page
+            if (response.status === 401) errorType = "KEY_INVALID";
+            else if (response.status === 429) errorType = "RATE_LIMITED";
           }
-          console.error("OpenAI API error status:", response.status, errText);
-          throw new Error(`OpenAI failed (${response.status}): ${parsedError}`);
-        }
 
-        const data = await response.json();
-        const responseText = data.choices?.[0]?.message?.content;
-
-        if (responseText) {
-          return NextResponse.json({ response: responseText });
+          errorsList.push({
+            provider: "OpenAI",
+            status: response.status,
+            errorType,
+            message: parsedError
+          });
         }
       } catch (openaiError: unknown) {
-        console.error("Failed call to OpenAI:", openaiError);
-        errorReason = (openaiError as Error).message || "OpenAI API failed";
+        const duration = Date.now() - startTime;
+        console.error(`[API Chat] OpenAI Connection Exception after ${duration}ms:`, openaiError);
+        errorsList.push({
+          provider: "OpenAI",
+          errorType: "NETWORK_ERROR",
+          message: (openaiError as Error).message || "OpenAI connection error"
+        });
       }
     }
 
-    // 3. Fallback: No API keys configured or both failed, trigger client fallback
+    // 3. Fallback: No API keys configured or both failed, trigger client fallback with specific errors info
+    if (errorsList.length === 0) {
+      console.warn("[API Chat] Chat POST called but no API keys were loaded in process.env.");
+      return NextResponse.json({
+        response: null,
+        fallback: true,
+        errorType: "MISSING_KEYS",
+        reason: "No AI providers are configured on this server. Set GEMINI_API_KEY or OPENAI_API_KEY variables.",
+        message: "No active API keys found."
+      });
+    }
+
+    // Return the primary error of the provider attempted
+    const primaryError = errorsList[errorsList.length - 1]; // return latest attempted failure
+    console.log(`[API Chat] Fallback triggered. Primary error type: ${primaryError.errorType}. Reason: ${primaryError.message}`);
     return NextResponse.json({
       response: null,
       fallback: true,
-      reason: errorReason || "No active API keys found.",
-      message: "No active API keys found or queries failed. Re-routing query to local portfolio core module."
+      errorType: primaryError.errorType,
+      reason: primaryError.message,
+      errors: errorsList
     });
   } catch (globalError: unknown) {
     console.error("Global Chat API Route error:", globalError);
