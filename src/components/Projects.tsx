@@ -66,7 +66,7 @@ export default function Projects() {
                       activeProjectId === project.id ? "text-cyan-400" : "text-white/40"
                     }`}
                   >
-                    SYS.{project.id.substring(0, 4).toUpperCase()}
+                    {project.category}
                   </span>
                   <h3
                     className={`font-bold text-lg transition-colors leading-tight ${
@@ -121,8 +121,8 @@ export default function Projects() {
                   {/* Overlay Content */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="p-5 rounded-2xl backdrop-blur-xl bg-black/40 border border-white/10 shadow-2xl">
-                      <h4 className="text-xs font-mono tracking-widest text-cyan-400 mb-2 flex items-center gap-2">
-                        <FiTarget /> ARCHITECTURE.OVERVIEW
+                      <h4 className="text-xs font-mono tracking-wider text-cyan-400 mb-2 flex items-center gap-2">
+                        <FiTarget /> Solution Architecture
                       </h4>
                       <p className="text-sm text-white/80 leading-relaxed line-clamp-3">
                         {activeProject.solutionArchitecture}
@@ -137,7 +137,7 @@ export default function Projects() {
                     href={`/projects/${activeProject.id}`}
                     className="group inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-white text-black font-extrabold hover:bg-gray-200 transition-colors shadow-xl"
                   >
-                    Initialize Deep Dive
+                    Read Case Study
                     <FiArrowRight className="group-hover:translate-x-1.5 transition-transform" />
                   </Link>
 
@@ -183,8 +183,8 @@ export default function Projects() {
                 {/* Status Card */}
                 <BorderGlow className="p-5" borderRadius={16} backgroundColor="#09090b">
                   <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent pointer-events-none" />
-                  <div className="flex items-center gap-3 text-white/50 mb-2 text-xs font-mono tracking-widest">
-                    <FiActivity className="text-green-400" /> SYSTEM.STATUS
+                  <div className="flex items-center gap-3 text-white/50 mb-2 text-xs font-mono tracking-wider">
+                    <FiActivity className="text-green-400" /> Status
                   </div>
                   <div className="text-xl font-extrabold text-white flex items-center gap-3 relative z-10">
                     <span className="relative flex h-3 w-3">
@@ -198,16 +198,16 @@ export default function Projects() {
                 {/* Specs Grid */}
                 <div className="grid grid-cols-2 gap-4">
                   <BorderGlow className="p-4" borderRadius={16} backgroundColor="#09090b">
-                    <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono mb-1.5 tracking-widest">
-                      <FiLayers /> CATEGORY
+                    <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono mb-1.5 tracking-wider">
+                      <FiLayers /> Category
                     </div>
                     <div className="text-sm font-bold text-white">
                       {activeProject.category}
                     </div>
                   </BorderGlow>
                   <BorderGlow className="p-4" borderRadius={16} backgroundColor="#09090b">
-                    <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono mb-1.5 tracking-widest">
-                      <FiClock /> DURATION
+                    <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono mb-1.5 tracking-wider">
+                      <FiClock /> Duration
                     </div>
                     <div className="text-sm font-bold text-white">
                       {activeProject.duration}
@@ -215,8 +215,8 @@ export default function Projects() {
                   </BorderGlow>
                   <BorderGlow className="col-span-2 p-5" borderRadius={16} backgroundColor="#09090b">
                     <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono tracking-widest">
-                        <FiTarget /> COMPLEXITY
+                      <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono tracking-wider">
+                        <FiTarget /> Complexity
                       </div>
                       <div className="text-lg font-bold text-cyan-400">
                         {activeProject.complexity}
@@ -233,8 +233,8 @@ export default function Projects() {
 
                 {/* Tech Stack */}
                 <BorderGlow className="p-5 flex flex-col" borderRadius={16} backgroundColor="#09090b">
-                  <div className="flex items-center gap-3 text-white/50 mb-4 text-xs font-mono tracking-widest">
-                    <FiCode /> TECH.STACK
+                  <div className="flex items-center gap-3 text-white/50 mb-4 text-xs font-mono tracking-wider">
+                    <FiCode className="text-cyan-400" /> Tech Stack
                   </div>
                   <div className="flex flex-wrap gap-2 overflow-y-auto custom-scrollbar">
                     {activeProject.tech.map((t) => (
@@ -252,7 +252,7 @@ export default function Projects() {
                 {activeProject.metrics && activeProject.metrics.length > 0 && (
                   <BorderGlow className="p-6" borderRadius={16} backgroundColor="#09090b" colors={["#06b6d4", "#3b82f6", "#0ea5e9"]}>
                     <div className="flex items-center gap-3 text-cyan-500/70 mb-4 text-xs font-mono tracking-widest">
-                      IMPACT.METRICS
+                    Impact Metrics
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       {activeProject.metrics.slice(0, 2).map((m) => (
@@ -384,7 +384,7 @@ export default function Projects() {
                   <div className="flex items-center justify-between">
                     <span className="text-white/50 text-xs font-mono tracking-widest">
                     <FiActivity className="inline mr-2 text-green-400" />
-                    STATUS
+                    Status
                   </span>
                   <span className="text-white font-bold flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
@@ -412,8 +412,8 @@ export default function Projects() {
                 ))}
 
                 <BorderGlow className="col-span-2 p-5 mt-2" borderRadius={16} backgroundColor="#09090b">
-                  <div className="text-white/50 text-xs font-mono tracking-widest mb-3">
-                    <FiCode className="inline mr-2" /> TECH STACK
+                  <div className="text-white/50 text-xs font-mono tracking-wider mb-3">
+                    <FiCode className="inline mr-2" /> Tech Stack
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {activeProject.tech.map((t) => (

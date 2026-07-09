@@ -64,8 +64,8 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
             </span>
           </div>
           <div className="text-right">
-            <span className="text-[7px] sm:text-[9px] font-mono tracking-widest text-cyan-400 font-bold">SECURE AUTH</span>
-            <div className="text-[8px] sm:text-[10px] font-mono text-white/40">{cert.hash.substring(0, 14)}...</div>
+            <span className="text-[7px] sm:text-[9px] font-mono tracking-widest text-white/30 font-bold">STATUS</span>
+            <div className="text-[8px] sm:text-[10px] font-mono text-cyan-400 font-bold">VERIFIED</div>
           </div>
         </div>
 
@@ -93,7 +93,7 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
           >
             K. YASHWANTH SRI SAI
           </span>
-          <span className="text-[6px] sm:text-[8px] font-mono text-white/20 mt-2">BY INDUSTRY ISSUER</span>
+          <span className="text-[6px] sm:text-[8px] font-mono text-white/20 mt-2">BY ISSUER</span>
           <span
             className={`font-sans font-extrabold uppercase tracking-widest mt-0.5 ${
               isLarge ? "text-xs sm:text-sm" : "text-[8px] sm:text-[10px]"
@@ -108,10 +108,10 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
         <div className="flex justify-between items-end">
           {/* Cryptographic Verification Entity */}
           <div className="flex flex-col text-left">
-            <span className="text-[8px] sm:text-[10px] font-mono italic text-white/40 border-b border-white/10 pb-0.5 select-none leading-none">
-              Aegis Core
+            <span className="text-[8px] sm:text-[10px] font-sans font-bold text-white/40 border-b border-white/10 pb-0.5 select-none leading-none">
+              Authorized Signature
             </span>
-            <span className="text-[5px] sm:text-[7px] font-mono text-white/30 tracking-widest mt-1">VERIFICATION SYS</span>
+            <span className="text-[5px] sm:text-[7px] font-mono text-white/25 tracking-widest mt-1">ISSUING AUTHORITY</span>
           </div>
 
           {/* Golden Seal of Authenticity */}

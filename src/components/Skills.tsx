@@ -756,12 +756,7 @@ export default function Skills() {
         
         {/* ─── SECTION 1: CINEMATIC HEADER ─── */}
         <div className="text-center max-w-3xl mx-auto mb-12 relative">
-          {/* Futuristic Telemetry Title Banner */}
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-blue-500/30" />
-            <span className="text-[9px] font-mono text-zinc-500 tracking-widest uppercase">SYS_INDEX: ENG_DEPT</span>
-            <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-blue-500/30" />
-          </div>
+
 
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -905,7 +900,7 @@ export default function Skills() {
                         <span>{selectedNode.category}</span>
                       </div>
                       <span className="text-[10px] font-mono text-zinc-500 tracking-wider">
-                        NODE telemetry
+                        Skill Node Details
                       </span>
                     </div>
 
@@ -972,23 +967,27 @@ export default function Skills() {
                           </svg>
                           <div className="absolute inset-0 flex flex-col items-center justify-center font-mono">
                             <span className="text-lg font-extrabold text-white leading-none">{selectedNode.level}%</span>
-                            <span className="text-[7px] text-zinc-500 uppercase tracking-widest mt-1">CAPACITY</span>
+                            <span className="text-[7px] text-zinc-500 uppercase tracking-widest mt-1">PROFICIENCY</span>
                           </div>
                         </div>
                       </div>
                       <div className="sm:col-span-8 space-y-3">
                         <div className="flex items-center gap-2 text-zinc-500 font-mono text-[9px] uppercase tracking-wider">
                           <FiActivity className="text-blue-400" />
-                          <span>Network Diagnostics</span>
+                          <span>Skill Telemetry</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="p-2 rounded bg-white/5 border border-white/5 text-left">
-                            <span className="text-[8px] font-mono text-zinc-500 block mb-0.5 uppercase">STABILITY</span>
-                            <span className="text-xs font-bold text-emerald-400 font-mono">99.98%</span>
+                            <span className="text-[8px] font-mono text-zinc-500 block mb-0.5 uppercase">EXPERIENCE</span>
+                            <span className="text-xs font-bold text-emerald-400 font-mono">
+                              {selectedNode.level >= 90 ? "Expert" : selectedNode.level >= 75 ? "Advanced" : "Proficient"}
+                            </span>
                           </div>
                           <div className="p-2 rounded bg-white/5 border border-white/5 text-left">
-                            <span className="text-[8px] font-mono text-zinc-500 block mb-0.5 uppercase">RETENTION</span>
-                            <span className="text-xs font-bold text-white font-mono">CORE_VAL</span>
+                            <span className="text-[8px] font-mono text-zinc-500 block mb-0.5 uppercase">DOMAIN</span>
+                            <span className="text-xs font-bold text-white font-mono truncate block">
+                              {selectedNode.category}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1025,7 +1024,7 @@ export default function Skills() {
                       </div>
                     ) : (
                       <div className="p-3.5 rounded-xl border border-dashed border-white/10 text-center font-mono text-[9px] text-zinc-500">
-                        NO PROJECTS CURRENTLY ASSIGNED // CONCEPTUAL DEPLOYMENT
+                        No linked projects for this skill node.
                       </div>
                     )}
                   </div>
@@ -1033,8 +1032,8 @@ export default function Skills() {
               ) : (
                 <div className="flex-1 flex flex-col justify-center items-center text-center font-mono py-12">
                   <FiCpu className="text-3xl text-zinc-700 animate-bounce mb-3" />
-                  <span className="text-xs text-zinc-500">NEURAL CORE INACTIVE</span>
-                  <span className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Select a skill node to inspect metrics</span>
+                  <span className="text-xs text-zinc-500">NO NODE SELECTED</span>
+                  <span className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Select a skill node on the canvas to view details</span>
                 </div>
               )}
             </BorderGlow>
@@ -1044,8 +1043,8 @@ export default function Skills() {
         {/* ─── SECTION 6: CURRENTLY EXPLORING / ROADMAP ─── */}
         <div className="mt-20">
           <div className="text-left mb-10 max-w-xl">
-            <span className="text-xs font-mono uppercase tracking-widest text-purple-400 block mb-2">
-              03 // FUTURE EXPLORATION
+            <span className="text-xs font-mono uppercase tracking-wider text-purple-400 block mb-2">
+              Future Exploration
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Currently Learning & Exploring

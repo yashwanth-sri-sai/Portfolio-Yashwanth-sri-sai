@@ -361,7 +361,7 @@ export default function Contact() {
             className="flex items-center justify-center gap-3 mb-2"
           >
             <span className="h-[1px] w-8 bg-cyan-500/30" />
-            <span className="text-xs font-mono text-cyan-400 tracking-widest uppercase font-bold">SYSTEM TERMINUS</span>
+            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase font-bold">Connect</span>
             <span className="h-[1px] w-8 bg-cyan-500/30" />
           </motion.div>
 

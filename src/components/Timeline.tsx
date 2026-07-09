@@ -153,7 +153,7 @@ export default function Timeline() {
                         className="text-xs font-mono font-bold tracking-widest uppercase mb-2 block"
                         style={{ color: activeMilestone.color }}
                       >
-                        {activeMilestone.phase}
+                        Journey Stage {(activeStation + 1).toString().padStart(2, "0")}
                       </span>
                       <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5">{activeMilestone.title}</h3>
                       <p className="text-zinc-400 font-medium text-xs leading-relaxed">{activeMilestone.subtitle}</p>
