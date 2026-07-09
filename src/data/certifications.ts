@@ -90,5 +90,31 @@ export const certifications: Certification[] = [
     color: "#22c55e",
     hueRotate: "90deg",
     hash: "SHA256-GOOG8C7D6"
+  },
+  {
+    id: 7,
+    title: "Automating with AI/ML",
+    issuer: "Google",
+    year: "2025",
+    category: "AI/ML",
+    image: "/certifications/template.jpg",
+    verificationLink: "https://drive.google.com/file/d/1547QpQ-XEVwnBS6Sa5-HKDaYA7Z8xE1Z/view?usp=sharing",
+    skills: ["AI/ML", "Automation", "Python", "API Integration"],
+    color: "#0284c7",
+    hueRotate: "200deg",
+    hash: "SHA256-GOOG5F6E7"
+  },
+  {
+    id: 8,
+    title: "Fundamentals of Prompt Engineering with Claude",
+    issuer: "Anthropic",
+    year: "2025",
+    category: "AI/ML",
+    image: "/certifications/template.jpg",
+    verificationLink: "https://drive.google.com/file/d/1_s9lBTkuLu3a5nRCOAAbrxRHD2j9iIet/view?usp=sharing",
+    skills: ["Prompt Engineering", "Claude AI", "LLMs", "AI Reasoning"],
+    color: "#d97706",
+    hueRotate: "25deg",
+    hash: "SHA256-ANTH8B9C2"
   }
 ];
