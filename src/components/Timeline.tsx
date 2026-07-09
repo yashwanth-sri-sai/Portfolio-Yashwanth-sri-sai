@@ -31,11 +31,11 @@ export default function Timeline() {
         {/* 1. METRO STATION JOURNEY EXPERIENCE                                       */}
         {/* ========================================================================= */}
         <div>
-          <div className="mb-16 text-center">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4 text-white drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
+          <div className="mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-white drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
               Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">Journey</span>
             </h2>
-            <p className="text-zinc-400 max-w-2xl mx-auto text-lg font-medium">
+            <p className="text-zinc-400 max-w-2xl mx-auto text-base sm:text-lg leading-[1.8] font-normal">
               Explore the route map of my technical evolution. Select a station below to reveal architectural milestones, technologies, and deployed systems.
             </p>
           </div>
@@ -155,11 +155,11 @@ export default function Timeline() {
                       >
                         {activeMilestone.phase}
                       </span>
-                      <h3 className="text-3xl md:text-4xl font-black text-white mb-2">{activeMilestone.title}</h3>
-                      <p className="text-zinc-400 font-medium text-sm leading-relaxed">{activeMilestone.subtitle}</p>
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5">{activeMilestone.title}</h3>
+                      <p className="text-zinc-400 font-medium text-xs leading-relaxed">{activeMilestone.subtitle}</p>
                     </div>
 
-                    <p className="text-zinc-300 leading-relaxed">
+                    <p className="text-sm sm:text-base text-zinc-400 leading-[1.8]">
                       {activeMilestone.description}
                     </p>
 

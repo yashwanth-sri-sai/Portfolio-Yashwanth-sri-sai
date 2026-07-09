@@ -370,7 +370,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.0, delay: 0.1, ease: "easeOut" }}
-            className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)]"
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)]"
           >
             Let&apos;s Build Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">Impactful</span> Together
           </motion.h2>
@@ -380,7 +380,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.0, delay: 0.2, ease: "easeOut" }}
-            className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+            className="text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-[1.8]"
           >
             Exploring AI architectures, engineering intelligent automated pipelines, and crafting immersive digital interfaces through continuous experimentation and technical design.
           </motion.p>

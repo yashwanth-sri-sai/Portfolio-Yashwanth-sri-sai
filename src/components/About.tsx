@@ -38,32 +38,29 @@ export default function About() {
               align="left"
             />
             <p
-              className="text-lg leading-relaxed mb-6"
-              style={{ color: "var(--color-text-secondary)" }}
+              className="text-base md:text-[1.05rem] leading-[1.8] text-zinc-400 mb-6 mt-6"
             >
               I&apos;m a{" "}
-              <span className="font-semibold" style={{ color: "var(--color-text-primary)" }}>
+              <span className="font-medium text-zinc-200">
                 Computer Science Undergraduate
               </span>{" "}
               specializing in Cyber Security, with strong foundations in Data Structures, Algorithms, and backend development. I am passionate about building secure, scalable systems and solving complex computational problems.
             </p>
             <p
-              className="text-lg leading-relaxed mb-6"
-              style={{ color: "var(--color-text-secondary)" }}
+              className="text-base md:text-[1.05rem] leading-[1.8] text-zinc-400 mb-6"
             >
               From designing{" "}
-              <span className="font-semibold" style={{ color: "var(--color-accent-indigo)" }}>
+              <span className="font-medium text-zinc-200" style={{ color: "var(--color-accent-indigo)" }}>
                 machine learning security solutions
               </span>{" "}
               to deploying{" "}
-              <span className="font-semibold" style={{ color: "var(--color-accent-cyan)" }}>
+              <span className="font-medium text-zinc-200" style={{ color: "var(--color-accent-cyan)" }}>
                 agentic AI workflows
               </span>{" "}
               using Gemini and LangChain — I bring an engineering-first mindset and solid analytical skills to every project.
             </p>
             <p
-              className="text-lg leading-relaxed"
-              style={{ color: "var(--color-text-secondary)" }}
+              className="text-base md:text-[1.05rem] leading-[1.8] text-zinc-400"
             >
               Seeking a full-time Software Engineer role to leverage my backend, database optimization, and AI deployment expertise to deliver production-grade software solutions.
             </p>

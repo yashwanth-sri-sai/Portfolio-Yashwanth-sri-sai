@@ -23,7 +23,7 @@ export default function Blog() {
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -38,7 +38,7 @@ export default function Blog() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight"
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4 tracking-tight"
           >
             Technical <span className="gradient-text">Explorations</span>
           </motion.h2>
@@ -47,7 +47,7 @@ export default function Blog() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-zinc-400 text-lg md:text-xl max-w-3xl mx-auto font-light leading-relaxed"
+            className="text-zinc-400 text-sm sm:text-base max-w-3xl mx-auto leading-[1.8] font-normal"
           >
             Deep dives into AI systems, immersive interfaces, scalable architecture, and modern web technologies.
           </motion.p>

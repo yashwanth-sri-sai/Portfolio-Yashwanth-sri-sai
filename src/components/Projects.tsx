@@ -100,10 +100,10 @@ export default function Projects() {
               >
                 {/* Top Bar - Title and Action */}
                 <div className="flex flex-col items-center text-center mb-6">
-                  <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
+                  <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">
                     {activeProject.title}
                   </h2>
-                  <p className="text-white/60 text-sm max-w-xl leading-relaxed">
+                  <p className="text-white/60 text-sm max-w-xl leading-[1.75]">
                     {activeProject.shortDescription}
                   </p>
                 </div>
@@ -331,10 +331,10 @@ export default function Projects() {
               >
               {/* Mobile Center Panel */}
               <BorderGlow className="p-5 sm:p-6" borderRadius={24} backgroundColor="#09090b">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                   {activeProject.title}
                 </h2>
-                <p className="text-white/60 text-sm mb-6 leading-relaxed">
+                <p className="text-white/60 text-sm mb-6 leading-[1.75]">
                   {activeProject.shortDescription}
                 </p>
 

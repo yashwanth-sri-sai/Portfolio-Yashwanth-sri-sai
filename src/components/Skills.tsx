@@ -755,7 +755,7 @@ export default function Skills() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         
         {/* ─── SECTION 1: CINEMATIC HEADER ─── */}
-        <div className="text-center max-w-3xl mx-auto mb-16 relative">
+        <div className="text-center max-w-3xl mx-auto mb-12 relative">
           {/* Futuristic Telemetry Title Banner */}
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-blue-500/30" />
@@ -779,7 +779,7 @@ export default function Skills() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-5 leading-tight"
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 leading-tight"
           >
             Core Technical{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
@@ -792,7 +792,7 @@ export default function Skills() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-zinc-400 text-base sm:text-lg leading-relaxed font-sans"
+            className="text-zinc-400 text-sm sm:text-base leading-[1.8] font-sans"
           >
             Building intelligent systems with modern technologies, scalable architectures, and immersive user experiences.
           </motion.p>
