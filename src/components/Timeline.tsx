@@ -33,10 +33,10 @@ export default function Timeline() {
         <div>
           <div className="mb-12 text-center">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-white drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
-              Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">Journey</span>
+              Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">Evolution</span>
             </h2>
             <p className="text-zinc-400 max-w-2xl mx-auto text-base sm:text-lg leading-[1.8] font-normal">
-              Explore the route map of my technical evolution. Select a station below to reveal architectural milestones, technologies, and deployed systems.
+              A visual timeline showing my technical growth and progression from foundational computer science studies toward advanced production-grade AI systems.
             </p>
           </div>
 
@@ -136,9 +136,9 @@ export default function Timeline() {
                 className="w-full relative"
               >
                 <BorderGlow 
-                className="relative p-6 md:p-10"
-                innerClassName="flex flex-col md:flex-row gap-10 w-full"
-                borderRadius={24} backgroundColor="#09090b"
+                  className="relative p-6 md:p-10"
+                  innerClassName="flex flex-col md:flex-row gap-10 w-full"
+                  borderRadius={24} backgroundColor="#09090b"
                 >
                   {/* Subtle Background Glow based on station color */}
                   <div 
@@ -147,79 +147,55 @@ export default function Timeline() {
                   />
 
                   {/* Left Column: Context */}
-                  <div className="flex-1 space-y-6 relative z-10">
+                  <div className="flex-1 space-y-6 relative z-10 text-left">
                     <div>
                       <span 
-                        className="text-xs font-mono font-bold tracking-widest uppercase mb-2 block"
+                        className="text-xs font-mono font-bold tracking-wider uppercase mb-2 block"
                         style={{ color: activeMilestone.color }}
                       >
                         Journey Stage {(activeStation + 1).toString().padStart(2, "0")}
                       </span>
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5">{activeMilestone.title}</h3>
-                      <p className="text-zinc-400 font-medium text-xs leading-relaxed">{activeMilestone.subtitle}</p>
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5">
+                        {activeMilestone.title}
+                      </h3>
+                      <p className="text-zinc-500 font-mono text-xs tracking-wider font-bold">
+                        Period: {activeMilestone.year}
+                      </p>
                     </div>
 
                     <p className="text-sm sm:text-base text-zinc-400 leading-[1.8]">
                       {activeMilestone.description}
                     </p>
+                  </div>
 
+                  {/* Right Column: Skills & Achievement */}
+                  <div className="flex-1 space-y-8 relative z-10 text-left">
                     <div>
-                      <h4 className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Core Technologies</h4>
+                      <h4 className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Key Technologies</h4>
                       <div className="flex flex-wrap gap-2">
-                        {activeMilestone.tech.map(t => (
+                        {activeMilestone.skills.map(s => (
                           <span 
-                            key={t} 
+                            key={s} 
                             className="text-xs px-3 py-1.5 rounded-md font-semibold border"
                             style={{
                               background: `${activeMilestone.color}10`,
-                              borderColor: `${activeMilestone.color}30`,
+                              borderColor: `${activeMilestone.color}25`,
                               color: "#e4e4e7"
                             }}
                           >
-                            {t}
+                            {s}
                           </span>
                         ))}
                       </div>
                     </div>
-                  </div>
-
-                  {/* Right Column: Key Learnings & Projects */}
-                  <div className="flex-1 space-y-8 relative z-10">
-                    <div>
-                      <h4 className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-4">Key Achievements</h4>
-                      <ul className="space-y-3">
-                        {activeMilestone.points.map((pt, pIdx) => (
-                          <li key={pIdx} className="flex items-start gap-3 text-sm text-zinc-300 font-medium leading-relaxed">
-                            <span className="mt-1 shrink-0">
-                              <FiGitCommit size={14} style={{ color: activeMilestone.color }} />
-                            </span>
-                            <span>{pt}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
 
                     <div>
-                      <h4 className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Deployed Systems / Projects</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {activeMilestone.projects.map((proj, pIdx) => (
-                          <div 
-                            key={pIdx} 
-                            className="p-4 bg-black/40 rounded-xl border border-white/5 flex flex-col gap-2 hover:border-white/20 transition-colors"
-                          >
-                            <div className="flex justify-between items-start">
-                              <span className="text-sm font-bold text-white leading-tight">{proj.name}</span>
-                              <FiArrowUpRight size={14} className="text-zinc-500 shrink-0" />
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-auto">
-                              {proj.pathway.map((path, idx) => (
-                                <span key={idx} className="text-[10px] text-zinc-400 font-mono">
-                                  {path}{idx < proj.pathway.length - 1 ? " • " : ""}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
+                      <h4 className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Milestone Achievement</h4>
+                      <div className="relative p-5 rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden transition-all duration-300 hover:border-white/10 shadow-inner">
+                        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: activeMilestone.color }} />
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed pl-3 font-medium">
+                          {activeMilestone.achievement}
+                        </p>
                       </div>
                     </div>
                   </div>
