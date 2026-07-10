@@ -8,10 +8,7 @@ import {
   FiX, 
   FiNavigation, 
   FiLayers, 
-  FiCpu,
-  FiAlertTriangle,
-  FiBriefcase,
-  FiAward
+  FiAlertTriangle
 } from "react-icons/fi";
 import { RESUME_DATA } from "@/data/resumeContext";
 
@@ -25,30 +22,44 @@ interface Message {
   isStreaming?: boolean;
 }
 
-// Suggestion Chips aligned with portfolio guide
+// Suggestion Chips aligned with Yash.OS / LOST KD guide
 const SUGGESTIONS = [
-  { label: "🤖 Best AI Project", query: "Show best AI project" },
-  { label: "💡 Explain NoteAI", query: "Explain NoteAI" },
-  { label: "⚙️ Backend Stack", query: "Backend experience" },
-  { label: "🧠 AI Projects", query: "AI projects" },
+  { label: "🚀 Best AI Project", query: "Show best AI project" },
+  { label: "🏗 Architecture Explorer", query: "Explain NoteAI" },
+  { label: "🧠 Knowledge Graph", query: "Where have you used FastAPI?" },
+  { label: "⚙ Backend Stack", query: "Backend experience" },
+  { label: "📜 Certifications", query: "Show certifications" },
   { label: "📄 Resume Summary", query: "Resume summary" },
-  { label: "🔒 Certifications", query: "Certifications" },
-  { label: "💼 Mock Interview", query: "Start mock interview" },
-  { label: "✉️ Contact Info", query: "Contact" }
+  { label: "🎯 Interview Me", query: "Start mock interview" }
 ];
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [initStep, setInitStep] = useState(0);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content: "Greetings. I am **Lost KD**, K. Yashwanth Sri Sai's AI Portfolio Guide. Ask me about his projects, architecture, certifications, or technical stack. I can also evaluate your skills in **Mock Interview Mode**! How can I help you today?",
+      content: `Hello, I'm LOST KD.
+
+I'm the AI Engineering Guide inside Yash.OS.
+
+I can help you explore:
+• Projects & Live Demos
+• Interactive Architecture Explorer
+• Engineering Knowledge Graph
+• Certifications Vault
+• Technical Decisions & Resume
+• Backend Engineering & AI Systems
+• Mock Interviews
+
+What would you like to build today?`,
     }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("System Ready");
+  const [statusMessage, setStatusMessage] = useState("AI Core Online");
   const [isLocalMode, setIsLocalMode] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [interviewStep, setInterviewStep] = useState<number>(0);
@@ -61,7 +72,7 @@ export default function AIAssistant() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isInitializing]);
 
   // Load configuration check on mount to set correct initial state
   useEffect(() => {
@@ -73,24 +84,51 @@ export default function AIAssistant() {
           if (data.online) {
             setIsLocalMode(false);
             setApiError(null);
-            setStatusMessage("🟢 Online");
+            setStatusMessage("AI Core Online");
           } else {
             setIsLocalMode(true);
             setApiError("MISSING_KEYS");
-            setStatusMessage("Offline (Missing Keys)");
+            setStatusMessage("Local Knowledge Mode");
           }
         } else {
           throw new Error("Status check failed");
         }
       } catch (err) {
         console.warn("Could not retrieve AI Assistant online status:", err);
-        // Do not force Local Mode unless status returns no keys, default to online if connection fails during initial loading
-        setIsLocalMode(false);
-        setStatusMessage("🟢 Online");
+        setIsLocalMode(true);
+        setStatusMessage("Local Knowledge Mode");
       }
     };
     checkStatus();
   }, []);
+
+  // Boot startup animation sequence when assistant opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsInitializing(true);
+      setInitStep(0);
+      const steps = [
+        { delay: 100, step: 1 },  // Initializing Yash.OS...
+        { delay: 300, step: 2 },  // Loading LOST KD...
+        { delay: 500, step: 3 },  // Loading Engineering Knowledge...
+        { delay: 700, step: 4 },  // Projects Indexed
+        { delay: 850, step: 5 },  // Architecture Explorer Ready
+        { delay: 1000, step: 6 }, // AI Core Online
+        { delay: 1150, step: 7 }, // Welcome.
+        { delay: 1300, step: 8 }  // Complete
+      ];
+      const timers = steps.map(s => setTimeout(() => {
+        setInitStep(s.step);
+        if (s.step === 8) {
+          setIsInitializing(false);
+        }
+      }, s.delay));
+      return () => timers.forEach(clearTimeout);
+    } else {
+      setIsInitializing(false);
+      setInitStep(0);
+    }
+  }, [isOpen]);
 
   // Handle smooth scroll to section
   const handleScrollToSection = (sectionId: string) => {
@@ -125,21 +163,21 @@ export default function AIAssistant() {
     // 1. Diagnostics / Quota fallback
     if (q.includes("quota") || q.includes("api") || q.includes("key") || q.includes("offline") || q.includes("error")) {
       return {
-        content: "⚠️ **Offline Mode Active**: I am running in local pre-programmed mode because the cloud AI API key is offline or has exceeded its usage quota (HTTP 429).\n\nTo restore full AI conversational capability, you can create a free **GEMINI_API_KEY** on Google AI Studio and place it in the `.env.local` file! In the meantime, I can answer questions about Yashwanth's projects, experience, skills, or scroll you to any section of the page."
+        content: "Operating on **Yash.OS Local Portfolio Knowledge**. Cloud generative services are currently offline or unavailable. I can answer questions using pre-indexed repository mappings or scroll you to any section of the page."
       };
     }
 
     // 2. Greetings
     if (q === "hi" || q === "hello" || q === "hey" || q === "greetings" || q.startsWith("hello ") || q.startsWith("hi ")) {
       return {
-        content: "Greetings! I am **Lost KD**, K. Yashwanth's AI guide. I'm currently running in **Local Offline Mode** (API quota exceeded). I can still navigate the page and tell you about his work. Try asking about **'projects'**, **'resume summary'**, or type **'start mock interview'**!"
+        content: "Hello, I'm **LOST KD**. I'm the AI Engineering Guide inside **Yash.OS**. I can help you explore Yashwanth's systems architecture, stack, experience, and certifications. What would you like to explore?"
       };
     }
 
     // 3. Conversational / Help / Commands
     if (q.includes("help") || q.includes("who are you") || q.includes("what can you do") || q.includes("commands")) {
       return {
-        content: "I am **Lost KD**, K. Yashwanth Sri Sai's AI Assistant. Currently in **Offline Mode** (quota exceeded).\n\nHere are commands I recognize:\n- **Overview**: 'projects', 'skills', 'certifications', 'resume summary', 'contact'\n- **Specific Projects**: 'explain noteai', 'agentic ai', 'pdf chatbot', 'phishing detection'\n- **Recruiter**: 'why hire', 'strongest skills', 'best SDE project'\n- **Interaction**: 'start mock interview' for interactive developer testing!"
+        content: "I am **LOST KD**, Yashwanth's Engineering Guide. I can walk you through:\n- **Overview**: 'projects', 'skills', 'certifications', 'resume summary', 'contact'\n- **Specific Projects**: 'explain noteai', 'agentic ai', 'pdf chatbot', 'phishing detection'\n- **Recruiter**: 'why hire', 'strongest skills', 'best SDE project'\n- **Interaction**: 'start mock interview' to evaluate developer skills!"
       };
     }
 
@@ -243,19 +281,18 @@ export default function AIAssistant() {
 
     // Default fallback
     return {
-      content: "I am running in **Local Heuristics Mode** (API quota exceeded). I didn't quite match your phrase, but you can explore my pre-programmed knowledge about Yashwanth.\n\nTry asking me about:\n- **'Explain NoteAI'** to launch the Architecture Explorer\n- **'Where have you used FastAPI?'** to highlight the Skills Graph\n- **'Why should I hire you?'** or **'Strongest skills'**\n- **'Start mock interview'** to test developer knowledge!"
+      content: "Operating in **Local Heuristics Mode** (API offline). I didn't quite match your phrase, but you can explore my pre-programmed knowledge base.\n\nTry asking me about:\n- **'Explain NoteAI'** to launch the Architecture Explorer\n- **'Where have you used FastAPI?'** to highlight the Skills Graph\n- **'Why should I hire you?'** or **'Strongest skills'**\n- **'Start mock interview'** to evaluate developer knowledge!"
     };
   };
 
   // Extract navigation signals from text responses
   const parseNavigation = (text: string): string | undefined => {
     const lowerText = text.toLowerCase();
-    if (lowerText.includes("projects section") || lowerText.includes("projects view") || lowerText.includes("#projects")) return "projects";
-    if (lowerText.includes("timeline section") || lowerText.includes("timeline view") || lowerText.includes("#timeline")) return "timeline";
-    if (lowerText.includes("experience section") || lowerText.includes("#experience")) return "experience";
-    if (lowerText.includes("skills section") || lowerText.includes("#skills")) return "skills";
-    if (lowerText.includes("contact section") || lowerText.includes("#contact")) return "contact";
-    if (lowerText.includes("certifications section") || lowerText.includes("#certifications")) return "certifications";
+    if (lowerText.includes("projects section") || lowerText.includes("projects view") || lowerText.includes("#projects") || lowerText.includes("projects explorer")) return "projects";
+    if (lowerText.includes("timeline section") || lowerText.includes("timeline view") || lowerText.includes("#timeline") || lowerText.includes("journey")) return "timeline";
+    if (lowerText.includes("skills section") || lowerText.includes("#skills") || lowerText.includes("knowledge graph")) return "skills";
+    if (lowerText.includes("contact section") || lowerText.includes("#contact") || lowerText.includes("hiring form")) return "contact";
+    if (lowerText.includes("certifications section") || lowerText.includes("#certifications") || lowerText.includes("certification vault")) return "certifications";
     if (lowerText.includes("about section") || lowerText.includes("#about")) return "about";
     return undefined;
   };
@@ -295,9 +332,9 @@ export default function AIAssistant() {
           handleScrollToSection(extraData.sectionId);
         }
 
-        setStatusMessage(finalStatus || (isLocalMode ? "Local Core Node Active" : "🟢 Online"));
+        setStatusMessage(finalStatus || (isLocalMode ? "Local Knowledge Mode" : "AI Core Online"));
       }
-    }, 45); // Speed multiplier per word
+    }, 35); // Speed multiplier per word
   };
 
   const handleSendMessage = async (textToSend: string) => {
@@ -309,7 +346,7 @@ export default function AIAssistant() {
     setMessages(prev => [...prev, userMsg]);
     setInputValue("");
     setIsLoading(true);
-    setStatusMessage("Processing Query...");
+    setStatusMessage("Thinking");
 
     // Create placeholder for assistant response
     const assistantMsgId = `assistant-${Date.now()}`;
@@ -349,7 +386,7 @@ export default function AIAssistant() {
       }
       
       setInterviewStep(nextStep);
-      typeMessage(replyText, assistantMsgId, {}, nextStep > 0 ? "Mock Interview Active" : "🟢 Online");
+      typeMessage(replyText, assistantMsgId, {}, nextStep > 0 ? "Mock Interview Active" : (isLocalMode ? "Local Knowledge Mode" : "AI Core Online"));
       return;
     }
 
@@ -362,6 +399,11 @@ export default function AIAssistant() {
     if (q.includes("where has he used fastapi") || q.includes("used fastapi") || q.includes("fastapi")) {
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("highlight-skill-node", { detail: { skillId: "fastapi" } }));
+      }
+    }
+    if (q.includes("where has he used langchain") || q.includes("used langchain") || q.includes("langchain")) {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("highlight-skill-node", { detail: { skillId: "langchain" } }));
       }
     }
 
@@ -387,18 +429,11 @@ export default function AIAssistant() {
       const data = await response.json();
 
       if (data.fallback) {
-        // API key failed / configured local fallback
         setIsLocalMode(true);
         const errorType = data.errorType || "SERVER_ERROR";
         setApiError(errorType);
 
-        let finalStatus = "Offline (Local Core)";
-        if (errorType === "QUOTA_EXCEEDED") finalStatus = "Offline (Quota Exceeded)";
-        else if (errorType === "KEY_INVALID") finalStatus = "Offline (Key Invalid)";
-        else if (errorType === "RATE_LIMITED") finalStatus = "Offline (Rate Limited)";
-        else if (errorType === "WRONG_MODEL") finalStatus = "Offline (Wrong Model)";
-        else if (errorType === "MISSING_KEYS") finalStatus = "Offline (Missing Keys)";
-
+        const finalStatus = "Local Knowledge Mode";
         setStatusMessage(finalStatus);
 
         const fallbackRes = getLocalResponse(textToSend);
@@ -411,7 +446,7 @@ export default function AIAssistant() {
       } else if (data.response) {
         setIsLocalMode(false);
         setApiError(null);
-        setStatusMessage("🟢 Online");
+        setStatusMessage("AI Core Online");
         const reply = data.response;
         const sectionId = parseNavigation(reply);
         
@@ -428,17 +463,16 @@ export default function AIAssistant() {
         else if (lowerReply.includes("tracker") || lowerReply.includes("github repo") || lowerReply.includes("rest api")) projectId = "rest-api-backend";
         else if (lowerReply.includes("salesforge") || lowerReply.includes("sales")) projectId = "salesforge";
 
-        typeMessage(reply, assistantMsgId, { projectId, sectionId }, "🟢 Online");
+        typeMessage(reply, assistantMsgId, { projectId, sectionId }, "AI Core Online");
       } else {
         throw new Error("Malformed response");
       }
     } catch (err) {
       console.warn("API Request exception encountered:", err);
       setIsLoading(false);
-      // ONLY set local mode if there was no active provider keys found.
-      // If there are keys, keep isLocalMode false and let them retry.
+      setIsLocalMode(true);
       setApiError("NETWORK_ERROR");
-      const finalStatus = "Offline (Network Error)";
+      const finalStatus = "Local Knowledge Mode";
       setStatusMessage(finalStatus);
       const fallbackRes = getLocalResponse(textToSend);
       typeMessage(
@@ -452,18 +486,29 @@ export default function AIAssistant() {
 
   // Helper function to render text with bold tags and custom styles
   const formatMessageText = (content: string) => {
-    // Basic bold parsing: **text**
-    const parts = content.split(/(\*\*[^*]+\*\*)/g);
-    return parts.map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        const text = part.slice(2, -2);
-        return (
-          <strong key={index} className="text-white font-semibold">
-            {text}
-          </strong>
-        );
-      }
-      return part;
+    // Split by newlines first to render paragraphs correctly
+    const lines = content.split("\n");
+    return lines.map((line, lineIdx) => {
+      // Basic bold parsing: **text**
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      const renderedLine = parts.map((part, index) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          const text = part.slice(2, -2);
+          return (
+            <strong key={index} className="text-white font-semibold">
+              {text}
+            </strong>
+          );
+        }
+        return part;
+      });
+
+      return (
+        <React.Fragment key={lineIdx}>
+          {renderedLine}
+          {lineIdx < lines.length - 1 && <br />}
+        </React.Fragment>
+      );
     });
   };
 
@@ -474,27 +519,27 @@ export default function AIAssistant() {
     if (!project) return null;
 
     return (
-      <div className="mt-3 p-4 rounded-xl bg-black/40 border border-blue-500/20 backdrop-blur-md">
+      <div className="mt-3 p-4 rounded-xl bg-black/40 border border-cyan-500/20 backdrop-blur-md">
         <div className="flex justify-between items-start mb-2">
-          <span className="text-[10px] uppercase tracking-wider text-blue-400 font-bold flex items-center gap-1">
+          <span className="text-[10px] uppercase tracking-wider text-cyan-400 font-bold flex items-center gap-1">
             <FiLayers /> {project.role}
           </span>
           <span className="text-[10px] text-white/50">{project.duration}</span>
         </div>
         <h4 className="text-sm font-bold text-white mb-1">{project.name}</h4>
-        <p className="text-xs text-white/70 mb-3 leading-relaxed">
+        <p className="text-xs text-white/70 mb-3 leading-relaxed text-left">
           {project.overview}
         </p>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {project.technologies.slice(0, 4).map(tech => (
-            <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/10">
+            <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/10">
               {tech}
             </span>
           ))}
         </div>
         <button
           onClick={() => handleScrollToSection(project.sectionId || "projects")}
-          className="w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs flex items-center justify-center gap-1 transition-all cursor-pointer"
+          className="w-full py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs flex items-center justify-center gap-1 transition-all cursor-pointer border-0"
         >
           <FiNavigation className="text-[10px]" /> View on Page
         </button>
@@ -504,16 +549,16 @@ export default function AIAssistant() {
 
   return (
     <>
-      {/* Floating AI Orb Trigger */}
+      {/* Floating AI Orb Trigger - Styled as Yash.OS Brand Gateway */}
       <div className="fixed bottom-6 right-6 z-[999] flex items-center justify-center">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle AI Assistant"
-          className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(99,102,241,0.4)] focus:outline-none"
+          className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(99,102,241,0.4)] focus:outline-none border-0"
           style={{
-            background: "radial-gradient(circle at 35% 35%, rgba(99, 102, 241, 0.8), rgba(59, 130, 246, 0.9))",
+            background: "radial-gradient(circle at 35% 35%, rgba(99, 102, 241, 0.85), rgba(6, 182, 212, 0.95))",
           }}
-          whileHover={{ scale: 1.08, boxShadow: "0 0 40px rgba(99,102,241,0.6)" }}
+          whileHover={{ scale: 1.08, boxShadow: "0 0 40px rgba(6,182,212,0.6)" }}
           whileTap={{ scale: 0.95 }}
           animate={{
             y: [0, -6, 0],
@@ -527,7 +572,7 @@ export default function AIAssistant() {
           }}
         >
           {/* Animated Orbital Ring */}
-          <div className="absolute inset-[-4px] rounded-full border border-indigo-500/30 animate-spin-reverse opacity-60" style={{ borderStyle: "dashed" }} />
+          <div className="absolute inset-[-4px] rounded-full border border-cyan-500/30 animate-spin-reverse opacity-60" style={{ borderStyle: "dashed" }} />
           <div className="absolute inset-[-8px] rounded-full border border-blue-400/20 animate-spin opacity-40" />
 
           {/* Glowing Orb Center */}
@@ -551,20 +596,20 @@ export default function AIAssistant() {
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: -90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center justify-center"
               >
                 <div className="relative shrink-0 mt-1">
-                  <Image src="/lost-kd.jpg" alt="Lost KD" width={32} height={32} className="w-8 h-8 rounded-full border border-indigo-500/30 object-cover shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-                  <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#030308] rounded-full"></div>
+                  <Image src="/logo.png" alt="Yash.OS logo" width={48} height={20} className="h-5 w-auto object-contain" />
+                  <div className="absolute -bottom-1.5 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#030308] rounded-full"></div>
                 </div>
-                <span className="text-[8px] text-indigo-200 uppercase font-black tracking-wider mt-0.5">LOST KD</span>
+                <span className="text-[8px] text-cyan-200 uppercase font-black tracking-wider mt-1 select-none">LOST KD</span>
               </motion.div>
             )}
           </AnimatePresence>
         </motion.button>
       </div>
 
-      {/* Futuristic Dashboard Chat Panel */}
+      {/* Yash.OS LOST KD Chat Panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -575,144 +620,206 @@ export default function AIAssistant() {
             className="fixed bottom-24 right-6 w-[92vw] sm:w-[400px] h-[550px] z-[998] flex flex-col rounded-3xl overflow-hidden glass-primary"
           >
             {/* Header section with ambient glow background */}
-            <div className="relative px-5 py-4 border-b border-white/5 flex items-center justify-between overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-[80px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
+            <div className="relative px-5 py-4 border-b border-white/5 flex flex-col gap-3 overflow-hidden select-none">
+              <div className="absolute top-0 left-0 right-0 h-[100px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
               
-              <div className="flex items-center gap-3 relative z-10">
-                <div className="w-12 h-12 rounded-full border border-indigo-500/30 overflow-hidden shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-                  <Image src="/lost-kd.jpg" alt="Lost KD" width={48} height={48} className="w-full h-full object-cover" />
+              {/* Row 1: Logo and Version */}
+              <div className="flex justify-between items-center relative z-10">
+                <div className="flex items-center">
+                  <Image src="/logo.png" alt="Yash.OS" width={110} height={30} className="h-6.5 w-auto object-contain" priority />
                 </div>
-                <div>
-                  <h3 className="text-sm font-black tracking-widest text-white flex items-center gap-1.5 uppercase">
-                    LOST KD <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-normal tracking-normal lowercase">v2.0</span>
+                <span className="text-[9px] px-2 py-0.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 font-mono tracking-wider font-bold">
+                  v3.0
+                </span>
+              </div>
+
+              {/* Row 2: Assistant Details & Status */}
+              <div className="flex justify-between items-end relative z-10">
+                <div className="text-left">
+                  <h3 className="text-sm font-black tracking-widest text-white leading-none">
+                    LOST KD
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="relative flex h-2 w-2">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${apiError ? "bg-red-400" : isLocalMode ? "bg-amber-400" : "bg-emerald-400"}`}></span>
-                      <span className={`relative inline-flex rounded-full h-2 w-2 ${apiError ? "bg-red-500" : isLocalMode ? "bg-amber-500" : "bg-emerald-500"}`}></span>
+                  <p className="text-[9px] text-white/50 tracking-wider mt-1 font-mono uppercase">
+                    AI Portfolio Engineer
+                  </p>
+                  <p className="text-[8px] text-zinc-500 mt-0.5 font-mono">
+                    Powered by Yash.OS
+                  </p>
+                </div>
+
+                {/* Status Indicator */}
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
+                        isInitializing ? "bg-purple-500" :
+                        isLoading ? "bg-blue-500 animate-pulse" :
+                        isLocalMode ? "bg-amber-500" : "bg-emerald-500"
+                      }`}></span>
                     </span>
-                    <span className="text-[10px] text-white/50 tracking-wide font-mono uppercase">{statusMessage}</span>
+                    <span className={`text-[9px] font-mono font-bold tracking-wide uppercase ${
+                      isInitializing ? "text-purple-400" :
+                      isLoading ? "text-blue-400" :
+                      isLocalMode ? "text-amber-400" : "text-emerald-400"
+                    }`}>
+                      {isInitializing ? "Initializing" :
+                       isLoading ? "Thinking" :
+                       isLocalMode ? "Local Knowledge Mode" : "AI Core Online"}
+                    </span>
                   </div>
+                  {!isInitializing && (
+                    <span className="text-[7.5px] text-zinc-500 font-mono leading-none">
+                      {isLocalMode ? "Using pre-indexed dataset" : `Gemini - gemini-2.5-flash`}
+                    </span>
+                  )}
                 </div>
               </div>
 
+              {/* Close Button */}
               <button 
                 onClick={() => setIsOpen(false)}
                 aria-label="Close AI Assistant"
-                className="p-1.5 rounded-lg hover:bg-white/5 text-white/60 hover:text-white transition-all cursor-pointer"
+                className="absolute top-4 right-4 z-20 p-1.5 rounded-lg hover:bg-white/5 text-white/60 hover:text-white transition-all cursor-pointer border-0 bg-transparent"
               >
                 <FiX className="text-base" />
               </button>
             </div>
 
-            {/* Diagnostic Banner if API fails */}
-            {apiError && (
-              <div className="mx-5 mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-200/90 flex flex-col gap-1.5 shadow-[0_4px_12px_rgba(239,68,68,0.15)] text-left">
-                <div className="flex items-center gap-1.5 font-bold text-red-400">
-                  <FiAlertTriangle className="shrink-0 text-sm" />
-                  <span>API OFFLINE: {apiError.replace("_", " ")}</span>
+            {/* Banner if in Local Mode */}
+            {isLocalMode && !isInitializing && (
+              <div className="mx-5 mt-3 p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 text-xs text-amber-200/90 flex flex-col gap-1 shadow-[0_4px_12px_rgba(245,158,11,0.05)] text-left animate-fadeIn">
+                <div className="flex items-center gap-1.5 font-bold text-amber-400 font-mono text-[10px] uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span>Running on local portfolio knowledge.</span>
                 </div>
-                <p className="text-[11px] leading-relaxed text-red-200/70">
-                  {apiError === "QUOTA_EXCEEDED" && (
-                    <>
-                      Your API key has exceeded its quota (out of credits). Set a free <strong className="text-white">GEMINI_API_KEY</strong> from Google AI Studio in your `.env.local` to restore chat.
-                    </>
-                  )}
-                  {apiError === "KEY_INVALID" && (
-                    <>
-                      The configured API key is invalid or unauthorized. Please verify the key values in your `.env.local` file.
-                    </>
-                  )}
-                  {apiError === "MISSING_KEYS" && (
-                    <>
-                      No API keys are configured on the server. Please add <strong className="text-white">GEMINI_API_KEY</strong> or <strong className="text-white">OPENAI_API_KEY</strong> to your environment variables.
-                    </>
-                  )}
-                  {apiError === "RATE_LIMITED" && (
-                    <>
-                      API rate limit reached. Please wait a moment before sending another query.
-                    </>
-                  )}
-                  {apiError === "WRONG_MODEL" && (
-                    <>
-                      The selected model name is not recognized by the provider endpoint.
-                    </>
-                  )}
-                  {apiError === "NETWORK_ERROR" && (
-                    <>
-                      Failed to establish network connection to the AI provider server. Check internet availability.
-                    </>
-                  )}
-                  {apiError === "SERVER_ERROR" && (
-                    <>
-                      The AI model provider endpoint returned a server exception (HTTP 500).
-                    </>
-                  )}
+                <p className="text-[10px] leading-relaxed text-amber-200/60 font-sans">
+                  Cloud AI is currently offline or unavailable. Operating in secure offline mode using pre-indexed knowledge base.
                 </p>
               </div>
             )}
 
-            {/* Conversation message feed */}
+            {/* Main view: Boot loader sequence or Chat Messages */}
             <div 
               ref={scrollContainerRef}
-              className="flex-1 overflow-y-auto px-5 py-4 space-y-4"
+              className="flex-1 overflow-y-auto px-5 py-4 space-y-4 flex flex-col"
               style={{ scrollbarWidth: "thin" }}
             >
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div className="flex gap-2.5 max-w-[85%] items-start text-left">
-                    {m.role === "assistant" && (
-                      <div className="w-6 h-6 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <FiCpu className="text-indigo-400 text-xs" />
-                      </div>
+              {isInitializing ? (
+                /* Cinematic console loading sequence */
+                <div className="flex-1 flex flex-col justify-center px-2 space-y-2.5 font-mono text-left select-none text-[11px] text-zinc-400/80">
+                  <div className="space-y-1 bg-black/40 border border-white/5 p-5 rounded-2xl">
+                    {initStep >= 1 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-purple-400">&gt;</span> Initializing Yash.OS...
+                      </motion.div>
                     )}
-                    <div className="flex flex-col">
-                      <div
-                        className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
-                          m.role === "user"
-                            ? "bg-indigo-600/90 text-white rounded-tr-none shadow-[0_4px_12px_rgba(99,102,241,0.2)]"
-                            : "bg-white/5 text-white/90 border border-white/5 rounded-tl-none"
-                        }`}
-                      >
-                        {formatMessageText(m.content)}
+                    {initStep >= 2 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-purple-400">&gt;</span> Loading LOST KD...
+                      </motion.div>
+                    )}
+                    {initStep >= 3 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-purple-400">&gt;</span> Loading Engineering Knowledge...
+                      </motion.div>
+                    )}
+                    {initStep >= 4 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-emerald-400 font-bold">[OK]</span> Projects Indexed
+                      </motion.div>
+                    )}
+                    {initStep >= 5 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-emerald-400 font-bold">[OK]</span> Architecture Explorer Ready
+                      </motion.div>
+                    )}
+                    {initStep >= 6 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+                        <span className="text-emerald-400 font-bold">[OK]</span> AI Core Online
+                      </motion.div>
+                    )}
+                    {initStep >= 7 && (
+                      <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 text-cyan-400 font-bold mt-2">
+                        <span>[READY]</span> Welcome.
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                /* Chat Messages Feed */
+                <>
+                  {messages.map((m) => (
+                    <div
+                      key={m.id}
+                      className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div className="flex gap-2.5 max-w-[85%] items-start text-left">
+                        {m.role === "assistant" && (
+                          <div className="w-7 h-7 rounded bg-black/40 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 p-1">
+                            <Image src="/logo.png" alt="Yash.OS avatar" width={20} height={20} className="w-full h-full object-contain" />
+                          </div>
+                        )}
+                        <div className="flex flex-col">
+                          <div
+                            className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed ${
+                              m.role === "user"
+                                ? "bg-indigo-600/90 text-white rounded-tr-none shadow-[0_4px_12px_rgba(99,102,241,0.2)]"
+                                : "bg-white/5 text-white/90 border border-white/5 rounded-tl-none"
+                            }`}
+                          >
+                            {formatMessageText(m.content)}
+                          </div>
+
+                          {/* Navigation trigger button inside helper responses */}
+                          {m.role === "assistant" && m.sectionId && !m.projectId && (
+                            <button
+                              onClick={() => handleScrollToSection(m.sectionId!)}
+                              aria-label={`Navigate to ${m.sectionId}`}
+                              className="self-start mt-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20 text-cyan-300 text-[10px] font-medium flex items-center gap-1 transition-all cursor-pointer border-0"
+                            >
+                              <FiNavigation className="text-[9px]" /> Navigate to {m.sectionId.toUpperCase()}
+                            </button>
+                          )}
+
+                          {/* Detailed inline project card */}
+                          {m.role === "assistant" && m.projectId && (
+                            renderInlineProjectCard(m.projectId)
+                          )}
+                        </div>
                       </div>
-
-                      {/* Display navigation copilot trigger button inside helper responses */}
-                      {m.role === "assistant" && m.sectionId && !m.projectId && (
-                        <button
-                          onClick={() => handleScrollToSection(m.sectionId!)}
-                          aria-label={`Navigate to ${m.sectionId}`}
-                          className="self-start mt-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-300 text-[11px] font-medium flex items-center gap-1 transition-all cursor-pointer"
-                        >
-                          <FiNavigation className="text-[9px]" /> Navigate to {m.sectionId.toUpperCase()}
-                        </button>
-                      )}
-
-                      {/* Render custom detailed project card inside helper responses */}
-                      {m.role === "assistant" && m.projectId && (
-                        renderInlineProjectCard(m.projectId)
-                      )}
                     </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
 
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="flex gap-2.5 max-w-[85%] items-start">
-                    <div className="w-6 h-6 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                      <FiCpu className="text-indigo-400 text-xs animate-spin-reverse" />
+                  {/* Thinking Loader State */}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="flex gap-2.5 max-w-[85%] items-start">
+                        <div className="w-7 h-7 rounded bg-black/40 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-0.5 p-1 shadow-[0_0_10px_rgba(6,182,212,0.15)]">
+                          <motion.div
+                            animate={{ 
+                              scale: [1, 1.15, 1],
+                              opacity: [0.7, 1, 0.7]
+                            }}
+                            transition={{ 
+                              duration: 1.2, 
+                              repeat: Infinity, 
+                              ease: "easeInOut" 
+                            }}
+                            className="w-full h-full relative"
+                          >
+                            <Image src="/logo.png" alt="Yash.OS Loading" fill className="object-contain" />
+                          </motion.div>
+                        </div>
+                        <div className="px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 rounded-tl-none flex items-center gap-1.5 h-8">
+                          <span className="text-[10px] font-mono text-cyan-400/80 tracking-wider">thinking</span>
+                          <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </div>
+                      </div>
                     </div>
-                    <div className="px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 rounded-tl-none flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  </div>
-                </div>
+                  )}
+                </>
               )}
               
               <div ref={messagesEndRef} />
@@ -726,6 +833,7 @@ export default function AIAssistant() {
                   onClick={() => handleSendMessage(s.query)}
                   aria-label={`Suggestion: ${s.label}`}
                   className="px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-white/80 hover:text-white text-xs whitespace-nowrap cursor-pointer transition-all shrink-0 animate-pulse-glow"
+                  disabled={isLoading || isInitializing}
                 >
                   {s.label}
                 </button>
@@ -744,15 +852,15 @@ export default function AIAssistant() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={interviewStep > 0 ? "Type your interview response..." : "Ask Lost KD about projects, skills, history..."}
-                className="flex-1 bg-white/5 border border-white/10 hover:border-white/15 focus:border-indigo-500/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none font-sans placeholder-white/35 transition-all"
-                disabled={isLoading}
+                placeholder={interviewStep > 0 ? "Type your response..." : "Ask LOST KD about projects, architecture, skills, or interview experience..."}
+                className="flex-1 bg-white/5 border border-white/10 hover:border-white/15 focus:border-indigo-500/50 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none font-sans placeholder-white/35 transition-all"
+                disabled={isLoading || isInitializing}
               />
               <button
                 type="submit"
-                aria-label="Send Message"
-                className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/20 cursor-pointer disabled:opacity-50 transition-all"
-                disabled={isLoading || !inputValue.trim()}
+                aria-label="Ask LOST KD"
+                className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/20 cursor-pointer disabled:opacity-50 transition-all border-0"
+                disabled={isLoading || isInitializing || !inputValue.trim()}
               >
                 <FiSend className="text-base" />
               </button>
