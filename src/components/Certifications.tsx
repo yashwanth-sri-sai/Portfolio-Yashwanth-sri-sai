@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { certifications, Certification } from "@/data/certifications";
-import { FiExternalLink, FiX, FiCalendar, FiAward, FiCheckCircle, FiLock, FiFilter, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiExternalLink, FiX, FiLock, FiFilter, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SectionHeading from "./SectionHeading";
 import BorderGlow from "./BorderGlow";
 
@@ -38,10 +39,12 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
       className="relative w-full select-none overflow-hidden bg-black flex items-center justify-center font-sans"
       style={{ aspectRatio: "4/3" }}
     >
-      {/* Background Certificate Template with hue adjustment */}
-      <img
+      {/* Background Certificate Template with Next.js Image Optimization */}
+      <Image
         src={cert.image}
         alt={`${cert.title} Certificate Background Template`}
+        fill
+        sizes={isLarge ? "640px" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         style={{
@@ -214,9 +217,11 @@ export default function Certifications() {
   const visibleCertifications = useMemo(() => {
     let result = certifications.filter((cert) => matchesFilter(cert, activeFilter));
     
-    // If showing featured and filter is "All", slice it to featured items only
+    // If showing featured and filter is "All", slice and sort by custom featured order
     if (!showAll && activeFilter === "All") {
-      result = result.filter((cert) => FEATURED_IDS.includes(cert.id));
+      result = result
+        .filter((cert) => FEATURED_IDS.includes(cert.id))
+        .sort((a, b) => FEATURED_IDS.indexOf(a.id) - FEATURED_IDS.indexOf(b.id));
     }
     return result;
   }, [activeFilter, showAll]);
@@ -250,8 +255,11 @@ export default function Certifications() {
               key={category}
               onClick={() => {
                 setActiveFilter(category);
-                // When selecting a specific filter area, reset showAll to avoid confusion
-                if (category !== "All") setShowAll(true);
+                if (category === "All") {
+                  setShowAll(false);
+                } else {
+                  setShowAll(true);
+                }
               }}
               className={`px-4 py-2 rounded-full border text-xs font-mono font-medium tracking-wide transition-all duration-300 relative overflow-hidden cursor-pointer ${
                 activeFilter === category
