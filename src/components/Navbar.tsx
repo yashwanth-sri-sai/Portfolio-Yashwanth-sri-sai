@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { FiMenu, FiX } from "react-icons/fi";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,11 +67,16 @@ export default function Navbar() {
             }}
             aria-label="Scroll to Home"
             data-cursor="magnetic"
-            className="group relative z-[110] font-mono font-bold tracking-widest text-lg flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus:outline-none rounded px-2 py-1"
+            className="group relative z-[110] flex items-center focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus:outline-none rounded transition-transform duration-300 hover:scale-105"
           >
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-            <span className="text-white group-hover:text-cyan-400 transition-colors duration-300">YSS</span>
-            <span className="text-zinc-600">.CORE</span>
+            <Image
+              src="/logo.png"
+              alt="Yash.OS Logo"
+              width={140}
+              height={40}
+              className="h-8 sm:h-9 w-auto object-contain"
+              priority
+            />
           </button>
 
           {/* Desktop Inline Navigation */}
