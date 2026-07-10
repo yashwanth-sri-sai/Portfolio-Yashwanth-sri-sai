@@ -10,7 +10,9 @@ export default function Intro() {
 
   useEffect(() => {
     if (localStorage.getItem("introSeen") === "true") {
-      setStage("complete");
+      setTimeout(() => {
+        setStage("complete");
+      }, 0);
     }
   }, []);
   const isComplete = stage === "complete";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MILESTONES, TECH_EVOLUTION, FUTURE_VISION } from "@/data/timelineData";
-import { FiGitCommit, FiArrowUpRight, FiEye, FiZap } from "react-icons/fi";
+import { FiEye, FiZap } from "react-icons/fi";
 import BorderGlow from "./BorderGlow";
 
 export default function Timeline() {
