@@ -226,11 +226,27 @@ export default function Certifications() {
   const visibleCertifications = useMemo(() => {
     let result = certifications.filter((cert) => matchesFilter(cert, activeFilter));
     
-    // If showing featured and filter is "All", slice and sort by custom featured order
-    if (!showAll && activeFilter === "All") {
-      result = result
-        .filter((cert) => FEATURED_IDS.includes(cert.id))
-        .sort((a, b) => FEATURED_IDS.indexOf(a.id) - FEATURED_IDS.indexOf(b.id));
+    if (activeFilter === "All") {
+      if (!showAll) {
+        // Show only featured sorted by custom featured order
+        result = result
+          .filter((cert) => FEATURED_IDS.includes(cert.id))
+          .sort((a, b) => FEATURED_IDS.indexOf(a.id) - FEATURED_IDS.indexOf(b.id));
+      } else {
+        // Show all, but keep featured items at the top in their custom order, and append others at the bottom.
+        // This maintains element layout stability during grid expanding transitions.
+        result = [...result].sort((a, b) => {
+          const aFeatured = FEATURED_IDS.includes(a.id);
+          const bFeatured = FEATURED_IDS.includes(b.id);
+          
+          if (aFeatured && bFeatured) {
+            return FEATURED_IDS.indexOf(a.id) - FEATURED_IDS.indexOf(b.id);
+          }
+          if (aFeatured) return -1;
+          if (bFeatured) return 1;
+          return a.id - b.id;
+        });
+      }
     }
     return result;
   }, [activeFilter, showAll]);
@@ -289,7 +305,7 @@ export default function Certifications() {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence>
             {visibleCertifications.map((cert) => (
               <motion.div
                 key={cert.id}
