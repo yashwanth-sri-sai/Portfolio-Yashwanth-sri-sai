@@ -617,7 +617,7 @@ What would you like to build today?`,
             animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50, x: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 w-[92vw] sm:w-[400px] h-[550px] z-[998] flex flex-col rounded-3xl overflow-hidden glass-primary"
+            className="fixed bottom-24 right-6 w-[92vw] sm:w-[400px] h-[550px] z-[998] flex flex-col rounded-3xl overflow-hidden border border-blue-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.85)] bg-[#0d1f44]"
           >
             {/* Header section with ambient glow background */}
             <div className="relative px-5 py-4 border-b border-white/5 flex flex-col gap-3 overflow-hidden select-none">
