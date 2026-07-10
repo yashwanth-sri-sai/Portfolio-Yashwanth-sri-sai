@@ -286,7 +286,7 @@ export default function Hero() {
             <a href="https://www.linkedin.com/in/yashwanth-srisai-7a1078252/" target="_blank" rel="noreferrer" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="LinkedIn">
               <FiLinkedin size={20} />
             </a>
-            <a href="mailto:yashwanthsrisai@gmail.com" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="Email">
+            <a href="mailto:k.yashwanthsrisai09@gmail.com" className="hover:text-white hover:scale-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded" aria-label="Email">
               <FiMail size={20} />
             </a>
             <div className="w-px h-4 bg-zinc-800 mx-1" />

@@ -466,7 +466,7 @@ export default function Contact() {
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-5" id="contact-form">
                 {isDemoMode && (
                   <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-300 text-xs font-mono leading-relaxed">
-                    <span className="font-bold">⚠️ Demo Mode:</span> Email API credentials are not configured in environment variables. Form submission will show a transmission error. Please reach me directly at <a href="mailto:yashwanthsrisai@gmail.com" className="underline text-cyan-400 hover:text-cyan-300">yashwanthsrisai@gmail.com</a>.
+                    <span className="font-bold">⚠️ Demo Mode:</span> Email API credentials are not configured in environment variables. Form submission will show a transmission error. Please reach me directly at <a href="mailto:k.yashwanthsrisai09@gmail.com" className="underline text-cyan-400 hover:text-cyan-300">k.yashwanthsrisai09@gmail.com</a>.
                   </div>
                 )}
 
