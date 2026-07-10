@@ -71,70 +71,78 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
       </div>
 
       {/* dynamic certificate text layers */}
-      <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 z-10">
+      <div className={`absolute inset-0 flex flex-col justify-between z-10 ${isLarge ? "p-6 sm:p-8" : "p-3.5 sm:p-4"}`}>
+        
         {/* Header Metadata */}
         <div className="flex justify-between items-start">
           <div className="flex flex-col text-left">
-            <span className="text-[7px] sm:text-[9px] font-mono tracking-widest text-white/30">CREDENTIAL ID</span>
-            <span className="text-[8px] sm:text-[10px] font-mono font-bold text-white/60 tracking-wider">
+            <span className={`font-mono tracking-widest text-white/30 ${isLarge ? "text-[7px] sm:text-[9px]" : "text-[6px] sm:text-[7px]"}`}>CREDENTIAL ID</span>
+            <span className={`font-mono font-bold text-white/60 tracking-wider ${isLarge ? "text-[8px] sm:text-[10px]" : "text-[7px] sm:text-[8px]"}`}>
               #{cert.id.toString().padStart(4, "0")}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-[7px] sm:text-[9px] font-mono tracking-widest text-white/30 font-bold">STATUS</span>
-            <div className="text-[8px] sm:text-[10px] font-mono text-cyan-400 font-bold">VERIFIED</div>
+            <span className={`font-mono tracking-widest text-white/30 font-bold ${isLarge ? "text-[7px] sm:text-[9px]" : "text-[6px] sm:text-[7px]"}`}>STATUS</span>
+            <div className={`font-mono text-cyan-400 font-bold ${isLarge ? "text-[8px] sm:text-[10px]" : "text-[7px] sm:text-[8px]"}`}>VERIFIED</div>
           </div>
         </div>
 
         {/* Dynamic Title, Issuer & Candidate */}
-        <div className="flex flex-col items-center text-center my-auto px-4">
-          <span
-            className="text-[7px] sm:text-[9px] font-mono tracking-[0.2em] font-extrabold uppercase mb-1 sm:mb-2 text-white/40"
-            style={{ textShadow: "0 0 10px rgba(255,255,255,0.05)" }}
-          >
-            CERTIFICATE OF COMPLETION
-          </span>
-          <h4
-            className={`font-black tracking-tight text-white leading-tight uppercase max-w-[90%] mb-1.5 sm:mb-3 ${
-              isLarge ? "text-base sm:text-xl md:text-2xl" : "text-xs sm:text-sm md:text-base"
-            }`}
-            style={{ textShadow: "0 0 15px rgba(255,255,255,0.15)" }}
-          >
-            {cert.title}
-          </h4>
-          <span className="text-[6px] sm:text-[8px] font-mono text-white/30 mb-0.5">AWARDED TO</span>
-          <span
-            className={`font-sans font-bold text-white tracking-wide border-b border-white/10 pb-0.5 px-4 ${
-              isLarge ? "text-xs sm:text-base" : "text-[10px] sm:text-xs"
-            }`}
-          >
-            K. YASHWANTH SRI SAI
-          </span>
-          <span className="text-[6px] sm:text-[8px] font-mono text-white/20 mt-2">BY ISSUER</span>
-          <span
-            className={`font-sans font-extrabold uppercase tracking-widest mt-0.5 ${
-              isLarge ? "text-xs sm:text-sm" : "text-[8px] sm:text-[10px]"
-            }`}
-            style={{ color: cert.color }}
-          >
-            {cert.issuer}
-          </span>
+        <div className="flex flex-col items-center text-center my-auto px-2">
+          {!isLarge ? (
+            <>
+              <h4 className="font-black tracking-tight text-white leading-tight uppercase max-w-[95%] mb-1 text-[9px] sm:text-[11px] line-clamp-2">
+                {cert.title}
+              </h4>
+              <span className="text-[7.5px] font-sans font-bold text-white/80 border-b border-white/10 pb-0.5 px-2">
+                K. YASHWANTH SRI SAI
+              </span>
+              <span className="font-sans font-extrabold uppercase tracking-widest text-[7px] sm:text-[8px] mt-1" style={{ color: cert.color }}>
+                {cert.issuer}
+              </span>
+            </>
+          ) : (
+            <>
+              <span
+                className="text-[7px] sm:text-[9px] font-mono tracking-[0.2em] font-extrabold uppercase mb-1 sm:mb-2 text-white/40"
+                style={{ textShadow: "0 0 10px rgba(255,255,255,0.05)" }}
+              >
+                CERTIFICATE OF COMPLETION
+              </span>
+              <h4
+                className="font-black tracking-tight text-white leading-tight uppercase max-w-[90%] mb-1.5 sm:mb-3 text-base sm:text-xl md:text-2xl"
+                style={{ textShadow: "0 0 15px rgba(255,255,255,0.15)" }}
+              >
+                {cert.title}
+              </h4>
+              <span className="text-[6px] sm:text-[8px] font-mono text-white/30 mb-0.5">AWARDED TO</span>
+              <span className="font-sans font-bold text-white tracking-wide border-b border-white/10 pb-0.5 px-4 text-xs sm:text-base">
+                K. YASHWANTH SRI SAI
+              </span>
+              <span className="text-[6px] sm:text-[8px] font-mono text-white/20 mt-2">BY ISSUER</span>
+              <span className="font-sans font-extrabold uppercase tracking-widest mt-0.5 text-xs sm:text-sm" style={{ color: cert.color }}>
+                {cert.issuer}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Footer Meta & Signatures */}
         <div className="flex justify-between items-end">
           {/* Cryptographic Verification Entity */}
           <div className="flex flex-col text-left">
-            <span className="text-[8px] sm:text-[10px] font-sans font-bold text-white/40 border-b border-white/10 pb-0.5 select-none leading-none">
+            <span className={`font-sans font-bold text-white/40 border-b border-white/10 pb-0.5 select-none leading-none ${isLarge ? "text-[8px] sm:text-[10px]" : "text-[7px] sm:text-[8px]"}`}>
               Authorized Signature
             </span>
-            <span className="text-[5px] sm:text-[7px] font-mono text-white/25 tracking-widest mt-1">ISSUING AUTHORITY</span>
+            <span className={`font-mono text-white/25 tracking-widest mt-1 ${isLarge ? "text-[5px] sm:text-[7px]" : "text-[4.5px] sm:text-[5.5px]"}`}>ISSUING AUTHORITY</span>
           </div>
 
           {/* Golden Seal of Authenticity */}
-          <div className="relative flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 bg-yellow-500/10 rounded-full border border-yellow-500/30 shadow-[0_0_12px_rgba(234,179,8,0.1)] select-none">
+          <div className={`relative flex items-center justify-center bg-yellow-500/10 rounded-full border border-yellow-500/30 shadow-[0_0_12px_rgba(234,179,8,0.1)] select-none ${
+            isLarge ? "w-8 h-8 sm:w-11 sm:h-11" : "w-6 h-6 sm:w-8 sm:h-8"
+          }`}>
             <div className="w-[85%] h-[85%] rounded-full border border-dashed border-yellow-500/20 flex items-center justify-center">
-              <span className="text-[8px] sm:text-[10px] text-yellow-500 font-bold">✓</span>
+              <span className={`text-yellow-500 font-bold ${isLarge ? "text-[8px] sm:text-[10px]" : "text-[6px] sm:text-[8px]"}`}>✓</span>
             </div>
             {/* Hologram details */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-full animate-pulse-glow" />
@@ -142,12 +150,13 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
 
           {/* Issuance Date */}
           <div className="flex flex-col text-right">
-            <span className="text-[8px] sm:text-[10px] font-mono font-bold text-white/60 leading-none">
+            <span className={`font-mono font-bold text-white/60 leading-none ${isLarge ? "text-[8px] sm:text-[10px]" : "text-[7px] sm:text-[8px]"}`}>
               {cert.year}
             </span>
-            <span className="text-[5px] sm:text-[7px] font-mono text-white/30 tracking-widest mt-1">DATE OF ISSUE</span>
+            <span className={`font-mono text-white/30 tracking-widest mt-1 ${isLarge ? "text-[5px] sm:text-[7px]" : "text-[4.5px] sm:text-[5.5px]"}`}>DATE OF ISSUE</span>
           </div>
         </div>
+
       </div>
     </div>
   );
