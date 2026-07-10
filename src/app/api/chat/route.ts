@@ -1,9 +1,46 @@
 import { NextResponse } from "next/server";
 import { generateSystemPrompt } from "@/data/resumeContext";
+import fs from "fs";
+import path from "path";
+
+// Helper to manually parse .env.local file if Next.js has not hot-reloaded process.env
+const getEnvKeys = () => {
+  let geminiKey = process.env.GEMINI_API_KEY;
+  let openaiKey = process.env.OPENAI_API_KEY;
+
+  if (!geminiKey || !openaiKey) {
+    try {
+      const envPath = path.join(process.cwd(), ".env.local");
+      if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, "utf-8");
+        const lines = envContent.split(/\r?\n/);
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed && !trimmed.startsWith("#")) {
+            const parts = trimmed.split("=");
+            if (parts.length >= 2) {
+              const key = parts[0].trim();
+              const value = parts.slice(1).join("=").trim();
+              if (key === "GEMINI_API_KEY" && !geminiKey) {
+                geminiKey = value;
+              }
+              if (key === "OPENAI_API_KEY" && !openaiKey) {
+                openaiKey = value;
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[API Chat] Manual .env.local parsing warning:", e);
+    }
+  }
+
+  return { geminiKey, openaiKey };
+};
 
 export async function GET() {
-  const geminiKey = process.env.GEMINI_API_KEY;
-  const openaiKey = process.env.OPENAI_API_KEY;
+  const { geminiKey, openaiKey } = getEnvKeys();
   
   const providers: string[] = [];
   if (geminiKey) providers.push("Gemini");
@@ -37,8 +74,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const geminiKey = process.env.GEMINI_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
+    const { geminiKey, openaiKey } = getEnvKeys();
     const systemPrompt = generateSystemPrompt();
     
     const errorsList: AttemptedError[] = [];
@@ -97,9 +133,7 @@ export async function POST(request: Request) {
           console.error(`[API Chat] Gemini FAILED in ${duration}ms. Status: ${response.status}. Error: ${errText}`);
           
           let errorType: AttemptedError["errorType"] = "SERVER_ERROR";
-          if (response.status === 400) {
-            errorType = "KEY_INVALID";
-          } else if (response.status === 403) {
+          if (response.status === 400 || response.status === 403) {
             errorType = "KEY_INVALID";
           } else if (response.status === 429) {
             errorType = errText.toLowerCase().includes("quota") ? "QUOTA_EXCEEDED" : "RATE_LIMITED";
@@ -213,7 +247,7 @@ export async function POST(request: Request) {
 
     // 3. Fallback: No API keys configured or both failed, trigger client fallback with specific errors info
     if (errorsList.length === 0) {
-      console.warn("[API Chat] Chat POST called but no API keys were loaded in process.env.");
+      console.warn("[API Chat] Chat POST called but no API keys were loaded in process.env or .env.local.");
       return NextResponse.json({
         response: null,
         fallback: true,
