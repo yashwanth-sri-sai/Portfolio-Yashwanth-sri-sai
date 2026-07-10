@@ -162,30 +162,6 @@ const CertificateRenderer = React.memo(function CertificateRenderer({
   );
 });
 
-// Container motion variants for stagger-animating child elements
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-// Certification card entrance variants
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-    },
-  },
-};
-
 export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
@@ -298,19 +274,16 @@ export default function Certifications() {
         </div>
 
         {/* Certificate Card Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
           <AnimatePresence>
             {visibleCertifications.map((cert) => (
               <motion.div
                 key={cert.id}
-                variants={cardVariants}
                 layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.4 }}
                 className="group relative flex flex-col h-full rounded-2xl border border-white/5 bg-[#0a0a0c]/40 backdrop-blur-xl transition-all duration-500 overflow-hidden hover:border-cyan-500/20 hover:shadow-[0_0_30px_rgba(6,182,212,0.08)] hover:-translate-y-1.5 cursor-pointer"
                 onClick={() => setSelectedCert(cert)}
               >
@@ -386,7 +359,7 @@ export default function Certifications() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* View All / Toggle Button (Only visible on All filter category) */}
         {activeFilter === "All" && (
